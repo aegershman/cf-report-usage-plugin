@@ -42,16 +42,16 @@ func ParseFlags(args []string) flagVal {
 //GetMetadata returns metatada
 func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
-		Name: "usage-report",
+		Name: "trueup-report",
 		Version: plugin.VersionType{
 			Major: 1,
-			Minor: 4,
-			Build: 1,
+			Minor: 0,
+			Build: 0,
 		},
 		Commands: []plugin.Command{
 			{
-				Name:     "usage-report",
-				HelpText: "Report AI and memory usage for orgs and spaces",
+				Name:     "trueup-report",
+				HelpText: "Report AIs, SIs and memory usage for orgs and spaces",
 				UsageDetails: plugin.Usage{
 					Usage: "cf usage-report [-o orgName] [-f <csv>]",
 					Options: map[string]string{
@@ -152,39 +152,47 @@ func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]models.Space, error) {
 	}
 	var spaces = []models.Space{}
 	for _, s := range rawSpaces {
-		apps, err := cmd.getApps(s.AppsURL)
+		apps, services, err := cmd.getAppsAndServices(s.SummaryURL)
 		if nil != err {
 			return nil, err
 		}
 		spaces = append(spaces,
 			models.Space{
-				Apps: apps,
 				Name: s.Name,
+				Apps: apps,
+				Services: services,
 			},
 		)
 	}
 	return spaces, nil
 }
 
-func (cmd *UsageReportCmd) getApps(appsURL string) ([]models.App, error) {
-	rawApps, err := cmd.apiHelper.GetSpaceApps(appsURL)
+func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, []models.Service, error) {
+	rawApps, rawServices, err := cmd.apiHelper.GetSpaceAppsAndServices(summaryURL)
 	if nil != err {
-		return nil, err
+		return nil, nil, err
 	}
 	var apps = []models.App{}
+	var services = []models.Service{}
 	for _, a := range rawApps {
 		apps = append(apps, models.App{
-			Instances: int(a.Instances),
-			Ram:       int(a.RAM),
-			Running:   a.Running,
+			Actual: int(a.Actual),
+			Desire: int(a.Desire),
+			RAM:	int(a.RAM),
 		})
 	}
-	return apps, nil
+	for _, s := range rawServices {
+		services = append(services, models.Service{
+			Label: string(s.Label),
+			ServicePlan: string(s.ServicePlan),
+		})
+	}
+	return apps, services, nil
 }
 
 //Run runs the plugin
 func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
-	if args[0] == "usage-report" {
+	if args[0] == "trueup-report" {
 		cmd.apiHelper = apihelper.New(cli)
 		cmd.UsageReportCommand(args)
 	}
