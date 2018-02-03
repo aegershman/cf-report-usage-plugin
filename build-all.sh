@@ -15,29 +15,29 @@ if [[ "$1" = "release" ]] ; then
 
 		`sed -i .bak -e "s/Major:.*/Major: $MAJOR,/" \
 			-e "s/Minor:.*/Minor: $MINOR,/" \
-			-e "s/Build:.*/Build: $BUILD,/" usagereport.go`
+			-e "s/Build:.*/Build: $BUILD,/" trueupreport.go`
 	fi
 fi
 
 GOOS=linux GOARCH=amd64 go build
-LINUX64_SHA1=`cat usagereport-plugin | openssl sha1`
+LINUX64_SHA1=`cat trueupreport-plugin | openssl sha1`
 mkdir -p bin/linux64
-mv usagereport-plugin bin/linux64
+mv trueupreport-plugin bin/linux64
 
 GOOS=darwin GOARCH=amd64 go build
-OSX_SHA1=`cat usagereport-plugin | openssl sha1`
+OSX_SHA1=`cat trueupreport-plugin | openssl sha1`
 mkdir -p bin/osx
-mv usagereport-plugin bin/osx
+mv trueupreport-plugin bin/osx
 
 GOOS=windows GOARCH=amd64 go build
-WIN64_SHA1=`cat usagereport-plugin.exe | openssl sha1`
+WIN64_SHA1=`cat trueupreport-plugin.exe | openssl sha1`
 mkdir -p bin/win64
-mv usagereport-plugin.exe bin/win64
+mv trueupreport-plugin.exe bin/win64
 
 GOOS=windows GOARCH=386 go build
-WIN32_SHA1=`cat usagereport-plugin.exe | openssl sha1`
+WIN32_SHA1=`cat trueupreport-plugin.exe | openssl sha1`
 mkdir -p bin/win32
-mv usagereport-plugin.exe bin/win32
+mv trueupreport-plugin.exe bin/win32
 
 cat repo-index.yml |
 sed "s/osx-sha1/$OSX_SHA1/" |

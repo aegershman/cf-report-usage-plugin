@@ -1,3 +1,3 @@
-cf uninstall-plugin usage-report
+cf uninstall-plugin trueup-report
 go build
-cf install-plugin usagereport-plugin
+cf install-plugin trueupreport-plugin

@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestUsagereportPlugin(t *testing.T) {
+func TestTrueupreportPlugin(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "UsagereportPlugin Suite")
+	RunSpecs(t, "TrueupreportPlugin Suite")
 }

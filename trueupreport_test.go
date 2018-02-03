@@ -10,7 +10,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Usagereport", func() {
+var _ = Describe("Trueupreport", func() {
 	var fakeAPI *fakes.FakeCFAPIHelper
 	var cmd *UsageReportCmd
 

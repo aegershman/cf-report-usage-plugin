@@ -9,7 +9,7 @@ build:
     # Sets the go workspace and places you package
     # at the right place in the workspace tree
     - wercker/setup-go-workspace:
-       package-dir: github.com/krujos/usagereport-plugin
+       package-dir: github.com/jigsheth57/trueupreport-plugin
 
     - script:
         name: Get dependencies
@@ -42,6 +42,5 @@ build:
          ./cf auth $cfuser "$cfpass"
          ./cf target -s $cfspace -o $cforg
          ls -al
-         ./cf install-plugin -f usagereport-plugin
-         ./cf usage-report
-
+         ./cf install-plugin -f trueupreport-plugin
+         ./cf trueup-report

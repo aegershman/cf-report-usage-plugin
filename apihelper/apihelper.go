@@ -3,6 +3,7 @@ package apihelper
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"net/url"
 	"strconv"
 
@@ -24,15 +25,21 @@ type Organization struct {
 
 //Space representation
 type Space struct {
-	Name    string
-	AppsURL string
+	Name    	string
+	SummaryURL	string
 }
 
 //App representation
 type App struct {
-	Instances float64
-	RAM       float64
-	Running   bool
+	Actual	float64
+	Desire	float64
+	RAM     float64
+}
+
+//Service representation
+type Service struct {
+	Label    	string
+	ServicePlan string
 }
 
 //CFAPIHelper to wrap cf curl results
@@ -42,7 +49,7 @@ type CFAPIHelper interface {
 	GetQuotaMemoryLimit(string) (float64, error)
 	GetOrgMemoryUsage(Organization) (float64, error)
 	GetOrgSpaces(string) ([]Space, error)
-	GetSpaceApps(string) ([]App, error)
+	GetSpaceAppsAndServices(string) ([]App, []Service, error)
 }
 
 //APIHelper implementation
@@ -69,10 +76,14 @@ func (api *APIHelper) GetOrgs() ([]Organization, error) {
 		for _, o := range orgsJSON["resources"].([]interface{}) {
 			theOrg := o.(map[string]interface{})
 			entity := theOrg["entity"].(map[string]interface{})
+			name := entity["name"].(string)
+			if (name == "system") {
+				continue
+			}
 			metadata := theOrg["metadata"].(map[string]interface{})
 			orgs = append(orgs,
 				Organization{
-					Name:      entity["name"].(string),
+					Name:      name,
 					URL:       metadata["url"].(string),
 					QuotaURL:  entity["quota_definition_url"].(string),
 					SpacesURL: entity["spaces_url"].(string),
@@ -143,11 +154,12 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) ([]Space, error) {
 		}
 		for _, s := range spacesJSON["resources"].([]interface{}) {
 			theSpace := s.(map[string]interface{})
+			metadata := theSpace["metadata"].(map[string]interface{})
 			entity := theSpace["entity"].(map[string]interface{})
 			spaces = append(spaces,
 				Space{
-					AppsURL: entity["apps_url"].(string),
 					Name:    entity["name"].(string),
+					SummaryURL: metadata["url"].(string)+"/summary",
 				})
 		}
 		if next, ok := spacesJSON["next_url"].(string); ok {
@@ -159,30 +171,49 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) ([]Space, error) {
 	return spaces, nil
 }
 
-//GetSpaceApps returns the apps in a space
-func (api *APIHelper) GetSpaceApps(appsURL string) ([]App, error) {
-	nextURL := appsURL
+//GetSpaceAppsAndServices returns the apps and the services in a space
+func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) ([]App, []Service, error) {
 	apps := []App{}
-	for nextURL != "" {
-		appsJSON, err := cfcurl.Curl(api.cli, nextURL)
-		if nil != err {
-			return nil, err
-		}
-		for _, a := range appsJSON["resources"].([]interface{}) {
+	services := []Service{}
+	summaryJSON, err := cfcurl.Curl(api.cli, summaryURL)
+	if nil != err {
+		return nil, nil, err
+	}
+
+	_, aok := summaryJSON["apps"]
+	_, sok := summaryJSON["services"]
+
+	if(aok) {
+		for _, a := range summaryJSON["apps"].([]interface{}) {
 			theApp := a.(map[string]interface{})
-			entity := theApp["entity"].(map[string]interface{})
 			apps = append(apps,
 				App{
-					Instances: entity["instances"].(float64),
-					RAM:			 entity["memory"].(float64),
-					Running:	 "STARTED" == entity["state"].(string),
+					Actual: theApp["running_instances"].(float64),
+					Desire: theApp["instances"].(float64),
+					RAM:	theApp["memory"].(float64),
 				})
 		}
-		if next, ok := appsJSON["next_url"].(string); ok {
-			nextURL = next
-		} else {
-			nextURL = ""
+	}
+	if(sok) {
+		for _, s := range summaryJSON["services"].([]interface{}) {
+			theService := s.(map[string]interface{})
+			_, servicePlanExist := theService["service_plan"]
+			if(servicePlanExist) {
+				servicePlan := theService["service_plan"].(map[string]interface{})
+				_, serviceExist := servicePlan["service"]
+				if(serviceExist) {
+					service := servicePlan["service"].(map[string]interface{})
+					label := service["label"].(string)
+					if (strings.Contains(label,"rabbit") || strings.Contains(label,"redis") || strings.Contains(label,"mysql")) {
+						services = append(services,
+							Service{
+								Label:       label,
+								ServicePlan: servicePlan["name"].(string),
+							})
+					}
+				}
+			}
 		}
 	}
-	return apps, nil
+	return apps, services, nil
 }

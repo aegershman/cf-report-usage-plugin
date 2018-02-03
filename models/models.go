@@ -15,14 +15,22 @@ type Org struct {
 }
 
 type Space struct {
-	Apps []App
 	Name string
+	Apps []App
+	Services []Service
 }
 
+//App representation
 type App struct {
-	Ram       int
-	Instances int
-	Running   bool
+	Actual	int
+	Desire	int
+	RAM     int
+}
+
+//Service representation
+type Service struct {
+	Label    	string
+	ServicePlan string
 }
 
 type Report struct {
@@ -37,6 +45,22 @@ func (org *Org) InstancesCount() int {
 	return instancesCount
 }
 
+func (org *Org) RunningAppsCount() int {
+	instancesCount := 0
+	for _, space := range org.Spaces {
+		instancesCount += space.RunningAppsCount()
+	}
+	return instancesCount
+}
+
+func (org *Org) RunningInstancesCount() int {
+	instancesCount := 0
+	for _, space := range org.Spaces {
+		instancesCount += space.RunningInstancesCount()
+	}
+	return instancesCount
+}
+
 func (org *Org) AppsCount() int {
 	appsCount := 0
 	for _, space := range org.Spaces {
@@ -45,12 +69,18 @@ func (org *Org) AppsCount() int {
 	return appsCount
 }
 
+func (org *Org) ServicesCount() int {
+	servicesCount := 0
+	for _, space := range org.Spaces {
+		servicesCount += len(space.Services)
+	}
+	return servicesCount
+}
+
 func (space *Space) ConsumedMemory() int {
 	consumed := 0
 	for _, app := range space.Apps {
-		if app.Running {
-			consumed += int(app.Instances * app.Ram)
-		}
+		consumed += int(app.Actual * app.RAM)
 	}
 	return consumed
 }
@@ -58,7 +88,7 @@ func (space *Space) ConsumedMemory() int {
 func (space *Space) RunningAppsCount() int {
 	runningAppsCount := 0
 	for _, app := range space.Apps {
-		if app.Running {
+		if (app.Actual > 0) {
 			runningAppsCount++
 		}
 	}
@@ -68,7 +98,7 @@ func (space *Space) RunningAppsCount() int {
 func (space *Space) InstancesCount() int {
 	instancesCount := 0
 	for _, app := range space.Apps {
-		instancesCount += int(app.Instances)
+		instancesCount += int(app.Desire)
 	}
 	return instancesCount
 }
@@ -76,11 +106,14 @@ func (space *Space) InstancesCount() int {
 func (space *Space) RunningInstancesCount() int {
 	runningInstancesCount := 0
 	for _, app := range space.Apps {
-		if app.Running {
-			runningInstancesCount += app.Instances
-		}
+		runningInstancesCount += int(app.Actual)
 	}
 	return runningInstancesCount
+}
+
+func (space *Space) ServicesCount() int {
+	servicesCount := len(space.Services)
+	return servicesCount
 }
 
 func (report *Report) String() string {
@@ -88,6 +121,9 @@ func (report *Report) String() string {
 
 	totalApps := 0
 	totalInstances := 0
+	totalRunningApps := 0
+	totalRunningInstances := 0
+	totalServiceInstances := 0
 
 	for _, org := range report.Orgs {
 		response.WriteString(fmt.Sprintf("Org %s is consuming %d MB of %d MB.\n",
@@ -96,6 +132,7 @@ func (report *Report) String() string {
 		for _, space := range org.Spaces {
 			spaceRunningAppsCount := space.RunningAppsCount()
 			spaceInstancesCount := space.InstancesCount()
+			spaceServiceInstancesCount := space.ServicesCount()
 			spaceRunningInstancesCount := space.RunningInstancesCount()
 			spaceConsumedMemory := space.ConsumedMemory()
 
@@ -106,17 +143,22 @@ func (report *Report) String() string {
 				fmt.Sprintf("\t\t%d apps: %d running %d stopped\n", len(space.Apps),
 					spaceRunningAppsCount, len(space.Apps)-spaceRunningAppsCount))
 			response.WriteString(
-				fmt.Sprintf("\t\t%d instances: %d running, %d stopped\n", spaceInstancesCount,
+				fmt.Sprintf("\t\t%d app instances: %d running, %d stopped\n", spaceInstancesCount,
 					spaceRunningInstancesCount, spaceInstancesCount-spaceRunningInstancesCount))
+			response.WriteString(
+				fmt.Sprintf("\t\t%d service instances of type Service Suite\n", spaceServiceInstancesCount))
 		}
 
 		totalApps += org.AppsCount()
 		totalInstances += org.InstancesCount()
+		totalRunningApps += org.RunningAppsCount()
+		totalRunningInstances += org.RunningInstancesCount()
+		totalServiceInstances += org.ServicesCount()
 	}
 
 	response.WriteString(
-		fmt.Sprintf("You are running %d apps in %d org(s), with a total of %d instances.\n",
-			totalApps, len(report.Orgs), totalInstances))
+		fmt.Sprintf("You have deployed %d apps across %d org(s), with a total of %d app instances configured. You are currently running %d apps with %d app instances and using %d service instances of type Service Suite.\n",
+			totalApps, len(report.Orgs), totalInstances, totalRunningApps, totalRunningInstances, totalServiceInstances))
 
 	return response.String()
 }
@@ -125,7 +167,7 @@ func (report *Report) CSV() string {
 	var rows = [][]string{}
 	var csv bytes.Buffer
 
-	var headers = []string{"OrgName", "SpaceName", "SpaceMemoryUsed", "OrgMemoryQuota", "AppsDeployed", "AppsRunning", "AppInstancesDeployed", "AppInstancesRunning"}
+	var headers = []string{"OrgName", "SpaceName", "SpaceMemoryUsed", "OrgMemoryQuota", "AppsDeployed", "AppsRunning", "AppInstancesDeployed", "AppInstancesRunning", "ServiceInstanceDeployed"}
 
 	rows = append(rows, headers)
 
@@ -142,6 +184,7 @@ func (report *Report) CSV() string {
 				strconv.Itoa(space.RunningAppsCount()),
 				strconv.Itoa(space.InstancesCount()),
 				strconv.Itoa(space.RunningInstancesCount()),
+				strconv.Itoa(space.ServicesCount()),
 			}
 
 			rows = append(rows, spaceResult)
