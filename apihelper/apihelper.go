@@ -199,17 +199,20 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) ([]App, []Servi
 			theService := s.(map[string]interface{})
 			_, servicePlanExist := theService["service_plan"]
 			if(servicePlanExist) {
-				servicePlan := theService["service_plan"].(map[string]interface{})
-				_, serviceExist := servicePlan["service"]
-				if(serviceExist) {
-					service := servicePlan["service"].(map[string]interface{})
-					label := service["label"].(string)
-					if (strings.Contains(label,"rabbit") || strings.Contains(label,"redis") || strings.Contains(label,"mysql")) {
-						services = append(services,
-							Service{
-								Label:       label,
-								ServicePlan: servicePlan["name"].(string),
-							})
+				boundedApps := theService["bound_app_count"].(float64)
+				if(boundedApps > 0) {
+					servicePlan := theService["service_plan"].(map[string]interface{})
+					_, serviceExist := servicePlan["service"]
+					if(serviceExist) {
+						service := servicePlan["service"].(map[string]interface{})
+						label := service["label"].(string)
+						if (strings.Contains(label,"rabbit") || strings.Contains(label,"redis") || strings.Contains(label,"mysql")) {
+							services = append(services,
+								Service{
+									Label:       label,
+									ServicePlan: servicePlan["name"].(string),
+								})
+						}
 					}
 				}
 			}
