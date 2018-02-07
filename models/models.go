@@ -177,7 +177,7 @@ func (report *Report) CSV() string {
 	var rows = [][]string{}
 	var csv bytes.Buffer
 
-	var headers = []string{"OrgName", "SpaceName", "SpaceMemoryUsed", "OrgMemoryQuota", "AppsDeployed", "AppsRunning", "AppInstancesDeployed", "AppInstancesRunning", "TotalServiceInstancesDeployed", "RabbitMQServiceInstanceDeployed", "RedisServiceInstanceDeployed", "MySQLServiceInstanceDeployed"}
+	var headers = []string{"OrgName", "SpaceName", "SpaceMemoryUsed", "OrgMemoryQuota", "AppsDeployed", "AppsRunning", "AppInstancesConfigured", "AppInstancesRunning", "TotalServiceInstancesDeployed", "RabbitMQServiceInstanceDeployed", "RedisServiceInstanceDeployed", "MySQLServiceInstanceDeployed"}
 
 	rows = append(rows, headers)
 
