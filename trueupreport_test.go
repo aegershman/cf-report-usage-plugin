@@ -3,8 +3,8 @@ package main
 import (
 	"errors"
 
-	"github.com/krujos/usagereport-plugin/apihelper"
-	"github.com/krujos/usagereport-plugin/apihelper/fakes"
+	"github.com/jigsheth57/trueupreport-plugin/apihelper"
+	"github.com/jigsheth57/trueupreport-plugin/apihelper/fakes"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

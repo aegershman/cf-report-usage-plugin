@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/cloudfoundry/cli/plugin"
-	"github.com/krujos/usagereport-plugin/apihelper"
-	"github.com/krujos/usagereport-plugin/models"
+	"github.com/jigsheth57/trueupreport-plugin/apihelper"
+	"github.com/jigsheth57/trueupreport-plugin/models"
 )
 
 //UsageReportCmd the plugin
@@ -46,7 +46,7 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		Version: plugin.VersionType{
 			Major: 1,
 			Minor: 0,
-			Build: 0,
+			Build: 1,
 		},
 		Commands: []plugin.Command{
 			{

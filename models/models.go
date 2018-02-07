@@ -116,6 +116,16 @@ func (space *Space) ServicesCount() int {
 	return servicesCount
 }
 
+func (space *Space) ServiceInstancesCount(serviceType string) int {
+	boundedServiceInstancesCount := 0
+	for _, service := range space.Services {
+		if(strings.Contains(service.Label,serviceType)) {
+			boundedServiceInstancesCount++
+		}
+	}
+	return boundedServiceInstancesCount
+}
+
 func (report *Report) String() string {
 	var response bytes.Buffer
 
@@ -167,7 +177,7 @@ func (report *Report) CSV() string {
 	var rows = [][]string{}
 	var csv bytes.Buffer
 
-	var headers = []string{"OrgName", "SpaceName", "SpaceMemoryUsed", "OrgMemoryQuota", "AppsDeployed", "AppsRunning", "AppInstancesDeployed", "AppInstancesRunning", "ServiceInstanceDeployed"}
+	var headers = []string{"OrgName", "SpaceName", "SpaceMemoryUsed", "OrgMemoryQuota", "AppsDeployed", "AppsRunning", "AppInstancesDeployed", "AppInstancesRunning", "TotalServiceInstancesDeployed", "RabbitMQServiceInstanceDeployed", "RedisServiceInstanceDeployed", "MySQLServiceInstanceDeployed"}
 
 	rows = append(rows, headers)
 
@@ -185,6 +195,9 @@ func (report *Report) CSV() string {
 				strconv.Itoa(space.InstancesCount()),
 				strconv.Itoa(space.RunningInstancesCount()),
 				strconv.Itoa(space.ServicesCount()),
+				strconv.Itoa(space.ServiceInstancesCount("rabbit")),
+				strconv.Itoa(space.ServiceInstancesCount("redis")),
+				strconv.Itoa(space.ServiceInstancesCount("mysql")),
 			}
 
 			rows = append(rows, spaceResult)
