@@ -96,7 +96,7 @@ func (api *APIHelper) GetOrgs() ([]Organization, error) {
 //GetOrg returns a struct that represents critical fields in the JSON
 func (api *APIHelper) GetOrg(name string) (Organization, error) {
 	query := fmt.Sprintf("name:%s", name)
-	path := fmt.Sprintf("/v2/organizations?q=%s&inline-relations-depth=1", url.QueryEscape(query))
+	path := fmt.Sprintf("/v2/organizations?q=%s", url.QueryEscape(query))
 	orgsJSON, err := cfcurl.Curl(api.cli, path)
 	if nil != err {
 		return Organization{}, err
