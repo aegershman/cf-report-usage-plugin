@@ -1,0 +1,23 @@
+- name: Trueup Report
+  description: Report on memory, application and service instances usage for orgs and spaces
+  version: _TAG_
+  created: 2018-02-05T00:00:00Z
+  updated: 2018-02-07T00:00:00Z
+  company:
+  authors:
+  - name: Jignesh Sheth
+    homepage: https://github.com/jigsheth57/
+    contact: jsheth@pivotal.io
+  binaries:
+  - platform: osx
+    url: https://github.com/jigsheth57/trueupreport-plugin/raw/_TAG_/bin/osx/trueupreport-plugin
+    checksum: osx-sha1
+  - platform: win64
+    url: https://github.com/jigsheth57/trueupreport-plugin/raw/_TAG_/bin/win64/trueupreport-plugin.exe
+    checksum: win64-sha1
+  - platform: win32
+    url: https://github.com/jigsheth57/trueupreport-plugin/raw/_TAG_/bin/win32/trueupreport-plugin.exe
+    checksum: win32-sha1
+  - platform: linux64
+    url: https://github.com/jigsheth57/trueupreport-plugin/raw/_TAG_/bin/linux64/trueupreport-plugin
+    checksum: linux64-sha1
