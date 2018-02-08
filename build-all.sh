@@ -48,8 +48,6 @@ sed "s/_TAG_/$TAG/" |
 cat
 
 #Final build gives developer a plugin to install
-go build
-
 if [[ "$1" = "release" ]] ; then
 	git commit -am "Build version $TAG"
 	git tag $TAG
