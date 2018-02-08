@@ -179,11 +179,7 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) ([]App, []Servi
 	if nil != err {
 		return nil, nil, err
 	}
-
-	_, aok := summaryJSON["apps"]
-	_, sok := summaryJSON["services"]
-
-	if(aok) {
+	if _, ok := summaryJSON["apps"]; ok {
 		for _, a := range summaryJSON["apps"].([]interface{}) {
 			theApp := a.(map[string]interface{})
 			apps = append(apps,
@@ -194,16 +190,13 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) ([]App, []Servi
 				})
 		}
 	}
-	if(sok) {
+	if _, ok := summaryJSON["services"]; ok {
 		for _, s := range summaryJSON["services"].([]interface{}) {
 			theService := s.(map[string]interface{})
-			_, servicePlanExist := theService["service_plan"]
-			if(servicePlanExist) {
-				boundedApps := theService["bound_app_count"].(float64)
-				if(boundedApps > 0) {
+			if _, servicePlanExist := theService["service_plan"]; servicePlanExist {
+				if boundedApps := theService["bound_app_count"].(float64); boundedApps > 0 {
 					servicePlan := theService["service_plan"].(map[string]interface{})
-					_, serviceExist := servicePlan["service"]
-					if(serviceExist) {
+					if _, serviceExist := servicePlan["service"]; serviceExist {
 						service := servicePlan["service"].(map[string]interface{})
 						label := service["label"].(string)
 						if (strings.Contains(label,"rabbit") || strings.Contains(label,"redis") || strings.Contains(label,"mysql")) {
