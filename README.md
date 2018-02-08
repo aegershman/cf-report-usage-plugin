@@ -220,9 +220,18 @@ S1Pdemo14, gt-scdf-twitter-demo, 0, 102400, 0, 0, 0, 0, 0, 0, 0, 0
 
 ##Installation
 ```
-$ git clone https://github.com/jigsheth57/trueupreport-plugin.git
-$ cd trueupreport-plugin/bin/
-$ cf install-plugin osx/trueupreport-plugin -f
+For OSX
+$ cf install-plugin https://github.com/jigsheth57/trueupreport-plugin/blob/master/bin/osx/trueupreport-plugin?raw=true -f
+
+For Windows 32bit
+$ cf install-plugin https://github.com/jigsheth57/trueupreport-plugin/blob/master/bin/win32/trueupreport-plugin.exe?raw=true -f
+
+For Windows 64bit
+$ cf install-plugin https://github.com/jigsheth57/trueupreport-plugin/blob/master/bin/win64/trueupreport-plugin.exe?raw=true -f
+
+For Linux 64bit
+$ cf install-plugin https://github.com/jigsheth57/trueupreport-plugin/blob/master/bin/linux64/trueupreport-plugin?raw=true -f
+
 ```
 #####Install from Source (need to have [Go](http://golang.org/dl/) installed)
   ```
