@@ -11,13 +11,13 @@ type Org struct {
 	Name        string
 	MemoryQuota int
 	MemoryUsage int
-	Spaces      []Space
+	Spaces      Spaces
 }
 
 type Space struct {
 	Name string
-	Apps []App
-	Services []Service
+	Apps Apps
+	Services Services
 }
 
 //App representation
@@ -33,8 +33,39 @@ type Service struct {
 	ServicePlan string
 }
 
+type SpaceStats struct {
+	Name string
+	DeployedAppsCount int
+	RunningAppsCount int
+	StoppedAppsCount int
+	DeployedAppInstancesCount int
+	RunningAppInstancesCount int
+	StoppedAppInstancesCount int
+	ServicesCount int
+	ConsumedMemory int
+}
+
+type OrgStats struct {
+	Name        string
+	MemoryQuota int
+	MemoryUsage int
+	Spaces      Spaces
+	DeployedAppsCount	int
+	RunningAppsCount	int
+	StoppedAppsCount	int
+	DeployedAppInstancesCount int
+	RunningAppInstancesCount	int
+	StoppedAppInstancesCount	int
+	ServicesCount	int
+}
+
+type Orgs []Org
+type Spaces []Space
+type Apps []App
+type Services []Service
+
 type Report struct {
-	Orgs []Org
+	Orgs Orgs
 }
 
 func (org *Org) InstancesCount() int {
@@ -126,6 +157,54 @@ func (space *Space) ServiceInstancesCount(serviceType string) int {
 	return boundedServiceInstancesCount
 }
 
+func (spaces Spaces) Stats (c chan SpaceStats) {
+	for _, space := range spaces {
+		lApps := len(space.Apps)
+		rApps := space.RunningAppsCount()
+		sApps := lApps-rApps
+		lAIs := space.InstancesCount()
+		rAIs := space.RunningInstancesCount()
+		sAIs := lAIs-rAIs
+		c <- SpaceStats{
+			Name: space.Name,
+			DeployedAppsCount: lApps,
+			RunningAppsCount: rApps,
+			StoppedAppsCount: sApps,
+			DeployedAppInstancesCount: lAIs,
+			RunningAppInstancesCount: rAIs,
+			StoppedAppInstancesCount: sAIs,
+			ServicesCount: space.ServicesCount(),
+			ConsumedMemory: space.ConsumedMemory(),
+		}
+	}
+	close(c)
+}
+
+func (orgs Orgs) Stats (c chan OrgStats) {
+	for _, org := range orgs {
+		lApps := org.AppsCount()
+		rApps := org.RunningAppsCount()
+		sApps := lApps-rApps
+		lAIs := org.InstancesCount()
+		rAIs := org.RunningInstancesCount()
+		sAIs := lAIs-rAIs
+		c <- OrgStats{
+			Name: org.Name,
+			MemoryQuota: org.MemoryQuota,
+			MemoryUsage: org.MemoryUsage,
+			Spaces: org.Spaces,
+			DeployedAppsCount: lApps,
+			RunningAppsCount: rApps,
+			StoppedAppsCount: sApps,
+			DeployedAppInstancesCount: lAIs,
+			RunningAppInstancesCount: rAIs,
+			StoppedAppInstancesCount: sAIs,
+			ServicesCount: org.ServicesCount(),
+		}
+	}
+	close(c)
+}
+
 func (report *Report) String() string {
 	var response bytes.Buffer
 
@@ -135,37 +214,33 @@ func (report *Report) String() string {
 	totalRunningInstances := 0
 	totalServiceInstances := 0
 
-	for _, org := range report.Orgs {
+	chSpaceStats := make(chan SpaceStats)
+	chOrgStats := make(chan OrgStats)
+
+	go report.Orgs.Stats(chOrgStats)
+	for orgStats := range chOrgStats {
 		response.WriteString(fmt.Sprintf("Org %s is consuming %d MB of %d MB.\n",
-			org.Name, org.MemoryUsage, org.MemoryQuota))
-
-		for _, space := range org.Spaces {
-			spaceRunningAppsCount := space.RunningAppsCount()
-			spaceInstancesCount := space.InstancesCount()
-			spaceServiceInstancesCount := space.ServicesCount()
-			spaceRunningInstancesCount := space.RunningInstancesCount()
-			spaceConsumedMemory := space.ConsumedMemory()
-
+			orgStats.Name, orgStats.MemoryUsage, orgStats.MemoryQuota))
+		go orgStats.Spaces.Stats(chSpaceStats)
+		for spaceState := range chSpaceStats {
 			response.WriteString(
 				fmt.Sprintf("\tSpace %s is consuming %d MB memory (%d%%) of org quota.\n",
-					space.Name, spaceConsumedMemory, (100 * spaceConsumedMemory / org.MemoryQuota)))
+					spaceState.Name, spaceState.ConsumedMemory, (100 * spaceState.ConsumedMemory / orgStats.MemoryQuota)))
 			response.WriteString(
-				fmt.Sprintf("\t\t%d apps: %d running %d stopped\n", len(space.Apps),
-					spaceRunningAppsCount, len(space.Apps)-spaceRunningAppsCount))
+				fmt.Sprintf("\t\t%d apps: %d running %d stopped\n", spaceState.DeployedAppsCount,
+					spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
 			response.WriteString(
-				fmt.Sprintf("\t\t%d app instances: %d running, %d stopped\n", spaceInstancesCount,
-					spaceRunningInstancesCount, spaceInstancesCount-spaceRunningInstancesCount))
+				fmt.Sprintf("\t\t%d app instances: %d running, %d stopped\n", spaceState.DeployedAppInstancesCount,
+					spaceState.RunningAppInstancesCount, spaceState.StoppedAppInstancesCount))
 			response.WriteString(
-				fmt.Sprintf("\t\t%d service instances of type Service Suite\n", spaceServiceInstancesCount))
+				fmt.Sprintf("\t\t%d service instances of type Service Suite\n", spaceState.ServicesCount))
 		}
-
-		totalApps += org.AppsCount()
-		totalInstances += org.InstancesCount()
-		totalRunningApps += org.RunningAppsCount()
-		totalRunningInstances += org.RunningInstancesCount()
-		totalServiceInstances += org.ServicesCount()
+		totalApps += orgStats.DeployedAppsCount
+		totalInstances += orgStats.DeployedAppInstancesCount
+		totalRunningApps += orgStats.RunningAppsCount
+		totalRunningInstances += orgStats.RunningAppInstancesCount
+		totalServiceInstances += orgStats.ServicesCount
 	}
-
 	response.WriteString(
 		fmt.Sprintf("You have deployed %d apps across %d org(s), with a total of %d app instances configured. You are currently running %d apps with %d app instances and using %d service instances of type Service Suite.\n",
 			totalApps, len(report.Orgs), totalInstances, totalRunningApps, totalRunningInstances, totalServiceInstances))

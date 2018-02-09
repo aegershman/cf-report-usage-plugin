@@ -42,14 +42,20 @@ type Service struct {
 	ServicePlan string
 }
 
+type Orgs []Organization
+type Spaces []Space
+type Apps []App
+type Services []Service
+
+
 //CFAPIHelper to wrap cf curl results
 type CFAPIHelper interface {
-	GetOrgs() ([]Organization, error)
+	GetOrgs() (Orgs, error)
 	GetOrg(string) (Organization, error)
 	GetQuotaMemoryLimit(string) (float64, error)
 	GetOrgMemoryUsage(Organization) (float64, error)
-	GetOrgSpaces(string) ([]Space, error)
-	GetSpaceAppsAndServices(string) ([]App, []Service, error)
+	GetOrgSpaces(string) (Spaces, error)
+	GetSpaceAppsAndServices(string) (Apps, Services, error)
 }
 
 //APIHelper implementation
@@ -62,7 +68,7 @@ func New(cli plugin.CliConnection) CFAPIHelper {
 }
 
 //GetOrgs returns a struct that represents critical fields in the JSON
-func (api *APIHelper) GetOrgs() ([]Organization, error) {
+func (api *APIHelper) GetOrgs() (Orgs, error) {
 	orgsJSON, err := cfcurl.Curl(api.cli, "/v2/organizations")
 	if nil != err {
 		return nil, err
@@ -144,7 +150,7 @@ func (api *APIHelper) GetOrgMemoryUsage(org Organization) (float64, error) {
 }
 
 //GetOrgSpaces returns the spaces in an org.
-func (api *APIHelper) GetOrgSpaces(spacesURL string) ([]Space, error) {
+func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
 	nextURL := spacesURL
 	spaces := []Space{}
 	for nextURL != "" {
@@ -172,7 +178,7 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) ([]Space, error) {
 }
 
 //GetSpaceAppsAndServices returns the apps and the services in a space
-func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) ([]App, []Service, error) {
+func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services, error) {
 	apps := []App{}
 	services := []Service{}
 	summaryJSON, err := cfcurl.Curl(api.cli, summaryURL)
