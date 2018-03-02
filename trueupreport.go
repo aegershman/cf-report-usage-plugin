@@ -45,15 +45,15 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		Name: "trueup-report",
 		Version: plugin.VersionType{
 			Major: 2,
-			Minor: 0,
-			Build: 4,
+			Minor: 1,
+			Build: 0,
 		},
 		Commands: []plugin.Command{
 			{
 				Name:     "trueup-report",
 				HelpText: "Report AIs, SIs and memory usage for orgs and spaces",
 				UsageDetails: plugin.Usage{
-					Usage: "cf usage-report [-o orgName] [-f <csv>]",
+					Usage: "cf trueup-report [-o orgName] [-f <csv>]",
 					Options: map[string]string{
 						"o": "organization",
 						"f": "format",
