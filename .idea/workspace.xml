@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e75248af-5f79-4f6b-ab2f-f76d3a67639a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change beforePath="$PROJECT_DIR$/apihelper/apihelper.go" afterPath="$PROJECT_DIR$/apihelper/apihelper.go" />
-      <change beforePath="$PROJECT_DIR$/bin/linux64/trueupreport-plugin" afterPath="$PROJECT_DIR$/bin/linux64/trueupreport-plugin" />
-      <change beforePath="$PROJECT_DIR$/bin/osx/trueupreport-plugin" afterPath="$PROJECT_DIR$/bin/osx/trueupreport-plugin" />
-      <change beforePath="$PROJECT_DIR$/bin/win64/trueupreport-plugin.exe" afterPath="$PROJECT_DIR$/bin/win64/trueupreport-plugin.exe" />
-      <change beforePath="$PROJECT_DIR$/trueupreport.go" afterPath="$PROJECT_DIR$/trueupreport.go" />
-    </list>
+    <list default="true" id="e75248af-5f79-4f6b-ab2f-f76d3a67639a" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -344,7 +337,7 @@
         <state relative-caret-position="304">
           <caret line="55" column="44" lean-forward="false" selection-start-line="55" selection-start-column="44" selection-end-line="55" selection-end-column="44" />
           <folding>
-            <element signature="e#14#191#0" expanded="true" />
+            <element signature="e#14#191#0" expanded="false" />
           </folding>
         </state>
       </provider>
