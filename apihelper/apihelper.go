@@ -3,9 +3,9 @@ package apihelper
 import (
 	"errors"
 	"fmt"
-	"strings"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/cloudfoundry/cli/plugin"
 	"github.com/jigsheth57/trueupreport-plugin/cfcurl"
@@ -25,20 +25,20 @@ type Organization struct {
 
 //Space representation
 type Space struct {
-	Name    	string
-	SummaryURL	string
+	Name       string
+	SummaryURL string
 }
 
 //App representation
 type App struct {
-	Actual	float64
-	Desire	float64
-	RAM     float64
+	Actual float64
+	Desire float64
+	RAM    float64
 }
 
 //Service representation
 type Service struct {
-	Label    	string
+	Label       string
 	ServicePlan string
 }
 
@@ -46,7 +46,6 @@ type Orgs []Organization
 type Spaces []Space
 type Apps []App
 type Services []Service
-
 
 //CFAPIHelper to wrap cf curl results
 type CFAPIHelper interface {
@@ -164,8 +163,8 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
 			entity := theSpace["entity"].(map[string]interface{})
 			spaces = append(spaces,
 				Space{
-					Name:    entity["name"].(string),
-					SummaryURL: metadata["url"].(string)+"/summary",
+					Name:       entity["name"].(string),
+					SummaryURL: metadata["url"].(string) + "/summary",
 				})
 		}
 		if next, ok := spacesJSON["next_url"].(string); ok {
@@ -192,7 +191,7 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 				App{
 					Actual: theApp["running_instances"].(float64),
 					Desire: theApp["instances"].(float64),
-					RAM:	theApp["memory"].(float64),
+					RAM:    theApp["memory"].(float64),
 				})
 		}
 	}
@@ -200,12 +199,43 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 		for _, s := range summaryJSON["services"].([]interface{}) {
 			theService := s.(map[string]interface{})
 			if _, servicePlanExist := theService["service_plan"]; servicePlanExist {
-				if boundedApps := theService["bound_app_count"].(float64); boundedApps > 0 {
-					servicePlan := theService["service_plan"].(map[string]interface{})
-					if _, serviceExist := servicePlan["service"]; serviceExist {
-						service := servicePlan["service"].(map[string]interface{})
-						label := service["label"].(string)
-						if (strings.Contains(label,"rabbit") || strings.Contains(label,"redis") || strings.Contains(label,"mysql")) {
+				servicePlan := theService["service_plan"].(map[string]interface{})
+				if _, serviceExist := servicePlan["service"]; serviceExist {
+					service := servicePlan["service"].(map[string]interface{})
+					label := service["label"].(string)
+					if (strings.EqualFold(label, "p-dataflow")) {
+						services = append(services,
+							Service{
+								Label:       "p-dataflow-servers",
+								ServicePlan: servicePlan["name"].(string),
+							})
+					}
+					if boundedApps := theService["bound_app_count"].(float64); boundedApps > 0 {
+						if (strings.EqualFold(label, "p-dataflow-analytics")) {
+							services = append(services,
+								Service{
+									Label:       "p-redis",
+									ServicePlan: "p-dataflow-analytics",
+								})
+						} else if (strings.EqualFold(label, "p-dataflow-relational")) {
+							services = append(services,
+								Service{
+									Label:       "p-mysql",
+									ServicePlan: "p-dataflow-relational",
+								})
+						} else if (strings.EqualFold(label, "p-dataflow-messaging")) {
+							services = append(services,
+								Service{
+									Label:       "p-rabbit",
+									ServicePlan: "p-dataflow-messaging",
+								})
+						} else if (strings.Contains(label, "p-circuit-breaker") || strings.Contains(label, "p-config-server") || strings.Contains(label, "p-service-registry")) {
+							services = append(services,
+								Service{
+									Label:       "p-spring-cloud-services",
+									ServicePlan: label,
+								})
+						} else if (strings.Contains(label, "rabbit") || strings.Contains(label, "redis") || strings.Contains(label, "mysql")) {
 							services = append(services,
 								Service{
 									Label:       label,
