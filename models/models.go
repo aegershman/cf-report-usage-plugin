@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Org struct {
@@ -72,6 +73,9 @@ func (org *Org) InstancesCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
 		instancesCount += space.InstancesCount()
+		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
+		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
+		instancesCount += SCSCount + (SCDFCount*3)
 	}
 	return instancesCount
 }
@@ -88,6 +92,9 @@ func (org *Org) RunningInstancesCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
 		instancesCount += space.RunningInstancesCount()
+		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
+		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
+		instancesCount += SCSCount + (SCDFCount*3)
 	}
 	return instancesCount
 }
@@ -104,6 +111,9 @@ func (org *Org) ServicesCount() int {
 	servicesCount := 0
 	for _, space := range org.Spaces {
 		servicesCount += len(space.Services)
+		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
+		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
+		servicesCount -= (SCSCount + SCDFCount)
 	}
 	return servicesCount
 }
@@ -159,13 +169,19 @@ func (space *Space) ServiceInstancesCount(serviceType string) int {
 
 func (spaces Spaces) Stats (c chan SpaceStats, skipSIcount bool) {
 	for _, space := range spaces {
+		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
+		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
 		lApps := len(space.Apps)
 		rApps := space.RunningAppsCount()
 		sApps := lApps-rApps
 		lAIs := space.InstancesCount()
+		lAIs += (SCSCount + (SCDFCount*3))
 		rAIs := space.RunningInstancesCount()
+		rAIs += (SCSCount + (SCDFCount*3))
 		sAIs := lAIs-rAIs
 		siCount := space.ServicesCount()
+		siCount -= (SCSCount + SCDFCount)
+		rAIConsumedMemory := (space.ConsumedMemory()+(SCSCount*1024)+(SCDFCount*3*1024))
 		if(skipSIcount) {
 			siCount = 0
 		}
@@ -178,7 +194,7 @@ func (spaces Spaces) Stats (c chan SpaceStats, skipSIcount bool) {
 			RunningAppInstancesCount: rAIs,
 			StoppedAppInstancesCount: sAIs,
 			ServicesCount: siCount,
-			ConsumedMemory: space.ConsumedMemory(),
+			ConsumedMemory: rAIConsumedMemory,
 		}
 	}
 	close(c)
@@ -256,34 +272,37 @@ func (report *Report) CSV() string {
 	var rows = [][]string{}
 	var csv bytes.Buffer
 
-	var headers = []string{"OrgName", "SpaceName", "SpaceMemoryUsed", "OrgMemoryQuota", "AppsDeployed", "AppsRunning", "AppInstancesConfigured", "AppInstancesRunning", "TotalServiceInstancesDeployed", "RabbitMQServiceInstanceDeployed", "RedisServiceInstanceDeployed", "MySQLServiceInstanceDeployed"}
+	var headers = []string{"ReportDate", "OrgName", "SpaceName", "SpaceMemoryUsed", "OrgMemoryQuota", "AppsDeployed", "AppsRunning", "AppInstancesConfigured", "AppInstancesRunning", "TotalServiceInstancesDeployed", "RabbitMQServiceInstanceDeployed", "RedisServiceInstanceDeployed", "MySQLServiceInstanceDeployed", "SpringCloudServiceInstanceDeployed", "SpringCloudDataFlowServerInstanceDeployed"}
 
 	rows = append(rows, headers)
 
 	for _, org := range report.Orgs {
 		for _, space := range org.Spaces {
+			if (org.Name == "p-spring-cloud-services" || org.Name == "p-dataflow") {
+				continue
+			}
 			appsDeployed := len(space.Apps)
+			SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
+			SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
 
+			col0 := time.Now().Format("2006-01-02")
 			col1 := org.Name
 			col2 := space.Name
-			col3 := strconv.Itoa(space.ConsumedMemory())
+			col3 := strconv.Itoa(space.ConsumedMemory()+(SCSCount*1024)+(SCDFCount*3*1024))
 			col4 := strconv.Itoa(org.MemoryQuota)
 			col5 := strconv.Itoa(appsDeployed)
 			col6 := strconv.Itoa(space.RunningAppsCount())
 			col7 := strconv.Itoa(space.InstancesCount())
-			col8 := strconv.Itoa(space.RunningInstancesCount())
-			col9 := strconv.Itoa(space.ServicesCount())
+			col8 := strconv.Itoa(space.RunningInstancesCount()+SCSCount+(SCDFCount*3))
+			col9 := strconv.Itoa(space.ServicesCount()-(SCSCount + SCDFCount))
 			col10 := strconv.Itoa(space.ServiceInstancesCount("rabbit"))
 			col11 := strconv.Itoa(space.ServiceInstancesCount("redis"))
 			col12 := strconv.Itoa(space.ServiceInstancesCount("mysql"))
-			if (org.Name == "p-spring-cloud-services") {
-				col9 = "0"
-				col10 = "0"
-				col11 = "0"
-				col12 = "0"
-			}
+			col13 := strconv.Itoa(SCSCount)
+			col14 := strconv.Itoa(SCDFCount*3)
 
 			spaceResult := []string{
+				col0,
 				col1,
 				col2,
 				col3,
@@ -296,6 +315,8 @@ func (report *Report) CSV() string {
 				col10,
 				col11,
 				col12,
+				col13,
+				col14,
 			}
 			rows = append(rows, spaceResult)
 		}
