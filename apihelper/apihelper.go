@@ -49,6 +49,7 @@ type Services []Service
 
 //CFAPIHelper to wrap cf curl results
 type CFAPIHelper interface {
+	GetTarget() (string)
 	GetOrgs() (Orgs, error)
 	GetOrg(string) (Organization, error)
 	GetQuotaMemoryLimit(string) (float64, error)
@@ -66,6 +67,19 @@ func New(cli plugin.CliConnection) CFAPIHelper {
 	return &APIHelper{cli}
 }
 
+func (api *APIHelper) GetTarget() (string) {
+	envInfo, err := cfcurl.Curl(api.cli, "/v2/info")
+	if nil != err {
+		return ""
+	}
+	apiep, _ := envInfo["routing_endpoint"].(string)
+	u, err := url.Parse(apiep)
+	if err != nil {
+		panic(err)
+	}
+	host := u.Host
+	return host
+}
 //GetOrgs returns a struct that represents critical fields in the JSON
 func (api *APIHelper) GetOrgs() (Orgs, error) {
 	orgsJSON, err := cfcurl.Curl(api.cli, "/v2/organizations")

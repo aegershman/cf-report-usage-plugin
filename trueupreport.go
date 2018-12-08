@@ -45,7 +45,7 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		Name: "trueup-report",
 		Version: plugin.VersionType{
 			Major: 2,
-			Minor: 2,
+			Minor: 3,
 			Build: 0,
 		},
 		Commands: []plugin.Command{
@@ -90,7 +90,7 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 	report.Orgs = orgs
 
 	if flagVals.Format == "csv" {
-		fmt.Println(report.CSV())
+		fmt.Println(report.CSV(cmd.apiHelper.GetTarget()))
 	} else {
 		fmt.Println(report.String())
 	}
