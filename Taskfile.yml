@@ -29,6 +29,7 @@ tasks:
         # git push origin --tags
         # git tag -d 2.5.0
         # git tag -n
+        # git push origin 2.5.0
 
   # I know, not the best solution, but it'll work while I'm hacking away at stuff
   test:
