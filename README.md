@@ -1,4 +1,4 @@
-# trueupreport-plugin
+# cf-trueup-plugin
 
 This CF CLI Plugin to shows memory consumption and application & service instances (only part of service suite (RabbitMQ, Redis & MySQL)) for each org and space you have permission to access.
 
