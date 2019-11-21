@@ -20,6 +20,13 @@ tasks:
         ignore_error: true
       - go mod tidy
 
+  # https://git-scm.com/book/en/v2/Git-Basics-Tagging
+  git-tag:
+    cmds:
+      - |
+        version="2.5.0"
+        git tag -a ${version} -m "Build version ${version}"
+
   # I know, not the best solution, but it'll work while I'm hacking away at stuff
   test:
     cmds:
