@@ -182,7 +182,7 @@ func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, 
 
 // Run -
 func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
-	if args[0] == "trueup-report" {
+	if args[0] == "trueup-view" {
 		cmd.apiHelper = apihelper.New(cli)
 		cmd.UsageReportCommand(args)
 	}

@@ -8,7 +8,7 @@ tasks:
 
   uninstall:
     cmds:
-      - cf uninstall-plugin trueup-report
+      - cf uninstall-plugin cf-trueup-plugin
 
   build:
     cmds:
