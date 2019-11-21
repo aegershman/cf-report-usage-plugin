@@ -1,0 +1,7 @@
+version: "2"
+
+tasks:
+  install:
+    cmds:
+      - go build
+      - cf install-plugin trueupreport-plugin -f
