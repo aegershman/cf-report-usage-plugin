@@ -19,3 +19,8 @@ tasks:
       - cmd: go mod init github.com/aegershman/cf-trueup-plugin
         ignore_error: true
       - go mod tidy
+
+  # I know, not the best solution, but it'll work while I'm hacking away at stuff
+  test:
+    cmds:
+      - cf trueup-report -o groundworks

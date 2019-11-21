@@ -10,21 +10,18 @@ import (
 	"github.com/cloudfoundry/cli/plugin"
 )
 
-//UsageReportCmd the plugin
+// UsageReportCmd -
 type UsageReportCmd struct {
 	apiHelper apihelper.CFAPIHelper
 }
 
-// contains CLI flag values
-type flagVal struct {
+type flags struct {
 	OrgName string
-	Format  string
 }
 
-func ParseFlags(args []string) flagVal {
+func parseFlags(args []string) flags {
 	flagSet := flag.NewFlagSet(args[0], flag.ContinueOnError)
 
-	// Create flags
 	orgName := flagSet.String("o", "", "-o orgName")
 
 	err := flagSet.Parse(args[1:])
@@ -32,19 +29,19 @@ func ParseFlags(args []string) flagVal {
 
 	}
 
-	return flagVal{
+	return flags{
 		OrgName: string(*orgName),
 	}
 }
 
-//GetMetadata returns metatada
+// GetMetadata -
 func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
 		Name: "trueup-report",
 		Version: plugin.VersionType{
 			Major: 2,
 			Minor: 4,
-			Build: 0,
+			Build: 1,
 		},
 		Commands: []plugin.Command{
 			{
@@ -61,16 +58,16 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 	}
 }
 
-//UsageReportCommand doer
+// UsageReportCommand -
 func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
-	flagVals := ParseFlags(args)
+	flagss := parseFlags(args)
 
 	var orgs []models.Org
 	var err error
 	var report models.Report
 
-	if flagVals.OrgName != "" {
-		org, err := cmd.getOrg(flagVals.OrgName)
+	if flagss.OrgName != "" {
+		org, err := cmd.getOrg(flagss.OrgName)
 		if nil != err {
 			fmt.Println(err)
 			os.Exit(1)
@@ -183,7 +180,7 @@ func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, 
 	return apps, services, nil
 }
 
-//Run runs the plugin
+// Run -
 func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
 	if args[0] == "trueup-report" {
 		cmd.apiHelper = apihelper.New(cli)
