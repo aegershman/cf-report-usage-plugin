@@ -37,18 +37,18 @@ func parseFlags(args []string) flags {
 // GetMetadata -
 func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
-		Name: "trueup-report",
+		Name: "cf-trueup-plugin",
 		Version: plugin.VersionType{
 			Major: 2,
 			Minor: 5,
-			Build: 1,
+			Build: 2,
 		},
 		Commands: []plugin.Command{
 			{
-				Name:     "trueup-report",
-				HelpText: "Report AIs, SIs and memory usage for orgs and spaces",
+				Name:     "trueup-view",
+				HelpText: "View AIs, SIs and memory usage for orgs and spaces",
 				UsageDetails: plugin.Usage{
-					Usage: "cf trueup-report [-o orgName]",
+					Usage: "cf trueup-view [-o orgName]",
 					Options: map[string]string{
 						"o": "organization",
 					},
@@ -182,7 +182,7 @@ func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, 
 
 // Run -
 func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
-	if args[0] == "trueup-report" {
+	if args[0] == "trueup-view" {
 		cmd.apiHelper = apihelper.New(cli)
 		cmd.UsageReportCommand(args)
 	}

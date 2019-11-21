@@ -12,10 +12,10 @@ Reported SIs are for the "pivotal service suite", which as of writing this inclu
 
 ```sh
 # report all orgs you have access to
-cf trueup-report
+cf trueup-view
 
 # report specific orgs
-cf trueup-report -o myorg
+cf trueup-view -o myorg
 ```
 
 ```txt
