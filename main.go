@@ -44,7 +44,7 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 				UsageDetails: plugin.Usage{
 					Usage: "cf trueup-view [-o orgName]",
 					Options: map[string]string{
-						"o": "organization",
+						"o": "organization to include in report. flag can be provided multiple times.",
 					},
 				},
 			},
@@ -60,6 +60,7 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 	err := flagss.Parse(args[1:])
 	if err != nil {
 		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	var orgs []models.Org

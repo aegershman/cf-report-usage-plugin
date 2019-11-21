@@ -16,6 +16,7 @@ cf trueup-view
 
 # report specific orgs
 cf trueup-view -o myorg
+cf trueup-view -o firstorg -o secondorg [-o orgName...]
 ```
 
 ```txt
