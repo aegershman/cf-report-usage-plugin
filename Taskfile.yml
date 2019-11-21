@@ -9,3 +9,8 @@ tasks:
   build:
     cmds:
       - goreleaser --snapshot --skip-publish --rm-dist
+
+  mod-init:
+    cmds:
+      - go mod init github.com/aegershman/cf-trueup-plugin
+      - go mod tidy

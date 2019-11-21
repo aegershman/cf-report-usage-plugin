@@ -158,8 +158,8 @@ func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]models.Space, error) {
 		}
 		spaces = append(spaces,
 			models.Space{
-				Name: s.Name,
-				Apps: apps,
+				Name:     s.Name,
+				Apps:     apps,
 				Services: services,
 			},
 		)
@@ -178,12 +178,12 @@ func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, 
 		apps = append(apps, models.App{
 			Actual: int(a.Actual),
 			Desire: int(a.Desire),
-			RAM:	int(a.RAM),
+			RAM:    int(a.RAM),
 		})
 	}
 	for _, s := range rawServices {
 		services = append(services, models.Service{
-			Label: string(s.Label),
+			Label:       string(s.Label),
 			ServicePlan: string(s.ServicePlan),
 		})
 	}
