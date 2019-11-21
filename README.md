@@ -83,8 +83,8 @@ api.run.pivotal.io, 2018-12-08, S1Pdemo14, scdf-twitter-demo-s1p-2018, 0, 102400
 ```sh
 go get github.com/mattn/go-sqlite3
 go get github.com/cloudfoundry/cli
-go get github.com/jigsheth57/trueupreport-plugin
-cd $GOPATH/src/github.com/jigsheth57/trueupreport-plugin
+go get github.com/aegershman/cf-trueup-plugin
+cd $GOPATH/src/github.com/aegershman/cf-trueup-plugin
 go build
 cf install-plugin trueupreport-plugin
 ```

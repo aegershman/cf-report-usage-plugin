@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/aegershman/cf-trueup-plugin/apihelper"
+	"github.com/aegershman/cf-trueup-plugin/models"
 	"github.com/cloudfoundry/cli/plugin"
-	"github.com/jigsheth57/trueupreport-plugin/apihelper"
-	"github.com/jigsheth57/trueupreport-plugin/models"
 )
 
 //UsageReportCmd the plugin
@@ -46,7 +46,7 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		Version: plugin.VersionType{
 			Major: 2,
 			Minor: 3,
-			Build: 0,
+			Build: 1,
 		},
 		Commands: []plugin.Command{
 			{

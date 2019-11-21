@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/cloudfoundry/cli/plugin"
-	"github.com/jigsheth57/trueupreport-plugin/cfcurl"
+	"github.com/aegershman/cf-trueup-plugin/cfcurl"
 )
 
 var (
