@@ -1,3 +1,4 @@
 trueupreport.go.bak
 .DS_Store
 dist
+.config/goreleaser/*token
