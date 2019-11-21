@@ -1,13 +1,24 @@
 # cf-trueup-plugin
 
-This CF CLI Plugin to shows memory consumption and application & service instances (only part of service suite (RabbitMQ, Redis & MySQL)) for each org and space you have permission to access.
+cf-cli plugin showing memory consumption, application instances (AIs), and service instances (SIs) for each org and space you have permission to access.
+
+Reported SIs are for the "pivotal service suite", which as of writing this includes the following:
+
+- RabbitMQ (`p-rabbit`, `p.rabbitmq`)
+- Redis (`p.redis`, `p-redis`)
+- MySQL (`p.mysql`, `p-mysql`)
 
 ## usage
 
-For human readable output:
+```sh
+# report all orgs you have access to
+cf trueup-report
+
+# report specific orgs
+cf trueup-report -o myorg
+```
 
 ```txt
-➜  trueupreport-plugin git:(master) ✗ cf trueup-report
 Org north-area is consuming 38116 MB of 307200 MB.
   Space development is consuming 1124 MB memory (0%) of org quota.
     3 apps: 2 running 1 stopped
