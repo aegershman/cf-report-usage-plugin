@@ -6,6 +6,10 @@ tasks:
       - task: build
       - cf install-plugin dist/cf-trueup-plugin_darwin_amd64/cf-trueup-plugin -f
 
+  uninstall:
+    cmds:
+      - cf uninstall-plugin trueup-report
+
   build:
     cmds:
       - goreleaser --snapshot --skip-publish --rm-dist
