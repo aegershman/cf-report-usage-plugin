@@ -1,11 +1,11 @@
 package cfcurl
 
 import (
-"encoding/json"
-"errors"
-"strings"
+	"encoding/json"
+	"errors"
+	"strings"
 
-"github.com/cloudfoundry/cli/plugin"
+	"github.com/cloudfoundry/cli/plugin"
 )
 
 func callAndValidateCLI(cli plugin.CliConnection, path string) ([]string, error) {

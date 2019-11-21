@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/aegershman/cf-trueup-plugin/apihelper"
+	"github.com/aegershman/cf-trueup-plugin/models"
 	"github.com/cloudfoundry/cli/plugin"
-	"github.com/jigsheth57/trueupreport-plugin/apihelper"
-	"github.com/jigsheth57/trueupreport-plugin/models"
 )
 
 //UsageReportCmd the plugin
@@ -26,7 +26,6 @@ func ParseFlags(args []string) flagVal {
 
 	// Create flags
 	orgName := flagSet.String("o", "", "-o orgName")
-	format := flagSet.String("f", "format", "-f <csv>")
 
 	err := flagSet.Parse(args[1:])
 	if err != nil {
@@ -35,7 +34,6 @@ func ParseFlags(args []string) flagVal {
 
 	return flagVal{
 		OrgName: string(*orgName),
-		Format:  string(*format),
 	}
 }
 
@@ -45,7 +43,7 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		Name: "trueup-report",
 		Version: plugin.VersionType{
 			Major: 2,
-			Minor: 3,
+			Minor: 4,
 			Build: 0,
 		},
 		Commands: []plugin.Command{
@@ -53,10 +51,9 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 				Name:     "trueup-report",
 				HelpText: "Report AIs, SIs and memory usage for orgs and spaces",
 				UsageDetails: plugin.Usage{
-					Usage: "cf trueup-report [-o orgName] [-f <csv>]",
+					Usage: "cf trueup-report [-o orgName]",
 					Options: map[string]string{
 						"o": "organization",
-						"f": "format",
 					},
 				},
 			},
@@ -89,11 +86,7 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 
 	report.Orgs = orgs
 
-	if flagVals.Format == "csv" {
-		fmt.Println(report.CSV(cmd.apiHelper.GetTarget()))
-	} else {
-		fmt.Println(report.String())
-	}
+	fmt.Println(report.String())
 }
 
 func (cmd *UsageReportCmd) getOrgs() ([]models.Org, error) {
@@ -158,8 +151,8 @@ func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]models.Space, error) {
 		}
 		spaces = append(spaces,
 			models.Space{
-				Name: s.Name,
-				Apps: apps,
+				Name:     s.Name,
+				Apps:     apps,
 				Services: services,
 			},
 		)
@@ -178,12 +171,12 @@ func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, 
 		apps = append(apps, models.App{
 			Actual: int(a.Actual),
 			Desire: int(a.Desire),
-			RAM:	int(a.RAM),
+			RAM:    int(a.RAM),
 		})
 	}
 	for _, s := range rawServices {
 		services = append(services, models.Service{
-			Label: string(s.Label),
+			Label:       string(s.Label),
 			ServicePlan: string(s.ServicePlan),
 		})
 	}

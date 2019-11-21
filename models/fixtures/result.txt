@@ -45,4 +45,3 @@ Org S1Pdemo14 is consuming 9472 MB of 102400 MB.
 		0 app instances: 0 running, 0 stopped
 		0 service instances of type Service Suite
 You have deployed 26 apps across 2 org(s), with a total of 32 app instances configured. You are currently running 6 apps with 8 app instances and using 5 service instances of type Service Suite.
-
