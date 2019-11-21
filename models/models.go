@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -19,48 +20,48 @@ type Org struct {
 }
 
 type Space struct {
-	Name string
-	Apps Apps
+	Name     string
+	Apps     Apps
 	Services Services
 }
 
 //App representation
 type App struct {
-	Actual	int
-	Desire	int
-	RAM     int
+	Actual int
+	Desire int
+	RAM    int
 }
 
 //Service representation
 type Service struct {
-	Label    	string
+	Label       string
 	ServicePlan string
 }
 
 type SpaceStats struct {
-	Name string
-	DeployedAppsCount int
-	RunningAppsCount int
-	StoppedAppsCount int
+	Name                      string
+	DeployedAppsCount         int
+	RunningAppsCount          int
+	StoppedAppsCount          int
 	DeployedAppInstancesCount int
-	RunningAppInstancesCount int
-	StoppedAppInstancesCount int
-	ServicesCount int
-	ConsumedMemory int
+	RunningAppInstancesCount  int
+	StoppedAppInstancesCount  int
+	ServicesCount             int
+	ConsumedMemory            int
 }
 
 type OrgStats struct {
-	Name        string
-	MemoryQuota int
-	MemoryUsage int
-	Spaces      Spaces
-	DeployedAppsCount	int
-	RunningAppsCount	int
-	StoppedAppsCount	int
+	Name                      string
+	MemoryQuota               int
+	MemoryUsage               int
+	Spaces                    Spaces
+	DeployedAppsCount         int
+	RunningAppsCount          int
+	StoppedAppsCount          int
 	DeployedAppInstancesCount int
-	RunningAppInstancesCount	int
-	StoppedAppInstancesCount	int
-	ServicesCount	int
+	RunningAppInstancesCount  int
+	StoppedAppInstancesCount  int
+	ServicesCount             int
 }
 
 type Orgs []Org
@@ -78,7 +79,7 @@ func (org *Org) InstancesCount() int {
 		instancesCount += space.InstancesCount()
 		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
 		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
-		instancesCount += SCSCount + (SCDFCount*3)
+		instancesCount += SCSCount + (SCDFCount * 3)
 	}
 	return instancesCount
 }
@@ -97,7 +98,7 @@ func (org *Org) RunningInstancesCount() int {
 		instancesCount += space.RunningInstancesCount()
 		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
 		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
-		instancesCount += SCSCount + (SCDFCount*3)
+		instancesCount += SCSCount + (SCDFCount * 3)
 	}
 	return instancesCount
 }
@@ -132,7 +133,7 @@ func (space *Space) ConsumedMemory() int {
 func (space *Space) RunningAppsCount() int {
 	runningAppsCount := 0
 	for _, app := range space.Apps {
-		if (app.Actual > 0) {
+		if app.Actual > 0 {
 			runningAppsCount++
 		}
 	}
@@ -163,66 +164,66 @@ func (space *Space) ServicesCount() int {
 func (space *Space) ServiceInstancesCount(serviceType string) int {
 	boundedServiceInstancesCount := 0
 	for _, service := range space.Services {
-		if(strings.Contains(service.Label,serviceType)) {
+		if strings.Contains(service.Label, serviceType) {
 			boundedServiceInstancesCount++
 		}
 	}
 	return boundedServiceInstancesCount
 }
 
-func (spaces Spaces) Stats (c chan SpaceStats, skipSIcount bool) {
+func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 	for _, space := range spaces {
 		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
 		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
 		lApps := len(space.Apps)
 		rApps := space.RunningAppsCount()
-		sApps := lApps-rApps
+		sApps := lApps - rApps
 		lAIs := space.InstancesCount()
-		lAIs += (SCSCount + (SCDFCount*3))
+		lAIs += (SCSCount + (SCDFCount * 3))
 		rAIs := space.RunningInstancesCount()
-		rAIs += (SCSCount + (SCDFCount*3))
-		sAIs := lAIs-rAIs
+		rAIs += (SCSCount + (SCDFCount * 3))
+		sAIs := lAIs - rAIs
 		siCount := space.ServicesCount()
 		siCount -= (SCSCount + SCDFCount)
-		rAIConsumedMemory := (space.ConsumedMemory()+(SCSCount*1024)+(SCDFCount*3*1024))
-		if(skipSIcount) {
+		rAIConsumedMemory := (space.ConsumedMemory() + (SCSCount * 1024) + (SCDFCount * 3 * 1024))
+		if skipSIcount {
 			siCount = 0
 		}
 		c <- SpaceStats{
-			Name: space.Name,
-			DeployedAppsCount: lApps,
-			RunningAppsCount: rApps,
-			StoppedAppsCount: sApps,
+			Name:                      space.Name,
+			DeployedAppsCount:         lApps,
+			RunningAppsCount:          rApps,
+			StoppedAppsCount:          sApps,
 			DeployedAppInstancesCount: lAIs,
-			RunningAppInstancesCount: rAIs,
-			StoppedAppInstancesCount: sAIs,
-			ServicesCount: siCount,
-			ConsumedMemory: rAIConsumedMemory,
+			RunningAppInstancesCount:  rAIs,
+			StoppedAppInstancesCount:  sAIs,
+			ServicesCount:             siCount,
+			ConsumedMemory:            rAIConsumedMemory,
 		}
 	}
 	close(c)
 }
 
-func (orgs Orgs) Stats (c chan OrgStats) {
+func (orgs Orgs) Stats(c chan OrgStats) {
 	for _, org := range orgs {
 		lApps := org.AppsCount()
 		rApps := org.RunningAppsCount()
-		sApps := lApps-rApps
+		sApps := lApps - rApps
 		lAIs := org.InstancesCount()
 		rAIs := org.RunningInstancesCount()
-		sAIs := lAIs-rAIs
+		sAIs := lAIs - rAIs
 		c <- OrgStats{
-			Name: org.Name,
-			MemoryQuota: org.MemoryQuota,
-			MemoryUsage: org.MemoryUsage,
-			Spaces: org.Spaces,
-			DeployedAppsCount: lApps,
-			RunningAppsCount: rApps,
-			StoppedAppsCount: sApps,
+			Name:                      org.Name,
+			MemoryQuota:               org.MemoryQuota,
+			MemoryUsage:               org.MemoryUsage,
+			Spaces:                    org.Spaces,
+			DeployedAppsCount:         lApps,
+			RunningAppsCount:          rApps,
+			StoppedAppsCount:          sApps,
 			DeployedAppInstancesCount: lAIs,
-			RunningAppInstancesCount: rAIs,
-			StoppedAppInstancesCount: sAIs,
-			ServicesCount: org.ServicesCount(),
+			RunningAppInstancesCount:  rAIs,
+			StoppedAppInstancesCount:  sAIs,
+			ServicesCount:             org.ServicesCount(),
 		}
 	}
 	close(c)
@@ -244,7 +245,7 @@ func (report *Report) String() string {
 		response.WriteString(fmt.Sprintf("Org %s is consuming %d MB of %d MB.\n",
 			orgStats.Name, orgStats.MemoryUsage, orgStats.MemoryQuota))
 		chSpaceStats := make(chan SpaceStats, len(orgStats.Spaces))
-		go orgStats.Spaces.Stats(chSpaceStats,orgStats.Name == "p-spring-cloud-services")
+		go orgStats.Spaces.Stats(chSpaceStats, orgStats.Name == "p-spring-cloud-services")
 		for spaceState := range chSpaceStats {
 			response.WriteString(
 				fmt.Sprintf("\tSpace %s is consuming %d MB memory (%d%%) of org quota.\n",
@@ -304,7 +305,7 @@ func (report *Report) CSV(apiep string) string {
 	defer stmt.Close()
 	for _, org := range report.Orgs {
 		for _, space := range org.Spaces {
-			if (org.Name == "p-spring-cloud-services" || org.Name == "p-dataflow") {
+			if org.Name == "p-spring-cloud-services" || org.Name == "p-dataflow" {
 				continue
 			}
 			appsDeployed := len(space.Apps)
@@ -315,18 +316,18 @@ func (report *Report) CSV(apiep string) string {
 			col1 := time.Now().Format("2006-01-02")
 			col2 := org.Name
 			col3 := space.Name
-			col4 := strconv.Itoa(space.ConsumedMemory()+(SCSCount*1024)+(SCDFCount*3*1024))
+			col4 := strconv.Itoa(space.ConsumedMemory() + (SCSCount * 1024) + (SCDFCount * 3 * 1024))
 			col5 := strconv.Itoa(org.MemoryQuota)
 			col6 := strconv.Itoa(appsDeployed)
 			col7 := strconv.Itoa(space.RunningAppsCount())
 			col8 := strconv.Itoa(space.InstancesCount())
-			col9 := strconv.Itoa(space.RunningInstancesCount()+SCSCount+(SCDFCount*3))
-			col10 := strconv.Itoa(space.ServicesCount()-(SCSCount + SCDFCount))
+			col9 := strconv.Itoa(space.RunningInstancesCount() + SCSCount + (SCDFCount * 3))
+			col10 := strconv.Itoa(space.ServicesCount() - (SCSCount + SCDFCount))
 			col11 := strconv.Itoa(space.ServiceInstancesCount("rabbit"))
 			col12 := strconv.Itoa(space.ServiceInstancesCount("redis"))
 			col13 := strconv.Itoa(space.ServiceInstancesCount("mysql"))
 			col14 := strconv.Itoa(SCSCount)
-			col15 := strconv.Itoa(SCDFCount*3)
+			col15 := strconv.Itoa(SCDFCount * 3)
 
 			spaceResult := []string{
 				col0,
@@ -347,7 +348,7 @@ func (report *Report) CSV(apiep string) string {
 				col15,
 			}
 			rows = append(rows, spaceResult)
-			_, err = stmt.Exec(col0,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15)
+			_, err = stmt.Exec(col0, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15)
 			if err != nil {
 				log.Fatal(err)
 			}

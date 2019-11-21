@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cloudfoundry/cli/plugin"
 	"github.com/aegershman/cf-trueup-plugin/cfcurl"
+	"github.com/cloudfoundry/cli/plugin"
 )
 
 var (
@@ -49,7 +49,7 @@ type Services []Service
 
 //CFAPIHelper to wrap cf curl results
 type CFAPIHelper interface {
-	GetTarget() (string)
+	GetTarget() string
 	GetOrgs() (Orgs, error)
 	GetOrg(string) (Organization, error)
 	GetQuotaMemoryLimit(string) (float64, error)
@@ -67,7 +67,7 @@ func New(cli plugin.CliConnection) CFAPIHelper {
 	return &APIHelper{cli}
 }
 
-func (api *APIHelper) GetTarget() (string) {
+func (api *APIHelper) GetTarget() string {
 	envInfo, err := cfcurl.Curl(api.cli, "/v2/info")
 	if nil != err {
 		return ""
@@ -80,6 +80,7 @@ func (api *APIHelper) GetTarget() (string) {
 	host := u.Host
 	return host
 }
+
 //GetOrgs returns a struct that represents critical fields in the JSON
 func (api *APIHelper) GetOrgs() (Orgs, error) {
 	orgsJSON, err := cfcurl.Curl(api.cli, "/v2/organizations")
@@ -96,7 +97,7 @@ func (api *APIHelper) GetOrgs() (Orgs, error) {
 			theOrg := o.(map[string]interface{})
 			entity := theOrg["entity"].(map[string]interface{})
 			name := entity["name"].(string)
-			if (name == "system") {
+			if name == "system" {
 				continue
 			}
 			metadata := theOrg["metadata"].(map[string]interface{})
@@ -217,7 +218,7 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 				if _, serviceExist := servicePlan["service"]; serviceExist {
 					service := servicePlan["service"].(map[string]interface{})
 					label := service["label"].(string)
-					if (strings.EqualFold(label, "p-dataflow")) {
+					if strings.EqualFold(label, "p-dataflow") {
 						services = append(services,
 							Service{
 								Label:       "p-dataflow-servers",
@@ -225,31 +226,31 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 							})
 					}
 					if boundedApps := theService["bound_app_count"].(float64); boundedApps > 0 {
-						if (strings.EqualFold(label, "p-dataflow-analytics")) {
+						if strings.EqualFold(label, "p-dataflow-analytics") {
 							services = append(services,
 								Service{
 									Label:       "p-redis",
 									ServicePlan: "p-dataflow-analytics",
 								})
-						} else if (strings.EqualFold(label, "p-dataflow-relational")) {
+						} else if strings.EqualFold(label, "p-dataflow-relational") {
 							services = append(services,
 								Service{
 									Label:       "p-mysql",
 									ServicePlan: "p-dataflow-relational",
 								})
-						} else if (strings.EqualFold(label, "p-dataflow-messaging")) {
+						} else if strings.EqualFold(label, "p-dataflow-messaging") {
 							services = append(services,
 								Service{
 									Label:       "p-rabbit",
 									ServicePlan: "p-dataflow-messaging",
 								})
-						} else if (strings.Contains(label, "p-circuit-breaker") || strings.Contains(label, "p-config-server") || strings.Contains(label, "p-service-registry")) {
+						} else if strings.Contains(label, "p-circuit-breaker") || strings.Contains(label, "p-config-server") || strings.Contains(label, "p-service-registry") {
 							services = append(services,
 								Service{
 									Label:       "p-spring-cloud-services",
 									ServicePlan: label,
 								})
-						} else if (strings.Contains(label, "rabbit") || strings.Contains(label, "redis") || strings.Contains(label, "mysql")) {
+						} else if strings.Contains(label, "rabbit") || strings.Contains(label, "redis") || strings.Contains(label, "mysql") {
 							services = append(services,
 								Service{
 									Label:       label,
