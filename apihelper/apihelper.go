@@ -12,10 +12,11 @@ import (
 )
 
 var (
+	// ErrOrgNotFound -
 	ErrOrgNotFound = errors.New("organization not found")
 )
 
-//Organization representation
+// Organization -
 type Organization struct {
 	URL       string
 	Name      string
@@ -23,31 +24,38 @@ type Organization struct {
 	SpacesURL string
 }
 
-//Space representation
+// Space -
 type Space struct {
 	Name       string
 	SummaryURL string
 }
 
-//App representation
+// App -
 type App struct {
 	Actual float64
 	Desire float64
 	RAM    float64
 }
 
-//Service representation
+// Service -
 type Service struct {
 	Label       string
 	ServicePlan string
 }
 
+// Orgs -
 type Orgs []Organization
+
+// Spaces -
 type Spaces []Space
+
+// Apps -
 type Apps []App
+
+// Services -
 type Services []Service
 
-//CFAPIHelper to wrap cf curl results
+// CFAPIHelper wraps cf curl results
 type CFAPIHelper interface {
 	GetTarget() string
 	GetOrgs() (Orgs, error)
@@ -58,15 +66,17 @@ type CFAPIHelper interface {
 	GetSpaceAppsAndServices(string) (Apps, Services, error)
 }
 
-//APIHelper implementation
+// APIHelper -
 type APIHelper struct {
 	cli plugin.CliConnection
 }
 
+// New -
 func New(cli plugin.CliConnection) CFAPIHelper {
 	return &APIHelper{cli}
 }
 
+// GetTarget -
 func (api *APIHelper) GetTarget() string {
 	envInfo, err := cfcurl.Curl(api.cli, "/v2/info")
 	if nil != err {
@@ -81,7 +91,7 @@ func (api *APIHelper) GetTarget() string {
 	return host
 }
 
-//GetOrgs returns a struct that represents critical fields in the JSON
+// GetOrgs -
 func (api *APIHelper) GetOrgs() (Orgs, error) {
 	orgsJSON, err := cfcurl.Curl(api.cli, "/v2/organizations")
 	if nil != err {
@@ -113,7 +123,7 @@ func (api *APIHelper) GetOrgs() (Orgs, error) {
 	return orgs, nil
 }
 
-//GetOrg returns a struct that represents critical fields in the JSON
+// GetOrg -
 func (api *APIHelper) GetOrg(name string) (Organization, error) {
 	query := fmt.Sprintf("name:%s", name)
 	path := fmt.Sprintf("/v2/organizations?q=%s", url.QueryEscape(query))
@@ -145,7 +155,7 @@ func (api *APIHelper) orgResourceToOrg(o interface{}) Organization {
 	}
 }
 
-//GetQuotaMemoryLimit retruns the amount of memory (in MB) that the org is allowed
+// GetQuotaMemoryLimit returns memory quota (in MB) of a given org
 func (api *APIHelper) GetQuotaMemoryLimit(quotaURL string) (float64, error) {
 	quotaJSON, err := cfcurl.Curl(api.cli, quotaURL)
 	if nil != err {
@@ -154,7 +164,7 @@ func (api *APIHelper) GetQuotaMemoryLimit(quotaURL string) (float64, error) {
 	return quotaJSON["entity"].(map[string]interface{})["memory_limit"].(float64), nil
 }
 
-//GetOrgMemoryUsage returns the amount of memory (in MB) that the org is consuming
+// GetOrgMemoryUsage returns amount of memory (in MB) a given org is currently using
 func (api *APIHelper) GetOrgMemoryUsage(org Organization) (float64, error) {
 	usageJSON, err := cfcurl.Curl(api.cli, org.URL+"/memory_usage")
 	if nil != err {
@@ -163,7 +173,7 @@ func (api *APIHelper) GetOrgMemoryUsage(org Organization) (float64, error) {
 	return usageJSON["memory_usage_in_mb"].(float64), nil
 }
 
-//GetOrgSpaces returns the spaces in an org.
+// GetOrgSpaces returns the spaces in an org
 func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
 	nextURL := spacesURL
 	spaces := []Space{}
@@ -191,7 +201,7 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
 	return spaces, nil
 }
 
-//GetSpaceAppsAndServices returns the apps and the services in a space
+// GetSpaceAppsAndServices returns the apps and the services in a space
 func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services, error) {
 	apps := []App{}
 	services := []Service{}
