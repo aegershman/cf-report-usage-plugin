@@ -38,8 +38,8 @@ func parseOutput(output []string) (map[string]interface{}, error) {
 	return f.(map[string]interface{}), err
 }
 
-// Curl calls cf curl  and return the resulting json. This method will panic if
-// the api is depricated
+// Curl calls cf curl and returns the resulting json
+// This method will panic if the api is depricated
 func Curl(cli plugin.CliConnection, path string) (map[string]interface{}, error) {
 	output, err := cli.CliCommandWithoutTerminalOutput("curl", path)
 
@@ -50,7 +50,7 @@ func Curl(cli plugin.CliConnection, path string) (map[string]interface{}, error)
 	return parseOutput(output)
 }
 
-// CurlDepricated calls cf curl and return the resulting json, even if the api is depricated
+// CurlDepricated calls cf curl and returns the resulting json, even if the api is deprecated
 func CurlDepricated(cli plugin.CliConnection, path string) (map[string]interface{}, error) {
 	output, err := callAndValidateCLI(cli, path)
 	if nil != err {
