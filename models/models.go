@@ -84,7 +84,8 @@ func (org *Org) InstancesCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
 		instancesCount += space.InstancesCount()
-		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services") + space.ServiceInstancesCount("scs-service-broker")
+		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
+		SCSCount += space.ServiceInstancesCount("scs-service-broker")
 		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
 		instancesCount += SCSCount + (SCDFCount * 3)
 	}
@@ -105,7 +106,8 @@ func (org *Org) RunningInstancesCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
 		instancesCount += space.RunningInstancesCount()
-		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services") + space.ServiceInstancesCount("scs-service-broker")
+		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
+		SCSCount += space.ServiceInstancesCount("scs-service-broker")
 		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
 		instancesCount += SCSCount + (SCDFCount * 3)
 	}
@@ -126,7 +128,8 @@ func (org *Org) ServicesCount() int {
 	servicesCount := 0
 	for _, space := range org.Spaces {
 		servicesCount += len(space.Services)
-		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services") + space.ServiceInstancesCount("scs-service-broker")
+		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
+		SCSCount += space.ServiceInstancesCount("scs-service-broker")
 		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
 		servicesCount -= (SCSCount + SCDFCount)
 	}
@@ -191,7 +194,8 @@ func (space *Space) ServiceInstancesCount(serviceType string) int {
 // Stats -
 func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 	for _, space := range spaces {
-		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services") + space.ServiceInstancesCount("scs-service-broker")
+		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
+		SCSCount += space.ServiceInstancesCount("scs-service-broker")
 		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
 		lApps := len(space.Apps)
 		rApps := space.RunningAppsCount()
@@ -264,7 +268,6 @@ func (report *Report) String() string {
 		response.WriteString(fmt.Sprintf("Org %s is consuming %d MB of %d MB.\n",
 			orgStats.Name, orgStats.MemoryUsage, orgStats.MemoryQuota))
 		chSpaceStats := make(chan SpaceStats, len(orgStats.Spaces))
-		// I believe this is saying "go calculate all the stats of every org/space EXCEPT for <some-org>", in this case "p-spring-cloud-services"?
 		go orgStats.Spaces.Stats(chSpaceStats, orgStats.Name == "p-spring-cloud-services")
 		for spaceState := range chSpaceStats {
 			response.WriteString(
