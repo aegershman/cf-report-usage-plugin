@@ -10,7 +10,7 @@ import (
 	"github.com/cloudfoundry/cli/plugin"
 )
 
-//UsageReportCmd the plugin
+// UsageReportCmd the plugin
 type UsageReportCmd struct {
 	apiHelper apihelper.CFAPIHelper
 }
@@ -18,7 +18,6 @@ type UsageReportCmd struct {
 // contains CLI flag values
 type flagVal struct {
 	OrgName string
-	Format  string
 }
 
 func ParseFlags(args []string) flagVal {
