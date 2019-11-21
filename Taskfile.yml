@@ -3,7 +3,7 @@ version: "2"
 tasks:
   install:
     cmds:
-      - go build
+      - task: build
       - cf install-plugin trueupreport-plugin -f
 
   build:
@@ -12,5 +12,6 @@ tasks:
 
   mod-init:
     cmds:
-      - go mod init github.com/aegershman/cf-trueup-plugin
+      - cmd: go mod init github.com/aegershman/cf-trueup-plugin
+        ignore_error: true
       - go mod tidy
