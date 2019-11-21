@@ -235,38 +235,36 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 								ServicePlan: servicePlan["name"].(string),
 							})
 					}
-					if boundedApps := theService["bound_app_count"].(float64); boundedApps > 0 {
-						if strings.EqualFold(label, "p-dataflow-analytics") {
-							services = append(services,
-								Service{
-									Label:       "p-redis",
-									ServicePlan: "p-dataflow-analytics",
-								})
-						} else if strings.EqualFold(label, "p-dataflow-relational") {
-							services = append(services,
-								Service{
-									Label:       "p-mysql",
-									ServicePlan: "p-dataflow-relational",
-								})
-						} else if strings.EqualFold(label, "p-dataflow-messaging") {
-							services = append(services,
-								Service{
-									Label:       "p-rabbit",
-									ServicePlan: "p-dataflow-messaging",
-								})
-						} else if strings.Contains(label, "p-circuit-breaker") || strings.Contains(label, "p-config-server") || strings.Contains(label, "p-service-registry") {
-							services = append(services,
-								Service{
-									Label:       "p-spring-cloud-services",
-									ServicePlan: label,
-								})
-						} else if strings.Contains(label, "rabbit") || strings.Contains(label, "redis") || strings.Contains(label, "mysql") {
-							services = append(services,
-								Service{
-									Label:       label,
-									ServicePlan: servicePlan["name"].(string),
-								})
-						}
+					if strings.EqualFold(label, "p-dataflow-analytics") {
+						services = append(services,
+							Service{
+								Label:       "p-redis",
+								ServicePlan: "p-dataflow-analytics",
+							})
+					} else if strings.EqualFold(label, "p-dataflow-relational") {
+						services = append(services,
+							Service{
+								Label:       "p-mysql",
+								ServicePlan: "p-dataflow-relational",
+							})
+					} else if strings.EqualFold(label, "p-dataflow-messaging") {
+						services = append(services,
+							Service{
+								Label:       "p-rabbit",
+								ServicePlan: "p-dataflow-messaging",
+							})
+					} else if strings.Contains(label, "p-circuit-breaker") || strings.Contains(label, "p-config-server") || strings.Contains(label, "p-service-registry") {
+						services = append(services,
+							Service{
+								Label:       "p-spring-cloud-services",
+								ServicePlan: label,
+							})
+					} else if strings.Contains(label, "rabbit") || strings.Contains(label, "redis") || strings.Contains(label, "mysql") {
+						services = append(services,
+							Service{
+								Label:       label,
+								ServicePlan: servicePlan["name"].(string),
+							})
 					}
 				}
 			}
