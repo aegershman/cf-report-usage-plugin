@@ -16,22 +16,16 @@ type UsageReportCmd struct {
 }
 
 type flags struct {
-	OrgName string
+	OrgNames []string
 }
 
-func parseFlags(args []string) flags {
-	flagSet := flag.NewFlagSet(args[0], flag.ContinueOnError)
+func (f *flags) String() string {
+	return fmt.Sprint(f.OrgNames)
+}
 
-	orgName := flagSet.String("o", "", "-o orgName")
-
-	err := flagSet.Parse(args[1:])
-	if err != nil {
-
-	}
-
-	return flags{
-		OrgName: string(*orgName),
-	}
+func (f *flags) Set(value string) error {
+	f.OrgNames = append(f.OrgNames, value)
+	return nil
 }
 
 // GetMetadata -
@@ -60,19 +54,26 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 
 // UsageReportCommand -
 func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
-	flagss := parseFlags(args)
+	var userFlags flags
+	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
+	flagss.Var(&userFlags, "o", "-o orgName")
+	err := flagss.Parse(args[1:])
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	var orgs []models.Org
-	var err error
 	var report models.Report
 
-	if flagss.OrgName != "" {
-		org, err := cmd.getOrg(flagss.OrgName)
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
+	if len(userFlags.OrgNames) > 0 {
+		for _, orgArg := range userFlags.OrgNames {
+			org, err := cmd.getOrg(orgArg)
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			orgs = append(orgs, org)
 		}
-		orgs = append(orgs, org)
 	} else {
 		orgs, err = cmd.getOrgs()
 		if nil != err {
