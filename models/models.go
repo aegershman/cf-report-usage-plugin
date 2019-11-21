@@ -266,17 +266,25 @@ func (report *Report) String() string {
 		chSpaceStats := make(chan SpaceStats, len(orgStats.Spaces))
 		go orgStats.Spaces.Stats(chSpaceStats, orgStats.Name == "p-spring-cloud-services")
 		for spaceState := range chSpaceStats {
-			response.WriteString(
-				fmt.Sprintf("\tSpace %s is consuming %d MB memory (%d%%) of org quota.\n",
-					spaceState.Name, spaceState.ConsumedMemory, (100 * spaceState.ConsumedMemory / orgStats.MemoryQuota)))
+
+			// handle org having "zero quota", e.g. the org is only allowed to use service instances, not push apps
+			if orgStats.MemoryQuota > 0 {
+				response.WriteString(
+					fmt.Sprintf("\tSpace %s is consuming %d MB memory (%d%%) of org quota.\n",
+						spaceState.Name, spaceState.ConsumedMemory, (100 * spaceState.ConsumedMemory / orgStats.MemoryQuota)))
+			}
+
 			response.WriteString(
 				fmt.Sprintf("\t\t%d apps: %d running %d stopped\n", spaceState.DeployedAppsCount,
 					spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
+
 			response.WriteString(
 				fmt.Sprintf("\t\t%d app instances: %d running, %d stopped\n", spaceState.DeployedAppInstancesCount,
 					spaceState.RunningAppInstancesCount, spaceState.StoppedAppInstancesCount))
+
 			response.WriteString(
 				fmt.Sprintf("\t\t%d service instances of type Service Suite\n", spaceState.ServicesCount))
+
 		}
 		totalApps += orgStats.DeployedAppsCount
 		totalInstances += orgStats.DeployedAppInstancesCount
