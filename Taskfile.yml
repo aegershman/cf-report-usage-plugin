@@ -1,0 +1,21 @@
+version: "2"
+
+tasks:
+  install:
+    cmds:
+      - task: build
+      - cf install-plugin dist/cf-trueup-plugin_darwin_amd64/cf-trueup-plugin -f
+
+  uninstall:
+    cmds:
+      - cf uninstall-plugin trueup-report
+
+  build:
+    cmds:
+      - goreleaser --snapshot --skip-publish --rm-dist
+
+  mod-init:
+    cmds:
+      - cmd: go mod init github.com/aegershman/cf-trueup-plugin
+        ignore_error: true
+      - go mod tidy
