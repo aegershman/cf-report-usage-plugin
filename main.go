@@ -37,11 +37,11 @@ func parseFlags(args []string) flags {
 // GetMetadata -
 func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
-		Name: "trueup-report",
+		Name: "cf-trueup-plugin",
 		Version: plugin.VersionType{
 			Major: 2,
 			Minor: 5,
-			Build: 1,
+			Build: 2,
 		},
 		Commands: []plugin.Command{
 			{
