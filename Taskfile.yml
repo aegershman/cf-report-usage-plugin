@@ -5,3 +5,7 @@ tasks:
     cmds:
       - go build
       - cf install-plugin trueupreport-plugin -f
+
+  build:
+    cmds:
+      - goreleaser --snapshot --skip-publish --rm-dist
