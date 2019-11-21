@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// Org -
 type Org struct {
 	Name        string
 	MemoryQuota int
@@ -13,25 +14,27 @@ type Org struct {
 	Spaces      Spaces
 }
 
+// Space -
 type Space struct {
 	Name     string
 	Apps     Apps
 	Services Services
 }
 
-//App representation
+// App -
 type App struct {
 	Actual int
 	Desire int
 	RAM    int
 }
 
-//Service representation
+// Service -
 type Service struct {
 	Label       string
 	ServicePlan string
 }
 
+// SpaceStats -
 type SpaceStats struct {
 	Name                      string
 	DeployedAppsCount         int
@@ -44,6 +47,7 @@ type SpaceStats struct {
 	ConsumedMemory            int
 }
 
+// OrgStats -
 type OrgStats struct {
 	Name                      string
 	MemoryQuota               int
@@ -58,15 +62,24 @@ type OrgStats struct {
 	ServicesCount             int
 }
 
+// Orgs -
 type Orgs []Org
+
+// Spaces -
 type Spaces []Space
+
+// Apps -
 type Apps []App
+
+// Services -
 type Services []Service
 
+// Report -
 type Report struct {
 	Orgs Orgs
 }
 
+// InstancesCount -
 func (org *Org) InstancesCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
@@ -78,6 +91,7 @@ func (org *Org) InstancesCount() int {
 	return instancesCount
 }
 
+// RunningAppsCount -
 func (org *Org) RunningAppsCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
@@ -86,6 +100,7 @@ func (org *Org) RunningAppsCount() int {
 	return instancesCount
 }
 
+// RunningInstancesCount -
 func (org *Org) RunningInstancesCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
@@ -97,6 +112,7 @@ func (org *Org) RunningInstancesCount() int {
 	return instancesCount
 }
 
+// AppsCount -
 func (org *Org) AppsCount() int {
 	appsCount := 0
 	for _, space := range org.Spaces {
@@ -105,6 +121,7 @@ func (org *Org) AppsCount() int {
 	return appsCount
 }
 
+// ServicesCount -
 func (org *Org) ServicesCount() int {
 	servicesCount := 0
 	for _, space := range org.Spaces {
@@ -116,6 +133,7 @@ func (org *Org) ServicesCount() int {
 	return servicesCount
 }
 
+// ConsumedMemory -
 func (space *Space) ConsumedMemory() int {
 	consumed := 0
 	for _, app := range space.Apps {
@@ -124,6 +142,7 @@ func (space *Space) ConsumedMemory() int {
 	return consumed
 }
 
+// RunningAppsCount -
 func (space *Space) RunningAppsCount() int {
 	runningAppsCount := 0
 	for _, app := range space.Apps {
@@ -134,6 +153,7 @@ func (space *Space) RunningAppsCount() int {
 	return runningAppsCount
 }
 
+// InstancesCount -
 func (space *Space) InstancesCount() int {
 	instancesCount := 0
 	for _, app := range space.Apps {
@@ -142,6 +162,7 @@ func (space *Space) InstancesCount() int {
 	return instancesCount
 }
 
+// RunningInstancesCount -
 func (space *Space) RunningInstancesCount() int {
 	runningInstancesCount := 0
 	for _, app := range space.Apps {
@@ -150,11 +171,13 @@ func (space *Space) RunningInstancesCount() int {
 	return runningInstancesCount
 }
 
+// ServicesCount -
 func (space *Space) ServicesCount() int {
 	servicesCount := len(space.Services)
 	return servicesCount
 }
 
+// ServiceInstancesCount -
 func (space *Space) ServiceInstancesCount(serviceType string) int {
 	boundedServiceInstancesCount := 0
 	for _, service := range space.Services {
@@ -165,6 +188,7 @@ func (space *Space) ServiceInstancesCount(serviceType string) int {
 	return boundedServiceInstancesCount
 }
 
+// Stats -
 func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 	for _, space := range spaces {
 		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
@@ -198,6 +222,7 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 	close(c)
 }
 
+// Stats -
 func (orgs Orgs) Stats(c chan OrgStats) {
 	for _, org := range orgs {
 		lApps := org.AppsCount()

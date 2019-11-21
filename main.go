@@ -22,7 +22,6 @@ type flags struct {
 func parseFlags(args []string) flags {
 	flagSet := flag.NewFlagSet(args[0], flag.ContinueOnError)
 
-	// Create flags
 	orgName := flagSet.String("o", "", "-o orgName")
 
 	err := flagSet.Parse(args[1:])
