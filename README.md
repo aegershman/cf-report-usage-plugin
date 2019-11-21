@@ -56,35 +56,3 @@ Org S1Pdemo14 is consuming 4096 MB of 102400 MB.
     0 service instances of type Service Suite
 You have deployed 16 apps across 2 org(s), with a total of 20 app instances configured. You are currently running 4 apps with 5 app instances and using 2 service instances of type Service Suite.
 ```
-
-CSV output:
-
-```txt
-Creates sqllite db (usagereport.db) in working directory, so you can do offline BI!
-➜  trueupreport-plugin git:(master) ✗ cf trueup-report -f csv
-
-➜  trueupreport-plugin git:(master) ✗ cf trueup-report -f csv
-Env, ReportDate, OrgName, SpaceName, SpaceMemoryUsed, OrgMemoryQuota, AppsDeployed, AppsRunning, AppInstancesConfigured, AppInstancesRunning, TotalServiceInstancesDeployed, RabbitMQServiceInstanceDeployed, RedisServiceInstanceDeployed, MySQLServiceInstanceDeployed, SpringCloudServiceInstanceDeployed, SpringCloudDataFlowServerInstanceDeployed
-api.run.pivotal.io, 2018-12-08, north-area, development, 1124, 307200, 3, 2, 4, 3, 0, 0, 0, 0, 0, 0
-api.run.pivotal.io, 2018-12-08, north-area, staging, 0, 307200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-api.run.pivotal.io, 2018-12-08, north-area, production, 0, 307200, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0
-api.run.pivotal.io, 2018-12-08, north-area, jigsheth, 0, 307200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-api.run.pivotal.io, 2018-12-08, S1Pdemo14, development, 1024, 102400, 2, 1, 2, 1, 1, 1, 0, 0, 0, 0
-api.run.pivotal.io, 2018-12-08, S1Pdemo14, IoT-ConnectedCar-Emulator, 1024, 102400, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0
-api.run.pivotal.io, 2018-12-08, S1Pdemo14, sandbox, 0, 102400, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0
-api.run.pivotal.io, 2018-12-08, S1Pdemo14, auto-2, 0, 102400, 1, 0, 3, 0, 0, 0, 0, 0, 0, 0
-api.run.pivotal.io, 2018-12-08, S1Pdemo14, scdf-twitter-demo, 0, 102400, 7, 0, 7, 0, 0, 0, 0, 0, 0, 0
-api.run.pivotal.io, 2018-12-08, S1Pdemo14, scs-demo, 0, 102400, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-api.run.pivotal.io, 2018-12-08, S1Pdemo14, scdf-twitter-demo-s1p-2018, 0, 102400, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-```
-
-## install from source
-
-```sh
-go get github.com/mattn/go-sqlite3
-go get github.com/cloudfoundry/cli
-go get github.com/aegershman/cf-trueup-plugin
-cd $GOPATH/src/github.com/aegershman/cf-trueup-plugin
-go build
-cf install-plugin trueupreport-plugin
-```

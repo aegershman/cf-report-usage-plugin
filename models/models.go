@@ -2,14 +2,8 @@ package models
 
 import (
 	"bytes"
-	"database/sql"
 	"fmt"
-	"log"
-	"strconv"
 	"strings"
-	"time"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 type Org struct {
@@ -270,97 +264,4 @@ func (report *Report) String() string {
 			totalApps, len(report.Orgs), totalInstances, totalRunningApps, totalRunningInstances, totalServiceInstances))
 
 	return response.String()
-}
-
-func (report *Report) CSV(apiep string) string {
-	var rows = [][]string{}
-	var csv bytes.Buffer
-
-	var headers = []string{"Env", "ReportDate", "OrgName", "SpaceName", "SpaceMemoryUsed", "OrgMemoryQuota", "AppsDeployed", "AppsRunning", "AppInstancesConfigured", "AppInstancesRunning", "TotalServiceInstancesDeployed", "RabbitMQServiceInstanceDeployed", "RedisServiceInstanceDeployed", "MySQLServiceInstanceDeployed", "SpringCloudServiceInstanceDeployed", "SpringCloudDataFlowServerInstanceDeployed"}
-
-	rows = append(rows, headers)
-
-	db, err := sql.Open("sqlite3", "./usagereport.db")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-	db.SetMaxOpenConns(1)
-	sqlStmt := `
-	CREATE TABLE IF NOT EXISTS trueupreport(api_ep TEXT, report_date DATE, org_name TEXT, space_name TEXT, space_memory_used NUMERIC, org_memory_quota NUMERIC, apps_deployed NUMERIC, apps_running NUMERIC, app_instances_configured NUMERIC, app_instances_running NUMERIC, total_service_instances_deployed NUMERIC, rabbitmq_service_instance_deployed NUMERIC, redis_service_instance_deployed NUMERIC, mysql_service_instance_deployed NUMERIC, spring_cloud_service_instance_deployed NUMERIC, spring_cloud_dataflow_server_instance_deployed NUMERIC);
-	CREATE UNIQUE INDEX IF NOT EXISTS trueupreportidx ON trueupreport(api_ep,report_date,org_name,space_name);
-	`
-	_, err = db.Exec(sqlStmt)
-	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
-	}
-	tx, err := db.Begin()
-	if err != nil {
-		log.Fatal(err)
-	}
-	stmt, err := tx.Prepare("INSERT INTO trueupreport VALUES (?, CURRENT_DATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-	for _, org := range report.Orgs {
-		for _, space := range org.Spaces {
-			if org.Name == "p-spring-cloud-services" || org.Name == "p-dataflow" {
-				continue
-			}
-			appsDeployed := len(space.Apps)
-			SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
-			SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
-
-			col0 := apiep
-			col1 := time.Now().Format("2006-01-02")
-			col2 := org.Name
-			col3 := space.Name
-			col4 := strconv.Itoa(space.ConsumedMemory() + (SCSCount * 1024) + (SCDFCount * 3 * 1024))
-			col5 := strconv.Itoa(org.MemoryQuota)
-			col6 := strconv.Itoa(appsDeployed)
-			col7 := strconv.Itoa(space.RunningAppsCount())
-			col8 := strconv.Itoa(space.InstancesCount())
-			col9 := strconv.Itoa(space.RunningInstancesCount() + SCSCount + (SCDFCount * 3))
-			col10 := strconv.Itoa(space.ServicesCount() - (SCSCount + SCDFCount))
-			col11 := strconv.Itoa(space.ServiceInstancesCount("rabbit"))
-			col12 := strconv.Itoa(space.ServiceInstancesCount("redis"))
-			col13 := strconv.Itoa(space.ServiceInstancesCount("mysql"))
-			col14 := strconv.Itoa(SCSCount)
-			col15 := strconv.Itoa(SCDFCount * 3)
-
-			spaceResult := []string{
-				col0,
-				col1,
-				col2,
-				col3,
-				col4,
-				col5,
-				col6,
-				col7,
-				col8,
-				col9,
-				col10,
-				col11,
-				col12,
-				col13,
-				col14,
-				col15,
-			}
-			rows = append(rows, spaceResult)
-			_, err = stmt.Exec(col0, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15)
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
-	}
-	tx.Commit()
-	//database.Close()
-
-	for i := range rows {
-		csv.WriteString(strings.Join(rows[i], ", "))
-		csv.WriteString("\n")
-	}
-
-	return csv.String()
 }

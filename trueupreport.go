@@ -26,7 +26,6 @@ func ParseFlags(args []string) flagVal {
 
 	// Create flags
 	orgName := flagSet.String("o", "", "-o orgName")
-	format := flagSet.String("f", "format", "-f <csv>")
 
 	err := flagSet.Parse(args[1:])
 	if err != nil {
@@ -35,7 +34,6 @@ func ParseFlags(args []string) flagVal {
 
 	return flagVal{
 		OrgName: string(*orgName),
-		Format:  string(*format),
 	}
 }
 
@@ -53,10 +51,9 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 				Name:     "trueup-report",
 				HelpText: "Report AIs, SIs and memory usage for orgs and spaces",
 				UsageDetails: plugin.Usage{
-					Usage: "cf trueup-report [-o orgName] [-f <csv>]",
+					Usage: "cf trueup-report [-o orgName]",
 					Options: map[string]string{
 						"o": "organization",
-						"f": "format",
 					},
 				},
 			},
@@ -89,11 +86,7 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 
 	report.Orgs = orgs
 
-	if flagVals.Format == "csv" {
-		fmt.Println(report.CSV(cmd.apiHelper.GetTarget()))
-	} else {
-		fmt.Println(report.String())
-	}
+	fmt.Println(report.String())
 }
 
 func (cmd *UsageReportCmd) getOrgs() ([]models.Org, error) {
