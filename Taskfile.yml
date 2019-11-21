@@ -27,6 +27,8 @@ tasks:
         version="2.5.0"
         git tag -a ${version} -m "Build version ${version}"
         # git push origin --tags
+        # git tag -d 2.5.0
+        # git tag -n
 
   # I know, not the best solution, but it'll work while I'm hacking away at stuff
   test:
