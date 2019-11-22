@@ -36,15 +36,16 @@ type Service struct {
 
 // SpaceStats -
 type SpaceStats struct {
-	Name                      string
-	DeployedAppsCount         int
-	RunningAppsCount          int
-	StoppedAppsCount          int
-	DeployedAppInstancesCount int
-	RunningAppInstancesCount  int
-	StoppedAppInstancesCount  int
-	ServicesCount             int
-	ConsumedMemory            int
+	Name                       string
+	DeployedAppsCount          int
+	RunningAppsCount           int
+	StoppedAppsCount           int
+	CanonicalAppInstancesCount int
+	DeployedAppInstancesCount  int
+	RunningAppInstancesCount   int
+	StoppedAppInstancesCount   int
+	ServicesCount              int
+	ConsumedMemory             int
 }
 
 // OrgStats -
@@ -196,6 +197,10 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 		lApps := len(space.Apps)
 		rApps := space.RunningAppsCount()
 		sApps := lApps - rApps
+		// "canonical" appInstances are what we can use for setting a quota
+		canonicalAppInstances := space.InstancesCount()
+		// "lAIs" in this context is really "billableAIs", but I don't want to mess
+		// with the existing logic before getting a chance to rework this
 		lAIs := space.InstancesCount()
 		lAIs += (SCSCount + (SCDFCount * 3))
 		rAIs := space.RunningInstancesCount()
@@ -208,15 +213,16 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 			siCount = 0
 		}
 		c <- SpaceStats{
-			Name:                      space.Name,
-			DeployedAppsCount:         lApps,
-			RunningAppsCount:          rApps,
-			StoppedAppsCount:          sApps,
-			DeployedAppInstancesCount: lAIs,
-			RunningAppInstancesCount:  rAIs,
-			StoppedAppInstancesCount:  sAIs,
-			ServicesCount:             siCount,
-			ConsumedMemory:            rAIConsumedMemory,
+			Name:                       space.Name,
+			DeployedAppsCount:          lApps,
+			RunningAppsCount:           rApps,
+			StoppedAppsCount:           sApps,
+			CanonicalAppInstancesCount: canonicalAppInstances,
+			DeployedAppInstancesCount:  lAIs,
+			RunningAppInstancesCount:   rAIs,
+			StoppedAppInstancesCount:   sAIs,
+			ServicesCount:              siCount,
+			ConsumedMemory:             rAIConsumedMemory,
 		}
 	}
 	close(c)
@@ -260,7 +266,7 @@ func (report *Report) String() string {
 	const (
 		orgOverviewMsg                = "Org %s is consuming %d MB of %d MB.\n"
 		spaceOverviewMsg              = "\tSpace %s is consuming %d MB memory (%d%%) of org quota.\n"
-		spaceCanonicalAppInstancesMsg = "\t\t%d canonical app instances: %d running %d stopped\n"
+		spaceCanonicalAppInstancesMsg = "\t\t%d canonical app instances:\n" // %d running %d stopped\n"
 		spaceUniqueAppGuidsMsg        = "\t\t%d unique app_guids: %d running %d stopped\n"
 		spaceBillableAppInstancesMsg  = "\t\t%d billable app instances: %d running, %d stopped\n"
 		spaceServiceSuiteMsg          = "\t\t%d service instances of type Service Suite (mysql, redis, rmq)\n"
@@ -283,7 +289,7 @@ func (report *Report) String() string {
 				response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceState.Name, spaceState.ConsumedMemory, spaceMemoryConsumedPercentage))
 			}
 
-			response.WriteString(fmt.Sprintf(spaceCanonicalAppInstancesMsg, nil, nil, nil))
+			response.WriteString(fmt.Sprintf(spaceCanonicalAppInstancesMsg, spaceState.CanonicalAppInstancesCount))
 
 			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceState.DeployedAppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
 
