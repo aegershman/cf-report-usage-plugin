@@ -56,5 +56,4 @@ release:
     owner: aegershman
     name: cf-trueup-plugin
   draft: true
-  prerelease: true
   name_template: "{{ .Tag }}"
