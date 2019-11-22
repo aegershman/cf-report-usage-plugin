@@ -8,6 +8,12 @@ Reported SIs are for the "pivotal service suite", which as of writing this inclu
 - Redis (`p.redis`, `p-redis`)
 - MySQL (`p.mysql`, `p-mysql`)
 
+Services part of the "spring cloud config" (SCS) suite, although are "SIs" from the perspective of CF, are treated as AIs from the perspective of billing. The following service instances are _billed_ and currently in this tool _reported_ as running AIs:
+
+- Spring Cloud Config (`p-spring-cloud-config` in 2.x, `p.spring-cloud-config` in 3.x)
+- Service Registry (`p-service-registry` in 2.x, `p.service-registry` in 3.x)
+- Circuit Breaker (`p-circuit-breaker` in 2.x, non-existant in 3.x)
+
 ## usage
 
 ```sh
