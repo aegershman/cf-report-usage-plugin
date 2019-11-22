@@ -4,7 +4,7 @@ tasks:
   install:
     cmds:
       - task: build
-      - cf install-plugin dist/cf-trueup-plugin_darwin_amd64/cf-trueup-plugin -f
+      - cf install-plugin dist/darwin_darwin_amd64/cf-trueup-plugin -f
 
   uninstall:
     cmds:
