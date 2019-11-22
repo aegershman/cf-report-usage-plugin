@@ -36,15 +36,16 @@ type Service struct {
 
 // SpaceStats -
 type SpaceStats struct {
-	Name                      string
-	DeployedAppsCount         int
-	RunningAppsCount          int
-	StoppedAppsCount          int
-	DeployedAppInstancesCount int
-	RunningAppInstancesCount  int
-	StoppedAppInstancesCount  int
-	ServicesCount             int
-	ConsumedMemory            int
+	Name                       string
+	DeployedAppsCount          int
+	RunningAppsCount           int
+	StoppedAppsCount           int
+	CanonicalAppInstancesCount int
+	DeployedAppInstancesCount  int
+	RunningAppInstancesCount   int
+	StoppedAppInstancesCount   int
+	ServicesCount              int
+	ConsumedMemory             int
 }
 
 // OrgStats -
@@ -196,6 +197,10 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 		lApps := len(space.Apps)
 		rApps := space.RunningAppsCount()
 		sApps := lApps - rApps
+		// "canonical" appInstances are what we can use for setting a quota
+		canonicalAppInstances := space.InstancesCount()
+		// "lAIs" in this context is really "billableAIs", but I don't want to mess
+		// with the existing logic before getting a chance to rework this
 		lAIs := space.InstancesCount()
 		lAIs += (SCSCount + (SCDFCount * 3))
 		rAIs := space.RunningInstancesCount()
@@ -208,15 +213,16 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 			siCount = 0
 		}
 		c <- SpaceStats{
-			Name:                      space.Name,
-			DeployedAppsCount:         lApps,
-			RunningAppsCount:          rApps,
-			StoppedAppsCount:          sApps,
-			DeployedAppInstancesCount: lAIs,
-			RunningAppInstancesCount:  rAIs,
-			StoppedAppInstancesCount:  sAIs,
-			ServicesCount:             siCount,
-			ConsumedMemory:            rAIConsumedMemory,
+			Name:                       space.Name,
+			DeployedAppsCount:          lApps,
+			RunningAppsCount:           rApps,
+			StoppedAppsCount:           sApps,
+			CanonicalAppInstancesCount: canonicalAppInstances,
+			DeployedAppInstancesCount:  lAIs,
+			RunningAppInstancesCount:   rAIs,
+			StoppedAppInstancesCount:   sAIs,
+			ServicesCount:              siCount,
+			ConsumedMemory:             rAIConsumedMemory,
 		}
 	}
 	close(c)
@@ -257,33 +263,40 @@ func (report *Report) String() string {
 	totalRunningInstances := 0
 	totalServiceInstances := 0
 
+	const (
+		orgOverviewMsg                = "Org %s is consuming %d MB of %d MB.\n"
+		spaceOverviewMsg              = "\tSpace %s is consuming %d MB memory (%d%%) of org quota.\n"
+		spaceCanonicalAppInstancesMsg = "\t\t%d canonical app instances\n"
+		spaceBillableAppInstancesMsg  = "\t\t%d billable app instances: %d running, %d stopped\n"
+		spaceUniqueAppGuidsMsg        = "\t\t%d unique app_guids: %d running %d stopped\n"
+		spaceServiceSuiteMsg          = "\t\t%d service instances of type Service Suite (mysql, redis, rmq)\n"
+		reportSummaryMsg              = "[WARNING: THIS REPORT SUMMARY IS MISLEADING AND INCORRECT. IT WILL BE FIXED SOON.] You have deployed %d apps across %d org(s), with a total of %d app instances configured. You are currently running %d apps with %d app instances and using %d service instances of type Service Suite.\n"
+	)
+
 	chOrgStats := make(chan OrgStats, len(report.Orgs))
 
 	go report.Orgs.Stats(chOrgStats)
 	for orgStats := range chOrgStats {
-		response.WriteString(fmt.Sprintf("Org %s is consuming %d MB of %d MB.\n",
-			orgStats.Name, orgStats.MemoryUsage, orgStats.MemoryQuota))
+		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgStats.Name, orgStats.MemoryUsage, orgStats.MemoryQuota))
 		chSpaceStats := make(chan SpaceStats, len(orgStats.Spaces))
+		// TODO dynamic filtering?
 		go orgStats.Spaces.Stats(chSpaceStats, orgStats.Name == "p-spring-cloud-services")
 		for spaceState := range chSpaceStats {
 
 			// handle org having "zero quota", e.g. the org is only allowed to use service instances, not push apps
 			if orgStats.MemoryQuota > 0 {
-				response.WriteString(
-					fmt.Sprintf("\tSpace %s is consuming %d MB memory (%d%%) of org quota.\n",
-						spaceState.Name, spaceState.ConsumedMemory, (100 * spaceState.ConsumedMemory / orgStats.MemoryQuota)))
+				spaceMemoryConsumedPercentage := (100 * spaceState.ConsumedMemory / orgStats.MemoryQuota)
+				response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceState.Name, spaceState.ConsumedMemory, spaceMemoryConsumedPercentage))
 			}
 
-			response.WriteString(
-				fmt.Sprintf("\t\t%d apps: %d running %d stopped\n", spaceState.DeployedAppsCount,
-					spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
+			response.WriteString(fmt.Sprintf(spaceCanonicalAppInstancesMsg, spaceState.CanonicalAppInstancesCount))
 
 			response.WriteString(
-				fmt.Sprintf("\t\t%d app instances: %d running, %d stopped\n", spaceState.DeployedAppInstancesCount,
-					spaceState.RunningAppInstancesCount, spaceState.StoppedAppInstancesCount))
+				fmt.Sprintf(spaceBillableAppInstancesMsg, spaceState.DeployedAppInstancesCount, spaceState.RunningAppInstancesCount, spaceState.StoppedAppInstancesCount))
 
-			response.WriteString(
-				fmt.Sprintf("\t\t%d service instances of type Service Suite\n", spaceState.ServicesCount))
+			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceState.DeployedAppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
+
+			response.WriteString(fmt.Sprintf(spaceServiceSuiteMsg, spaceState.ServicesCount))
 
 		}
 		totalApps += orgStats.DeployedAppsCount
@@ -292,9 +305,8 @@ func (report *Report) String() string {
 		totalRunningInstances += orgStats.RunningAppInstancesCount
 		totalServiceInstances += orgStats.ServicesCount
 	}
-	response.WriteString(
-		fmt.Sprintf("You have deployed %d apps across %d org(s), with a total of %d app instances configured. You are currently running %d apps with %d app instances and using %d service instances of type Service Suite.\n",
-			totalApps, len(report.Orgs), totalInstances, totalRunningApps, totalRunningInstances, totalServiceInstances))
+
+	response.WriteString(fmt.Sprintf(reportSummaryMsg, totalApps, len(report.Orgs), totalInstances, totalRunningApps, totalRunningInstances, totalServiceInstances))
 
 	return response.String()
 }
