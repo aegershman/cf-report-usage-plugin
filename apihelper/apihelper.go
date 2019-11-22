@@ -253,6 +253,7 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 								Label:       "p-rabbit",
 								ServicePlan: "p-dataflow-messaging",
 							})
+						// SCS 2.x
 					} else if strings.Contains(label, "p-circuit-breaker") || strings.Contains(label, "p-config-server") || strings.Contains(label, "p-service-registry") {
 						services = append(services,
 							Service{
