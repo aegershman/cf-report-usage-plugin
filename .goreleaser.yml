@@ -19,11 +19,12 @@ builds:
       - amd64
       - 386
     goarm:
+      # show our love for ARM, why not
       - 7
 
 archives:
-  # being a little dramatic by separating the linux-windows and darwin
-  # builds just to get a different naming style... but I'm okay with that.
+  # being dramatic by separating the linux-windows and darwin
+  # builds to get a different naming style... but I'm okay with that
   - id: linux-windows
     builds:
       - linux-windows
@@ -39,7 +40,8 @@ checksum:
   name_template: "checksums.txt"
 
 snapshot:
-  name_template: "{{ .Tag }}-next"
+  # show our love for semver *.build conventions
+  name_template: "{{ .Tag }}-build.{{ .ShortCommit }}"
 
 changelog:
   sort: asc
@@ -49,9 +51,10 @@ changelog:
       - "^test:"
 
 release:
+  # nearly all of these are the defaults, just being explicit about them
   github:
     owner: aegershman
     name: cf-trueup-plugin
   draft: true
   prerelease: true
-  name_template: "{{ .ProjectName }}-{{ .Tag }}"
+  name_template: "{{ .Tag }}"
