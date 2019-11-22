@@ -4,22 +4,33 @@ before:
   hooks:
     - go mod download
 builds:
-  - env:
+  - id: darwin
+    env:
       - CGO_ENABLED=0
     goos:
       - darwin
+    goarch:
+      - amd64
+  - id: linux-windows
+    env:
+      - CGO_ENABLED=0
+    goos:
       - linux
       - windows
     goarch:
       - amd64
       - 386
-    ignore:
-      - goos: darwin
-        goarch: 386
 archives:
-  - id: github
+  - id: github-linux-windows
+    builds:
+      - linux-windows
     format: binary
     name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
+  - id: github-darwin
+    builds:
+      - darwin
+    format: binary
+    name_template: "{{ .ProjectName }}-{{ .Os }}"
 checksum:
   name_template: "checksums.txt"
 snapshot:
