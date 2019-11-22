@@ -16,7 +16,7 @@ builds:
 archives:
   - id: github
     format: binary
-    name_template: "cf-trueup-plugin-{{ .Os }}"
+    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
 checksum:
   name_template: "checksums.txt"
 snapshot:
