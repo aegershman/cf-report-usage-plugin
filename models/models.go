@@ -274,6 +274,7 @@ func (report *Report) String() string {
 	for orgStats := range chOrgStats {
 		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgStats.Name, orgStats.MemoryUsage, orgStats.MemoryQuota))
 		chSpaceStats := make(chan SpaceStats, len(orgStats.Spaces))
+		// TODO dynamic filtering?
 		go orgStats.Spaces.Stats(chSpaceStats, orgStats.Name == "p-spring-cloud-services")
 		for spaceState := range chSpaceStats {
 

@@ -7,6 +7,11 @@ e.g., a way to define...
 - "any `user-provided-services` should be counted as an AI"
 - "any service which comes from `<some-broker>` should be reported as an AI"
 - "anything which has this metadata information should be treated as xyzabc"
+- orgs to be filtered out of _all_ searches, e.g. like how in models/report there's this line:
+
+```go
+go orgStats.Spaces.Stats(chSpaceStats, orgStats.Name == "p-spring-cloud-services")
+```
 
 overthinking example:
 
