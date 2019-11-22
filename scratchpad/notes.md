@@ -150,3 +150,50 @@ Org x is consuming 12864 MB of 20480 MB.
         5 billed as AIs
         4 others
 ```
+
+perhaps a configurable detailed view?
+
+```txt
+Org x is consuming 12864 MB of 20480 MB.
+  Space scratchpad is consuming 8768 MB memory (42%) of org quota.
+    billable:
+      AIs: 15 <-- let's move these to be right-side oriented
+        applications: 10
+          cf-sample-app-nodejs            started           1/1
+          cfenv-demo                      started           1/1
+          gwx-asp-net-core-app-basic      started           1/1
+          gwx-spring-boot-example-basic   started           1/1
+          gwx-spring-boot-sample-ui       stopped           0/1
+          hammerdb-test                   stopped           0/1
+          nodejs-web                      started           2/2
+          push-test-webhook-switchboard   started           2/2
+        services: 5
+          config [maybe more details?]
+          config-server
+          registry
+          scs-reg
+          scs-wow
+      SIs: 4
+        services: 4
+          rmq-clustered [maybe more details off to the side?]
+          rmq-standard
+          small-redis
+          tiny-sql
+    usable:
+      AIs: 10
+        running: 8
+        stopped: 2
+      SIs: 9
+        billed as AIs: 5
+        others: 4
+```
+
+todo: how does this work with user-provided services? how does this work with "multi-service-services" like SCDF?
+
+## what are the official rules
+
+Need to talk to someone from Pivotal about this. It could either be embodied in the code itself directly, or later could evaluate a more genericized rules system. Shouldn't be anything extravogent.
+
+## to what extent do the API endpoints used really matter
+
+Are there fundamental differences between how v2 and v3 will report things? etc.
