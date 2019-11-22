@@ -253,8 +253,12 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 								Label:       "p-rabbit",
 								ServicePlan: "p-dataflow-messaging",
 							})
-						// SCS 2.x
-					} else if strings.Contains(label, "p-circuit-breaker") || strings.Contains(label, "p-config-server") || strings.Contains(label, "p-service-registry") {
+						// SCS 2.x + 3.x
+						// This is false advertising labeling, because "p-config-server" & "p-service-registry" are scs 2.x
+						// which use "p-spring-cloud-services" as their service broker, whereas
+						// "p.config-server" & p.service-registry" use "scs-service-broker" as their broker.
+						// For the sake of simplicity, we'll lump them both into "p-spring-cloud-services" for calculations
+					} else if strings.Contains(label, "circuit-breaker") || strings.Contains(label, "config-server") || strings.Contains(label, "service-registry") {
 						services = append(services,
 							Service{
 								Label:       "p-spring-cloud-services",

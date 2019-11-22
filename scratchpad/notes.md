@@ -31,12 +31,12 @@ rmq-standard
 small-redis
 tiny-sql
 
-# scs services, x5
-config
-config-server
-registry
-scs-reg
-scs-wow
+# scs services, x5 total (x3 scs2, x2 scs3)
+config (p-config-server, p-spring-cloud-services)
+config-server (p-config-server, p-spring-cloud-services)
+registry (p-service-registry, p-spring-cloud-services)
+scs-reg (p.service-registry, scs-service-broker)
+scs-wow (p.config-server, scs-service-broker)
 ```
 
 ```txt
