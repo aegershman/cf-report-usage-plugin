@@ -15,10 +15,15 @@ builds:
       - linux
       - windows
     goarch:
+      - arm
       - amd64
       - 386
+    goarm:
+      - 7
 
 archives:
+  # being a little dramatic by separating the linux-windows and darwin
+  # builds just to get a different naming style... but I'm okay with that.
   - id: linux-windows
     builds:
       - linux-windows
