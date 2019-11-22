@@ -92,3 +92,23 @@ We should really only care about 'scratchpad'
 13 app instances: 11 running, 2 stopped
 4 service instances of type Service Suite
 ```
+
+## what we can deduce
+
+The first line, `8 apps: 6 running 2 stopped`, has nothing to do with app instances at all.
+
+The second line, `13 app instances: 11 running, 2 stopped`, is bizzare. There are `10` app_instances possible if you add up the results from `cf apps`. So it's definitely adding up something extra.
+
+Why should it report like that, though? Let's try something different. My boss wants to know:
+
+- _billable_ app instances
+- _billable_ service instances
+
+In order to get that data, I need to know:
+
+- AIs that are _actually_ applications
+- AIs that aren't _actually_ applications, but are instead _counted_ as AIs (e.g. SCS, etc., although getting a straight answer on what counts as an AI/SI is surprisingly annoying)
+- SIs that are _actually_ service instances
+- SIs that aren't _actually_ services, but are instead being _counted_ as AIs
+- SIs that are composed of _multiple_ other AIs and SIs, e.g. SCDF
+- How _user provided services_ should be counted
