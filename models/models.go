@@ -34,7 +34,9 @@ type Service struct {
 	ServicePlan string
 }
 
-// SpaceStats -
+// SpaceStats is a way to represent the 'business logic'
+// of Spaces; we can use it as a way to decorate
+// a Space with extra info like billableAIs, etc.
 type SpaceStats struct {
 	Name                       string
 	DeployedAppsCount          int
