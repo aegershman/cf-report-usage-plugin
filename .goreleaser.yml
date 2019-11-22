@@ -12,8 +12,11 @@ builds:
       - linux
       - windows
     goarch:
-      - 386
       - amd64
+      - 386
+    ignore:
+      - goos: darwin
+        goarch: 386
 archives:
   - id: github
     format: binary
