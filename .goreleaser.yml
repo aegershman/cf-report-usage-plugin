@@ -3,44 +3,46 @@
 before:
   hooks:
     - go mod download
+
 builds:
   - id: darwin
-    env:
-      - CGO_ENABLED=0
     goos:
       - darwin
     goarch:
       - amd64
   - id: linux-windows
-    env:
-      - CGO_ENABLED=0
     goos:
       - linux
       - windows
     goarch:
       - amd64
       - 386
+
 archives:
-  - id: github-linux-windows
+  - id: linux-windows
     builds:
       - linux-windows
     format: binary
     name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
-  - id: github-darwin
+  - id: darwin
     builds:
       - darwin
     format: binary
     name_template: "{{ .ProjectName }}-{{ .Os }}"
+
 checksum:
   name_template: "checksums.txt"
+
 snapshot:
   name_template: "{{ .Tag }}-next"
+
 changelog:
   sort: asc
   filters:
     exclude:
       - "^docs:"
       - "^test:"
+
 release:
   github:
     owner: aegershman
