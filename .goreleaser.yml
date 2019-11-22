@@ -55,5 +55,4 @@ release:
   github:
     owner: aegershman
     name: cf-trueup-plugin
-  draft: true
   name_template: "{{ .Tag }}"
