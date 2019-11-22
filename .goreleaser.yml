@@ -31,5 +31,8 @@ changelog:
       - "^docs:"
       - "^test:"
 release:
+  github:
+    owner: aegershman
+    name: cf-trueup-plugin
   draft: true
   prerelease: true
