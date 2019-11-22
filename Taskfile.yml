@@ -12,4 +12,6 @@ tasks:
 
   build:
     cmds:
+      - go mod tidy
+      - go generate ./...
       - goreleaser --snapshot --skip-publish --rm-dist
