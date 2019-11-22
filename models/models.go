@@ -258,14 +258,12 @@ func (report *Report) String() string {
 	totalServiceInstances := 0
 
 	const (
-		orgOverviewMsg   = "Org %s is consuming %d MB of %d MB.\n"
-		spaceOverviewMsg = "\tSpace %s is consuming %d MB memory (%d%%) of org quota.\n"
-		// Notice that "apps" here refers to unique app_guids, which doesn't calculate _instances_ of the app
-		// So even if you have 3 instances of "myapp" running, "apps" is still reported as "1"
-		spaceAppsMsg         = "\t\t%d apps: %d running %d stopped\n"
-		spaceAppInstancesMsg = "\t\t%d app instances: %d running, %d stopped\n"
-		spaceServiceSuiteMsg = "\t\t%d service instances of type Service Suite\n"
-		reportSummaryMsg     = "You have deployed %d apps across %d org(s), with a total of %d app instances configured. You are currently running %d apps with %d app instances and using %d service instances of type Service Suite.\n"
+		orgOverviewMsg               = "Org %s is consuming %d MB of %d MB.\n"
+		spaceOverviewMsg             = "\tSpace %s is consuming %d MB memory (%d%%) of org quota.\n"
+		spaceUniqueAppGuidsMsg       = "\t\t%d unique app_guids: %d running %d stopped\n"
+		spaceBillableAppInstancesMsg = "\t\t%d billable app instances: %d running, %d stopped\n"
+		spaceServiceSuiteMsg         = "\t\t%d service instances of type Service Suite (mysql, redis, rmq)\n"
+		reportSummaryMsg             = "You have deployed %d apps across %d org(s), with a total of %d app instances configured. You are currently running %d apps with %d app instances and using %d service instances of type Service Suite.\n"
 	)
 
 	chOrgStats := make(chan OrgStats, len(report.Orgs))
@@ -284,10 +282,10 @@ func (report *Report) String() string {
 				response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceState.Name, spaceState.ConsumedMemory, spaceMemoryConsumedPercentage))
 			}
 
-			response.WriteString(fmt.Sprintf(spaceAppsMsg, spaceState.DeployedAppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
+			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceState.DeployedAppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
 
 			response.WriteString(
-				fmt.Sprintf(spaceAppInstancesMsg, spaceState.DeployedAppInstancesCount, spaceState.RunningAppInstancesCount, spaceState.StoppedAppInstancesCount))
+				fmt.Sprintf(spaceBillableAppInstancesMsg, spaceState.DeployedAppInstancesCount, spaceState.RunningAppInstancesCount, spaceState.StoppedAppInstancesCount))
 
 			response.WriteString(fmt.Sprintf(spaceServiceSuiteMsg, spaceState.ServicesCount))
 
