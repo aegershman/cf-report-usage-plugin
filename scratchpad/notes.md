@@ -119,3 +119,34 @@ In order to properly set _quotas_ using this data, I need to know:
 - How many AIs are _actually_ applications? I don't care about individual "standalone" applications
 - How many SIs are _actually_ SIs?
 - To what extent do overages need to be accounted for?
+
+## proposed revisualization
+
+Alright, let's try a new mockup of this data
+
+We've established that...
+
+```txt
+Org x is consuming 12864 MB of 20480 MB. <-- numbers are fine
+        Space scratchpad is consuming 8768 MB memory (42%) of org quota.
+                8 apps: 6 running 2 stopped <-- don't really need to know
+                13 app instances: 11 running, 2 stopped <-- misleading
+                4 service instances of type Service Suite <-- inaccurate?
+```
+
+so how about...
+
+```txt
+Org x is consuming 12864 MB of 20480 MB.
+  Space scratchpad is consuming 8768 MB memory (42%) of org quota.
+    billable:
+      15 AIs
+      4 SIs
+    usable:
+      10 AIs
+        8 running
+        2 stopped
+      9 SIs
+        5 billed as AIs
+        4 others
+```
