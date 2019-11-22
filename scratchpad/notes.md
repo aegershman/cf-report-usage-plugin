@@ -102,6 +102,7 @@ The second line, `13 app instances: 11 running, 2 stopped`, is bizzare. There ar
 Why should it report like that, though? Let's try something different. My boss wants to know:
 
 - _billable_ app instances
+  - _billable_ max concurrent(?)
 - _billable_ service instances
 
 In order to get that data, I need to know:
@@ -112,3 +113,9 @@ In order to get that data, I need to know:
 - SIs that aren't _actually_ services, but are instead being _counted_ as AIs
 - SIs that are composed of _multiple_ other AIs and SIs, e.g. SCDF
 - How _user provided services_ should be counted
+
+In order to properly set _quotas_ using this data, I need to know:
+
+- How many AIs are _actually_ applications? I don't care about individual "standalone" applications
+- How many SIs are _actually_ SIs?
+- To what extent do overages need to be accounted for?
