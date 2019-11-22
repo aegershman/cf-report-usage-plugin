@@ -202,6 +202,15 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
 }
 
 // GetSpaceAppsAndServices returns the apps and the services in a space
+//
+// This function is problematic because the services it returns are a limited subset
+// of the actual services found within a space. We don't want to make those decisions
+// here, we'll want to store off the data and make decisions on _how_ and _what_ to render
+// somewhere else
+//
+// Granted, on the other hand, this isn't the "cf go library" so if it makes opinionated
+// decisions about what to return it's not the end of the world. But even still, we probably
+// don't want to make those decisions here. We'll want to make them in a specific view.
 func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services, error) {
 	apps := []App{}
 	services := []Service{}
