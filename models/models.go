@@ -258,12 +258,13 @@ func (report *Report) String() string {
 	totalServiceInstances := 0
 
 	const (
-		orgOverviewMsg               = "Org %s is consuming %d MB of %d MB.\n"
-		spaceOverviewMsg             = "\tSpace %s is consuming %d MB memory (%d%%) of org quota.\n"
-		spaceUniqueAppGuidsMsg       = "\t\t%d unique app_guids: %d running %d stopped\n"
-		spaceBillableAppInstancesMsg = "\t\t%d billable app instances: %d running, %d stopped\n"
-		spaceServiceSuiteMsg         = "\t\t%d service instances of type Service Suite (mysql, redis, rmq)\n"
-		reportSummaryMsg             = "You have deployed %d apps across %d org(s), with a total of %d app instances configured. You are currently running %d apps with %d app instances and using %d service instances of type Service Suite.\n"
+		orgOverviewMsg                = "Org %s is consuming %d MB of %d MB.\n"
+		spaceOverviewMsg              = "\tSpace %s is consuming %d MB memory (%d%%) of org quota.\n"
+		spaceCanonicalAppInstancesMsg = "\t\t%d canonical app instances: %d running %d stopped\n"
+		spaceUniqueAppGuidsMsg        = "\t\t%d unique app_guids: %d running %d stopped\n"
+		spaceBillableAppInstancesMsg  = "\t\t%d billable app instances: %d running, %d stopped\n"
+		spaceServiceSuiteMsg          = "\t\t%d service instances of type Service Suite (mysql, redis, rmq)\n"
+		reportSummaryMsg              = "You have deployed %d apps across %d org(s), with a total of %d app instances configured. You are currently running %d apps with %d app instances and using %d service instances of type Service Suite.\n"
 	)
 
 	chOrgStats := make(chan OrgStats, len(report.Orgs))
@@ -281,6 +282,8 @@ func (report *Report) String() string {
 				spaceMemoryConsumedPercentage := (100 * spaceState.ConsumedMemory / orgStats.MemoryQuota)
 				response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceState.Name, spaceState.ConsumedMemory, spaceMemoryConsumedPercentage))
 			}
+
+			response.WriteString(fmt.Sprintf(spaceCanonicalAppInstancesMsg, nil, nil, nil))
 
 			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceState.DeployedAppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
 
