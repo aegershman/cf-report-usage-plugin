@@ -39,7 +39,7 @@ type Service struct {
 // a Space with extra info like billableAIs, etc.
 type SpaceStats struct {
 	Name                       string
-	DeployedAppsCount          int
+	AppsCount                  int
 	RunningAppsCount           int
 	StoppedAppsCount           int
 	CanonicalAppInstancesCount int
@@ -66,7 +66,7 @@ type OrgStats struct {
 	MemoryQuota               int
 	MemoryUsage               int
 	Spaces                    Spaces
-	DeployedAppsCount         int
+	AppsCount                 int
 	RunningAppsCount          int
 	StoppedAppsCount          int
 	DeployedAppInstancesCount int
@@ -314,27 +314,33 @@ func (space *Space) SpringCloudServicesCount() int {
 // Stats -
 func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 	for _, space := range spaces {
+
 		totalUniqueApps := space.AppsCount()
 		runningUniqueApps := space.RunningAppsCount()
 		stoppedUniqueApps := totalUniqueApps - runningUniqueApps
+
 		// "canonical" appInstances are what we can use for setting a quota
 		canonicalAppInstances := space.AppInstancesCount()
+
 		// What _used_ to be reported as just "services"
 		servicesSuiteForPivotalPlatformCount := space.ServicesSuiteForPivotalPlatformCount()
+
 		// "lAIs" in this context is really "billableAIs", but I don't want to mess
 		// with the existing logic before getting a chance to rework this
 		lAIs := space.AppInstancesCount()
 		rAIs := space.RunningAppInstancesCount()
 		sAIs := lAIs - rAIs
+
 		consumedMemory := space.ConsumedMemory()
 		servicesCount := space.ServicesCount()
 		billableServicesCount := servicesCount - space.SpringCloudServicesCount()
 		if skipSIcount {
 			servicesCount = 0
 		}
+
 		c <- SpaceStats{
 			Name:                                 space.Name,
-			DeployedAppsCount:                    totalUniqueApps,
+			AppsCount:                            totalUniqueApps,
 			RunningAppsCount:                     runningUniqueApps,
 			StoppedAppsCount:                     stoppedUniqueApps,
 			CanonicalAppInstancesCount:           canonicalAppInstances,
@@ -364,7 +370,7 @@ func (orgs Orgs) Stats(c chan OrgStats) {
 			MemoryQuota:               org.MemoryQuota,
 			MemoryUsage:               org.MemoryUsage,
 			Spaces:                    org.Spaces,
-			DeployedAppsCount:         lApps,
+			AppsCount:                 lApps,
 			RunningAppsCount:          rApps,
 			StoppedAppsCount:          sApps,
 			DeployedAppInstancesCount: lAIs,
@@ -416,12 +422,12 @@ func (report *Report) String() string {
 			response.WriteString(
 				fmt.Sprintf(spaceBillableAppInstancesMsg, spaceState.DeployedAppInstancesCount, spaceState.RunningAppInstancesCount, spaceState.StoppedAppInstancesCount))
 
-			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceState.DeployedAppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
+			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceState.AppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
 
 			response.WriteString(fmt.Sprintf(spaceServiceSuiteMsg, spaceState.ServicesSuiteForPivotalPlatformCount))
 
 		}
-		totalApps += orgStats.DeployedAppsCount
+		totalApps += orgStats.AppsCount
 		totalInstances += orgStats.DeployedAppInstancesCount
 		totalRunningApps += orgStats.RunningAppsCount
 		totalRunningInstances += orgStats.RunningAppInstancesCount
