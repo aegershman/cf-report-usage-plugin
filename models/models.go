@@ -45,10 +45,10 @@ type SpaceStats struct {
 	AppInstancesCount        int
 	RunningAppInstancesCount int
 	StoppedAppInstancesCount int
-	ServicesCount            int // TODO misnomer
+	ServicesCount            int
 	ConsumedMemory           int
 
-	ServicesSuiteForPivotalPlatformCount int // TODO
+	ServicesSuiteForPivotalPlatformCount int
 
 	// includes anything which Pivotal deems "billable" as an AI, even if CF
 	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
@@ -73,7 +73,7 @@ type OrgStats struct {
 	StoppedAppInstancesCount int
 	ServicesCount            int
 
-	ServicesSuiteForPivotalPlatformCount int // TODO
+	ServicesSuiteForPivotalPlatformCount int
 
 	// includes anything which Pivotal deems "billable" as an AI, even if CF
 	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
