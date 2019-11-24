@@ -49,11 +49,7 @@ type SpaceStats struct {
 	ServicesCount              int // TODO misnomer
 	ConsumedMemory             int
 
-	// (I know right? It's an intense name)
-	// Services matching "services suite for pivotal platform",
-	// e.g. Pivotal's mysql, redis, rmq offerings
-	// see: https://network.pivotal.io/products/pcf-services
-	ServicesSuiteForPivotalPlatformCount int
+	ServicesSuiteForPivotalPlatformCount int // TODO
 
 	// includes anything which Pivotal deems "billable" as an AI, even if CF
 	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
@@ -73,6 +69,8 @@ type OrgStats struct {
 	RunningAppInstancesCount  int
 	StoppedAppInstancesCount  int
 	ServicesCount             int
+
+	ServicesSuiteForPivotalPlatformCount int // TODO
 
 	// includes anything which Pivotal deems "billable" as an AI, even if CF
 	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
@@ -250,8 +248,32 @@ func (space *Space) ServicesCount() int {
 	return count
 }
 
+// ServicesSuiteForPivotalPlatformCount returns the number of service instances
+// part of the "services suite for pivotal platform", e.g. Pivotal's MySQL/Redis/RMQ
+//
+// see: https://network.pivotal.io/products/pcf-services
+// (I know right? It's an intense function name)
+//
+// TODO come back and figure out labeling more appropriately
+func (space *Space) ServicesSuiteForPivotalPlatformCount() int {
+	count := 0
+
+	count += space.ServicesCountByServiceLabel("p-dataflow-servers")
+
+	count += space.ServicesCountByServiceLabel("p-mysql")
+	count += space.ServicesCountByServiceLabel("pivotal-mysql")
+
+	count += space.ServicesCountByServiceLabel("p-redis")
+	count += space.ServicesCountByServiceLabel("p.redis")
+
+	count += space.ServicesCountByServiceLabel("p-rabbitmq")
+	count += space.ServicesCountByServiceLabel("p.rabbitmq")
+
+	return count
+}
+
 // ServicesCountByServiceLabel returns the number of service instances
-// within a space which match the provided service label.
+// within a space which contain the provided service label.
 //
 // Keep in mind, when we say "service label", we aren't talking about
 // metadata labels; this is the label property of the "service" object
