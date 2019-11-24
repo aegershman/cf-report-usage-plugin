@@ -34,8 +34,8 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		Name: "cf-trueup-plugin",
 		Version: plugin.VersionType{
 			Major: 2,
-			Minor: 7,
-			Build: 1,
+			Minor: 8,
+			Build: 0,
 		},
 		Commands: []plugin.Command{
 			{
