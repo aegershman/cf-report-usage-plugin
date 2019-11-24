@@ -46,8 +46,14 @@ type SpaceStats struct {
 	DeployedAppInstancesCount  int
 	RunningAppInstancesCount   int
 	StoppedAppInstancesCount   int
-	ServicesCount              int
+	ServicesCount              int // TODO misnomer
 	ConsumedMemory             int
+
+	// (I know right? It's an intense name)
+	// Services matching "services suite for pivotal platform",
+	// e.g. Pivotal's mysql, redis, rmq offerings
+	// see: https://network.pivotal.io/products/pcf-services
+	ServicesSuiteForPivotalPlatformCount int
 
 	// includes anything which Pivotal deems "billable" as an AI, even if CF
 	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
