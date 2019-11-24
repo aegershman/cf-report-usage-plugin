@@ -87,8 +87,8 @@ func (org *Org) InstancesCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
 		instancesCount += space.InstancesCount()
-		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
-		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
+		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
+		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
 		instancesCount += SCSCount + (SCDFCount * 3)
 	}
 	return instancesCount
@@ -108,8 +108,8 @@ func (org *Org) RunningInstancesCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
 		instancesCount += space.RunningInstancesCount()
-		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
-		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
+		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
+		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
 		instancesCount += SCSCount + (SCDFCount * 3)
 	}
 	return instancesCount
@@ -129,8 +129,8 @@ func (org *Org) ServicesCount() int {
 	servicesCount := 0
 	for _, space := range org.Spaces {
 		servicesCount += len(space.Services)
-		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
-		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
+		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
+		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
 		servicesCount -= (SCSCount + SCDFCount)
 	}
 	return servicesCount
@@ -184,8 +184,12 @@ func (space *Space) ServicesCount() int {
 	return servicesCount
 }
 
-// ServiceInstancesCount -
-func (space *Space) ServiceInstancesCount(serviceType string) int {
+// ServicesCountByServiceLabel returns the number of service instances
+// within a space which match the provided service label.
+//
+// Keep in mind, when we say "service label", we aren't talking about
+// metadata labels; this is the label property of the "service" object
+func (space *Space) ServicesCountByServiceLabel(serviceType string) int {
 	boundedServiceInstancesCount := 0
 	for _, service := range space.Services {
 		if strings.Contains(service.Label, serviceType) {
@@ -198,8 +202,8 @@ func (space *Space) ServiceInstancesCount(serviceType string) int {
 // Stats -
 func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 	for _, space := range spaces {
-		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
-		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
+		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
+		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
 		lApps := len(space.Apps)
 		rApps := space.RunningAppsCount()
 		sApps := lApps - rApps
