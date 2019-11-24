@@ -203,6 +203,8 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
 
 // GetSpaceAppsAndServices returns the apps and the services in a space
 //
+// In reality though, it's just getting the SpaceSummary, right?
+//
 // This function is problematic because the services it returns are a limited subset
 // of the actual services found within a space. We don't want to make those decisions
 // here, we'll want to store off the data and make decisions on _how_ and _what_ to render
