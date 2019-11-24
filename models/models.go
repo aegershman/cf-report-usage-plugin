@@ -190,13 +190,13 @@ func (space *Space) ServicesCount() int {
 // Keep in mind, when we say "service label", we aren't talking about
 // metadata labels; this is the label property of the "service" object
 func (space *Space) ServicesCountByServiceLabel(serviceType string) int {
-	boundedServiceInstancesCount := 0
+	matchingServices := 0
 	for _, service := range space.Services {
 		if strings.Contains(service.Label, serviceType) {
-			boundedServiceInstancesCount++
+			matchingServices++
 		}
 	}
-	return boundedServiceInstancesCount
+	return matchingServices
 }
 
 // Stats -
