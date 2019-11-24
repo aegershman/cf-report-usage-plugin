@@ -189,6 +189,13 @@
           "version": null
         }
       }
+    },
+    {
+      "guid": "af3112f7-cb6f-4b88-ad79-e5c63a114248",
+      "name": "user-provided-service",
+      "bound_app_count": 0,
+      "type": "user_provided_service_instance",
+      "shared_to": []
     }
   ]
 }
