@@ -307,9 +307,9 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 		rAIs := space.RunningAppInstancesCount()
 		rAIs += (SCSCount + (SCDFCount * 3))
 		sAIs := lAIs - rAIs
+		consumedMemory := space.ConsumedMemory()
 		siCount := space.ServicesCount()
 		siCount -= (SCSCount + SCDFCount)
-		rAIConsumedMemory := (space.ConsumedMemory() + (SCSCount * 1024) + (SCDFCount * 3 * 1024))
 		if skipSIcount {
 			siCount = 0
 		}
@@ -323,7 +323,7 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 			RunningAppInstancesCount:             rAIs,
 			StoppedAppInstancesCount:             sAIs,
 			ServicesCount:                        siCount,
-			ConsumedMemory:                       rAIConsumedMemory,
+			ConsumedMemory:                       consumedMemory,
 			ServicesSuiteForPivotalPlatformCount: servicesSuiteForPivotalPlatformCount,
 		}
 	}
