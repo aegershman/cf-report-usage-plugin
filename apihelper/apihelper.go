@@ -233,6 +233,8 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 	if _, ok := summaryJSON["services"]; ok {
 		for _, s := range summaryJSON["services"].([]interface{}) {
 			theService := s.(map[string]interface{})
+			// TODO I believe us filtering on service plan existing means that
+			// user-provided services won't be included in this
 			if _, servicePlanExist := theService["service_plan"]; servicePlanExist {
 				servicePlan := theService["service_plan"].(map[string]interface{})
 				if _, serviceExist := servicePlan["service"]; serviceExist {
@@ -250,49 +252,6 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 							Label:       label,
 							ServicePlan: servicePlan["name"].(string),
 						})
-					// if strings.EqualFold(label, "p-dataflow") {
-					// 	services = append(services,
-					// 		Service{
-					// 			Label:       "p-dataflow-servers",
-					// 			ServicePlan: servicePlan["name"].(string),
-					// 		})
-					// }
-					// if strings.EqualFold(label, "p-dataflow-analytics") {
-					// 	services = append(services,
-					// 		Service{
-					// 			Label:       "p-redis",
-					// 			ServicePlan: "p-dataflow-analytics",
-					// 		})
-					// } else if strings.EqualFold(label, "p-dataflow-relational") {
-					// 	services = append(services,
-					// 		Service{
-					// 			Label:       "p-mysql",
-					// 			ServicePlan: "p-dataflow-relational",
-					// 		})
-					// } else if strings.EqualFold(label, "p-dataflow-messaging") {
-					// 	services = append(services,
-					// 		Service{
-					// 			Label:       "p-rabbit",
-					// 			ServicePlan: "p-dataflow-messaging",
-					// 		})
-					// 	// SCS 2.x + 3.x
-					// 	// This is false advertising labeling, because "p-config-server" & "p-service-registry" are scs 2.x
-					// 	// which use "p-spring-cloud-services" as their service broker, whereas
-					// 	// "p.config-server" & p.service-registry" use "scs-service-broker" as their broker.
-					// 	// For the sake of simplicity, we'll lump them both into "p-spring-cloud-services" for calculations
-					// } else if strings.Contains(label, "circuit-breaker") || strings.Contains(label, "config-server") || strings.Contains(label, "service-registry") {
-					// 	services = append(services,
-					// 		Service{
-					// 			Label:       "p-spring-cloud-services",
-					// 			ServicePlan: label,
-					// 		})
-					// } else if strings.Contains(label, "rabbit") || strings.Contains(label, "redis") || strings.Contains(label, "mysql") {
-					// 	services = append(services,
-					// 		Service{
-					// 			Label:       label,
-					// 			ServicePlan: servicePlan["name"].(string),
-					// 		})
-					// }
 				}
 			}
 		}
