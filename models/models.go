@@ -115,7 +115,16 @@ func (org *Org) RunningInstancesCount() int {
 	return instancesCount
 }
 
-// AppsCount -
+// AppsCount returns the count of unique canonical app guids
+// regardless of start/stop state across all spaces within the org
+//
+// for example, within a space, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "3 unique apps"
 func (org *Org) AppsCount() int {
 	appsCount := 0
 	for _, space := range org.Spaces {
