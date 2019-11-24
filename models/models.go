@@ -264,9 +264,9 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 	for _, space := range spaces {
 		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
 		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
-		lApps := space.AppsCount()
-		rApps := space.RunningAppsCount()
-		sApps := lApps - rApps
+		totalUniqueApps := space.AppsCount()
+		runningUniqueApps := space.RunningAppsCount()
+		stoppedUniqueApps := totalUniqueApps - runningUniqueApps
 		// "canonical" appInstances are what we can use for setting a quota
 		canonicalAppInstances := space.AppInstancesCount()
 		// "lAIs" in this context is really "billableAIs", but I don't want to mess
@@ -284,9 +284,9 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 		}
 		c <- SpaceStats{
 			Name:                       space.Name,
-			DeployedAppsCount:          lApps,
-			RunningAppsCount:           rApps,
-			StoppedAppsCount:           sApps,
+			DeployedAppsCount:          totalUniqueApps,
+			RunningAppsCount:           runningUniqueApps,
+			StoppedAppsCount:           stoppedUniqueApps,
 			CanonicalAppInstancesCount: canonicalAppInstances,
 			DeployedAppInstancesCount:  lAIs,
 			RunningAppInstancesCount:   rAIs,
