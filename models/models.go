@@ -124,14 +124,16 @@ func (org *Org) AppsCount() int {
 	return appsCount
 }
 
-// ServicesCount -
+// ServicesCount returns total count of registered services in all spaces of the org
+//
+// Keep in mind, if a single service ends up creating more service instances
+// (or application instances) in a different space (e.g., Spring Cloud Data Flow, etc.)
+// those aren't considered in this result. This only counts services registered which
+// show up in `cf services`
 func (org *Org) ServicesCount() int {
 	servicesCount := 0
 	for _, space := range org.Spaces {
 		servicesCount += len(space.Services)
-		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
-		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
-		servicesCount -= (SCSCount + SCDFCount)
 	}
 	return servicesCount
 }
@@ -202,10 +204,11 @@ func (space *Space) RunningAppInstancesCount() int {
 }
 
 // ServicesCount returns total count of registered services in the space
+//
 // Keep in mind, if a single service ends up creating more service instances
 // (or application instances) in a different space (e.g., Spring Cloud Data Flow, etc.)
-// that's a different count. This is only for services registered within a given space,
-// which means they'd show up in a `cf services` call
+// those aren't considered in this result. This only counts services registered which
+// show up in `cf services`
 func (space *Space) ServicesCount() int {
 	servicesCount := len(space.Services)
 	return servicesCount
