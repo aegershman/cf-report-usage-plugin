@@ -85,31 +85,31 @@ type Report struct {
 // AppInstancesCount returns the count of declared canonical app instances
 // regardless of start/stop state across all spaces within the org
 func (org *Org) AppInstancesCount() int {
-	instancesCount := 0
+	count := 0
 	for _, space := range org.Spaces {
-		instancesCount += space.AppInstancesCount()
+		count += space.AppInstancesCount()
 	}
-	return instancesCount
+	return count
 }
 
 // RunningAppsCount returns the count of unique canonical app
 // guids with at least 1 running app instance across all spaces within the org
 func (org *Org) RunningAppsCount() int {
-	instancesCount := 0
+	count := 0
 	for _, space := range org.Spaces {
-		instancesCount += space.RunningAppsCount()
+		count += space.RunningAppsCount()
 	}
-	return instancesCount
+	return count
 }
 
 // RunningAppInstancesCount returns the count of declared canonical app instances
 // which are actively running across all spaces within the org
 func (org *Org) RunningAppInstancesCount() int {
-	instancesCount := 0
+	count := 0
 	for _, space := range org.Spaces {
-		instancesCount += space.RunningAppInstancesCount()
+		count += space.RunningAppInstancesCount()
 	}
-	return instancesCount
+	return count
 }
 
 // AppsCount returns the count of unique canonical app guids
@@ -125,11 +125,11 @@ func (org *Org) RunningAppInstancesCount() int {
 //
 // TODO is this valuable? is this something that should be part of a Space type too?
 func (org *Org) AppsCount() int {
-	appsCount := 0
+	count := 0
 	for _, space := range org.Spaces {
-		appsCount += len(space.Apps)
+		count += len(space.Apps)
 	}
-	return appsCount
+	return count
 }
 
 // ServicesCount returns total count of registered services in all spaces of the org
@@ -139,21 +139,21 @@ func (org *Org) AppsCount() int {
 // those aren't considered in this result. This only counts services registered which
 // show up in `cf services`
 func (org *Org) ServicesCount() int {
-	servicesCount := 0
+	count := 0
 	for _, space := range org.Spaces {
-		servicesCount += len(space.Services)
+		count += len(space.Services)
 	}
-	return servicesCount
+	return count
 }
 
 // ConsumedMemory returns the amount of memory consumed by all
 // running canonical application instances within a space
 func (space *Space) ConsumedMemory() int {
-	consumedMemory := 0
+	count := 0
 	for _, app := range space.Apps {
-		consumedMemory += int(app.Actual * app.RAM)
+		count += int(app.Actual * app.RAM)
 	}
-	return consumedMemory
+	return count
 }
 
 // RunningAppsCount returns the count of unique canonical app
@@ -167,13 +167,13 @@ func (space *Space) ConsumedMemory() int {
 //
 // then you'd have "2 running apps"
 func (space *Space) RunningAppsCount() int {
-	runningAppsCount := 0
+	count := 0
 	for _, app := range space.Apps {
 		if app.Actual > 0 {
-			runningAppsCount++
+			count++
 		}
 	}
-	return runningAppsCount
+	return count
 }
 
 // AppInstancesCount returns the count of declared canonical app instances
@@ -187,11 +187,11 @@ func (space *Space) RunningAppsCount() int {
 //
 // then you'd have "5 app instances"
 func (space *Space) AppInstancesCount() int {
-	appInstancesCount := 0
+	count := 0
 	for _, app := range space.Apps {
-		appInstancesCount += int(app.Desire)
+		count += int(app.Desire)
 	}
-	return appInstancesCount
+	return count
 }
 
 // RunningAppInstancesCount returns the count of declared canonical app instances
@@ -205,11 +205,11 @@ func (space *Space) AppInstancesCount() int {
 //
 // then you'd have "4 running app instances"
 func (space *Space) RunningAppInstancesCount() int {
-	runningAppInstancesCount := 0
+	count := 0
 	for _, app := range space.Apps {
-		runningAppInstancesCount += int(app.Actual)
+		count += int(app.Actual)
 	}
-	return runningAppInstancesCount
+	return count
 }
 
 // ServicesCount returns total count of registered services in the space
@@ -219,8 +219,8 @@ func (space *Space) RunningAppInstancesCount() int {
 // those aren't considered in this result. This only counts services registered which
 // show up in `cf services`
 func (space *Space) ServicesCount() int {
-	servicesCount := len(space.Services)
-	return servicesCount
+	count := len(space.Services)
+	return count
 }
 
 // ServicesCountByServiceLabel returns the number of service instances
@@ -229,13 +229,13 @@ func (space *Space) ServicesCount() int {
 // Keep in mind, when we say "service label", we aren't talking about
 // metadata labels; this is the label property of the "service" object
 func (space *Space) ServicesCountByServiceLabel(serviceType string) int {
-	matchingServices := 0
+	count := 0
 	for _, service := range space.Services {
 		if strings.Contains(service.Label, serviceType) {
-			matchingServices++
+			count++
 		}
 	}
-	return matchingServices
+	return count
 }
 
 // Stats -
