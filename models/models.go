@@ -162,6 +162,21 @@ func (space *Space) ConsumedMemory() int {
 	return count
 }
 
+// AppsCount returns the count of unique canonical app guids
+// regardless of start/stop state
+//
+// for example, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "3 unique apps"
+func (space *Space) AppsCount() int {
+	count := len(space.Apps)
+	return count
+}
+
 // RunningAppsCount returns the count of unique canonical app
 // guids with at least 1 running app instance
 //
@@ -215,21 +230,6 @@ func (space *Space) RunningAppInstancesCount() int {
 	for _, app := range space.Apps {
 		count += int(app.Actual)
 	}
-	return count
-}
-
-// AppsCount returns the count of unique canonical app guids
-// regardless of start/stop state
-//
-// for example, if you have the following result from `cf apps`:
-//
-// hammerdb-test                   stopped           0/1
-// nodejs-web                      started           2/2
-// push-test-webhook-switchboard   started           2/2
-//
-// then you'd have "3 unique apps"
-func (space *Space) AppsCount() int {
-	count := len(space.Apps)
 	return count
 }
 
