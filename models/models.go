@@ -107,7 +107,7 @@ func (org *Org) RunningAppsCount() int {
 func (org *Org) RunningInstancesCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
-		instancesCount += space.RunningInstancesCount()
+		instancesCount += space.RunningAppInstancesCount()
 		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
 		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
 		instancesCount += SCSCount + (SCDFCount * 3)
@@ -183,7 +183,7 @@ func (space *Space) InstancesCount() int {
 	return instancesCount
 }
 
-// RunningInstancesCount returns the count of declared canonical app instances
+// RunningAppInstancesCount returns the count of declared canonical app instances
 // which are actively running
 //
 // for example, if you have the following result from `cf apps`:
@@ -193,12 +193,12 @@ func (space *Space) InstancesCount() int {
 // push-test-webhook-switchboard   started           2/2
 //
 // then you'd have "4 running app instances"
-func (space *Space) RunningInstancesCount() int {
-	runningInstancesCount := 0
+func (space *Space) RunningAppInstancesCount() int {
+	runningAppInstancesCount := 0
 	for _, app := range space.Apps {
-		runningInstancesCount += int(app.Actual)
+		runningAppInstancesCount += int(app.Actual)
 	}
-	return runningInstancesCount
+	return runningAppInstancesCount
 }
 
 // ServicesCount returns total count of registered services in the space
@@ -240,7 +240,7 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 		// with the existing logic before getting a chance to rework this
 		lAIs := space.InstancesCount()
 		lAIs += (SCSCount + (SCDFCount * 3))
-		rAIs := space.RunningInstancesCount()
+		rAIs := space.RunningAppInstancesCount()
 		rAIs += (SCSCount + (SCDFCount * 3))
 		sAIs := lAIs - rAIs
 		siCount := space.ServicesCount()
