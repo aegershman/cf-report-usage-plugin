@@ -325,6 +325,9 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 		runningAppInstancesCount := space.RunningAppInstancesCount()
 		stoppedAppInstancesCount := appInstancesCount - runningAppInstancesCount
 
+		billableAppInstancesCount := space.AppInstancesCount()
+		billableAppInstancesCount += space.SpringCloudServicesCount()
+
 		consumedMemory := space.ConsumedMemory()
 		servicesCount := space.ServicesCount()
 		billableServicesCount := servicesCount - space.SpringCloudServicesCount()
@@ -343,6 +346,7 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 			ServicesCount:                        servicesCount,
 			ConsumedMemory:                       consumedMemory,
 			ServicesSuiteForPivotalPlatformCount: servicesSuiteForPivotalPlatformCount,
+			BillableAppInstancesCount:            billableAppInstancesCount,
 			BillableServicesCount:                billableServicesCount,
 		}
 	}
@@ -388,7 +392,7 @@ func (report *Report) String() string {
 		orgOverviewMsg                = "Org %s is consuming %d MB of %d MB.\n"
 		spaceOverviewMsg              = "\tSpace %s is consuming %d MB memory (%d%%) of org quota.\n"
 		spaceCanonicalAppInstancesMsg = "\t\t%d canonical app instances\n"
-		spaceBillableAppInstancesMsg  = "\t\t%d billable app instances: %d running, %d stopped\n"
+		spaceBillableAppInstancesMsg  = "\t\t%d billable app instances (includes AIs and billable SIs, like SCS)\n"
 		spaceUniqueAppGuidsMsg        = "\t\t%d unique app_guids: %d running %d stopped\n"
 		spaceServiceSuiteMsg          = "\t\t%d service instances of type Service Suite (mysql, redis, rmq)\n"
 		reportSummaryMsg              = "[WARNING: THIS REPORT SUMMARY IS MISLEADING AND INCORRECT. IT WILL BE FIXED SOON.] You have deployed %d apps across %d org(s), with a total of %d app instances configured. You are currently running %d apps with %d app instances and using %d service instances of type Service Suite.\n"
@@ -412,8 +416,7 @@ func (report *Report) String() string {
 
 			response.WriteString(fmt.Sprintf(spaceCanonicalAppInstancesMsg, spaceState.AppInstancesCount))
 
-			response.WriteString(
-				fmt.Sprintf(spaceBillableAppInstancesMsg, spaceState.AppInstancesCount, spaceState.RunningAppInstancesCount, spaceState.StoppedAppInstancesCount))
+			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, spaceState.BillableAppInstancesCount))
 
 			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceState.AppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
 
