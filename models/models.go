@@ -281,7 +281,7 @@ func (space *Space) ServicesCountByServiceLabel(serviceType string) int {
 func (space *Space) ServicesSuiteForPivotalPlatformCount() int {
 	count := 0
 
-	count += space.ServicesCountByServiceLabel("p-dataflow-servers")
+	count += space.ServicesCountByServiceLabel("p-dataflow-servers") // TODO
 
 	count += space.ServicesCountByServiceLabel("p-mysql")
 	count += space.ServicesCountByServiceLabel("p.mysql")
@@ -296,11 +296,24 @@ func (space *Space) ServicesSuiteForPivotalPlatformCount() int {
 	return count
 }
 
+// SpringCloudServicesCount returns the number of service instances
+// from "spring cloud services" tile, e.g. config-server/service-registry/circuit-breaker/etc.
+//
+// see: https://network.pivotal.io/products/p-spring-cloud-services/
+//
+// TODO come back and figure out labeling more appropriately
+func (space *Space) SpringCloudServicesCount() int {
+	count := 0
+
+	count += space.ServicesCountByServiceLabel("p-spring-cloud-services")
+	count += space.ServicesCountByServiceLabel("scs-service-broker")
+
+	return count
+}
+
 // Stats -
 func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 	for _, space := range spaces {
-		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
-		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
 		totalUniqueApps := space.AppsCount()
 		runningUniqueApps := space.RunningAppsCount()
 		stoppedUniqueApps := totalUniqueApps - runningUniqueApps
@@ -311,15 +324,13 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 		// "lAIs" in this context is really "billableAIs", but I don't want to mess
 		// with the existing logic before getting a chance to rework this
 		lAIs := space.AppInstancesCount()
-		lAIs += (SCSCount + (SCDFCount * 3))
 		rAIs := space.RunningAppInstancesCount()
-		rAIs += (SCSCount + (SCDFCount * 3))
 		sAIs := lAIs - rAIs
 		consumedMemory := space.ConsumedMemory()
-		siCount := space.ServicesCount()
-		siCount -= (SCSCount + SCDFCount)
+		servicesCount := space.ServicesCount()
+		billableServicesCount := servicesCount - space.SpringCloudServicesCount()
 		if skipSIcount {
-			siCount = 0
+			servicesCount = 0
 		}
 		c <- SpaceStats{
 			Name:                                 space.Name,
@@ -330,9 +341,10 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 			DeployedAppInstancesCount:            lAIs,
 			RunningAppInstancesCount:             rAIs,
 			StoppedAppInstancesCount:             sAIs,
-			ServicesCount:                        siCount,
+			ServicesCount:                        servicesCount,
 			ConsumedMemory:                       consumedMemory,
 			ServicesSuiteForPivotalPlatformCount: servicesSuiteForPivotalPlatformCount,
+			BillableServicesCount:                billableServicesCount,
 		}
 	}
 	close(c)
