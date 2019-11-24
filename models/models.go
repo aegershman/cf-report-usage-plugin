@@ -38,16 +38,15 @@ type Service struct {
 // of Spaces; we can use it as a way to decorate
 // a Space with extra info like billableAIs, etc.
 type SpaceStats struct {
-	Name                       string
-	AppsCount                  int
-	RunningAppsCount           int
-	StoppedAppsCount           int
-	CanonicalAppInstancesCount int
-	AppInstancesCount          int
-	RunningAppInstancesCount   int
-	StoppedAppInstancesCount   int
-	ServicesCount              int // TODO misnomer
-	ConsumedMemory             int
+	Name                     string
+	AppsCount                int
+	RunningAppsCount         int
+	StoppedAppsCount         int
+	AppInstancesCount        int
+	RunningAppInstancesCount int
+	StoppedAppInstancesCount int
+	ServicesCount            int // TODO misnomer
+	ConsumedMemory           int
 
 	ServicesSuiteForPivotalPlatformCount int // TODO
 
@@ -319,9 +318,6 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 		runningUniqueApps := space.RunningAppsCount()
 		stoppedUniqueApps := totalUniqueApps - runningUniqueApps
 
-		// "canonical" appInstances are what we can use for setting a quota
-		canonicalAppInstances := space.AppInstancesCount()
-
 		// What _used_ to be reported as just "services"
 		servicesSuiteForPivotalPlatformCount := space.ServicesSuiteForPivotalPlatformCount()
 
@@ -341,7 +337,6 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 			AppsCount:                            totalUniqueApps,
 			RunningAppsCount:                     runningUniqueApps,
 			StoppedAppsCount:                     stoppedUniqueApps,
-			CanonicalAppInstancesCount:           canonicalAppInstances,
 			AppInstancesCount:                    appInstancesCount,
 			RunningAppInstancesCount:             runningAppInstancesCount,
 			StoppedAppInstancesCount:             stoppedAppInstancesCount,
@@ -415,7 +410,7 @@ func (report *Report) String() string {
 				response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceState.Name, spaceState.ConsumedMemory, spaceMemoryConsumedPercentage))
 			}
 
-			response.WriteString(fmt.Sprintf(spaceCanonicalAppInstancesMsg, spaceState.CanonicalAppInstancesCount))
+			response.WriteString(fmt.Sprintf(spaceCanonicalAppInstancesMsg, spaceState.AppInstancesCount))
 
 			response.WriteString(
 				fmt.Sprintf(spaceBillableAppInstancesMsg, spaceState.AppInstancesCount, spaceState.RunningAppInstancesCount, spaceState.StoppedAppInstancesCount))
