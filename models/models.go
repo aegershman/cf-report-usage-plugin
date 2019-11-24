@@ -401,6 +401,7 @@ func (report *Report) String() string {
 		spaceAppInstancesMsg         = "\t\t%d app instances: %d running %d stopped\n"
 		spaceBillableAppInstancesMsg = "\t\t%d billable app instances (includes AIs and billable SIs, like SCS)\n"
 		spaceUniqueAppGuidsMsg       = "\t\t%d unique app_guids: %d running %d stopped\n"
+		spaceServiceMsg              = "\t\t%d service instances total\n"
 		spaceServiceSuiteMsg         = "\t\t%d service instances of type Service Suite (mysql, redis, rmq)\n"
 		reportSummaryMsg             = "[WARNING: THIS REPORT SUMMARY IS MISLEADING AND INCORRECT. IT WILL BE FIXED SOON.] You have deployed %d apps across %d org(s), with a total of %d app instances configured. You are currently running %d apps with %d app instances and using %d service instances of type Service Suite.\n"
 	)
@@ -426,6 +427,8 @@ func (report *Report) String() string {
 			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, spaceState.BillableAppInstancesCount))
 
 			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceState.AppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
+
+			response.WriteString(fmt.Sprintf(spaceServiceMsg, spaceState.ServicesCount))
 
 			response.WriteString(fmt.Sprintf(spaceServiceSuiteMsg, spaceState.ServicesSuiteForPivotalPlatformCount))
 
