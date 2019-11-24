@@ -48,6 +48,10 @@ type SpaceStats struct {
 	StoppedAppInstancesCount   int
 	ServicesCount              int
 	ConsumedMemory             int
+
+	// includes anything which Pivotal deems "billable" as an AI, even if CF
+	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
+	BillableAppInstancesCount int
 }
 
 // OrgStats -
@@ -63,6 +67,10 @@ type OrgStats struct {
 	RunningAppInstancesCount  int
 	StoppedAppInstancesCount  int
 	ServicesCount             int
+
+	// includes anything which Pivotal deems "billable" as an AI, even if CF
+	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
+	BillableAppInstancesCount int
 }
 
 // Orgs -
