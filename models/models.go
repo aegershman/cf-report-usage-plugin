@@ -46,8 +46,14 @@ type SpaceStats struct {
 	DeployedAppInstancesCount  int
 	RunningAppInstancesCount   int
 	StoppedAppInstancesCount   int
-	ServicesCount              int
+	ServicesCount              int // TODO misnomer
 	ConsumedMemory             int
+
+	ServicesSuiteForPivotalPlatformCount int // TODO
+
+	// includes anything which Pivotal deems "billable" as an AI, even if CF
+	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
+	BillableAppInstancesCount int
 }
 
 // OrgStats -
@@ -63,6 +69,12 @@ type OrgStats struct {
 	RunningAppInstancesCount  int
 	StoppedAppInstancesCount  int
 	ServicesCount             int
+
+	ServicesSuiteForPivotalPlatformCount int // TODO
+
+	// includes anything which Pivotal deems "billable" as an AI, even if CF
+	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
+	BillableAppInstancesCount int
 }
 
 // Orgs -
@@ -82,130 +94,217 @@ type Report struct {
 	Orgs Orgs
 }
 
-// InstancesCount -
-func (org *Org) InstancesCount() int {
-	instancesCount := 0
+// AppInstancesCount returns the count of declared canonical app instances
+// regardless of start/stop state across all spaces within the org
+func (org *Org) AppInstancesCount() int {
+	count := 0
 	for _, space := range org.Spaces {
-		instancesCount += space.InstancesCount()
-		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
-		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
-		instancesCount += SCSCount + (SCDFCount * 3)
+		count += space.AppInstancesCount()
 	}
-	return instancesCount
+	return count
 }
 
-// RunningAppsCount -
+// RunningAppsCount returns the count of unique canonical app
+// guids with at least 1 running app instance across all spaces within the org
 func (org *Org) RunningAppsCount() int {
-	instancesCount := 0
+	count := 0
 	for _, space := range org.Spaces {
-		instancesCount += space.RunningAppsCount()
+		count += space.RunningAppsCount()
 	}
-	return instancesCount
+	return count
 }
 
-// RunningInstancesCount -
-func (org *Org) RunningInstancesCount() int {
-	instancesCount := 0
+// RunningAppInstancesCount returns the count of declared canonical app instances
+// which are actively running across all spaces within the org
+func (org *Org) RunningAppInstancesCount() int {
+	count := 0
 	for _, space := range org.Spaces {
-		instancesCount += space.RunningInstancesCount()
-		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
-		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
-		instancesCount += SCSCount + (SCDFCount * 3)
+		count += space.RunningAppInstancesCount()
 	}
-	return instancesCount
+	return count
 }
 
-// AppsCount -
+// AppsCount returns the count of unique canonical app guids
+// regardless of start/stop state across all spaces within the org
+//
+// for example, within a space, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "3 unique apps"
 func (org *Org) AppsCount() int {
-	appsCount := 0
+	count := 0
 	for _, space := range org.Spaces {
-		appsCount += len(space.Apps)
+		count += len(space.Apps)
 	}
-	return appsCount
+	return count
 }
 
-// ServicesCount -
+// ServicesCount returns total count of registered services in all spaces of the org
+//
+// Keep in mind, if a single service ends up creating more service instances
+// (or application instances) in a different space (e.g., Spring Cloud Data Flow, etc.)
+// those aren't considered in this result. This only counts services registered which
+// show up in `cf services`
 func (org *Org) ServicesCount() int {
-	servicesCount := 0
+	count := 0
 	for _, space := range org.Spaces {
-		servicesCount += len(space.Services)
-		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
-		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
-		servicesCount -= (SCSCount + SCDFCount)
+		count += len(space.Services)
 	}
-	return servicesCount
+	return count
 }
 
-// ConsumedMemory -
+// ConsumedMemory returns the amount of memory consumed by all
+// running canonical application instances within a space
 func (space *Space) ConsumedMemory() int {
-	consumed := 0
+	count := 0
 	for _, app := range space.Apps {
-		consumed += int(app.Actual * app.RAM)
+		count += int(app.Actual * app.RAM)
 	}
-	return consumed
+	return count
 }
 
-// RunningAppsCount -
+// AppsCount returns the count of unique canonical app guids
+// regardless of start/stop state
+//
+// for example, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "3 unique apps"
+func (space *Space) AppsCount() int {
+	count := len(space.Apps)
+	return count
+}
+
+// RunningAppsCount returns the count of unique canonical app
+// guids with at least 1 running app instance
+//
+// for example, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "2 running apps"
 func (space *Space) RunningAppsCount() int {
-	runningAppsCount := 0
+	count := 0
 	for _, app := range space.Apps {
 		if app.Actual > 0 {
-			runningAppsCount++
+			count++
 		}
 	}
-	return runningAppsCount
+	return count
 }
 
-// InstancesCount -
-func (space *Space) InstancesCount() int {
-	instancesCount := 0
+// AppInstancesCount returns the count of declared canonical app instances
+// regardless of start/stop state
+//
+// for example, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "5 app instances"
+func (space *Space) AppInstancesCount() int {
+	count := 0
 	for _, app := range space.Apps {
-		instancesCount += int(app.Desire)
+		count += int(app.Desire)
 	}
-	return instancesCount
+	return count
 }
 
-// RunningInstancesCount -
-func (space *Space) RunningInstancesCount() int {
-	runningInstancesCount := 0
+// RunningAppInstancesCount returns the count of declared canonical app instances
+// which are actively running
+//
+// for example, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "4 running app instances"
+func (space *Space) RunningAppInstancesCount() int {
+	count := 0
 	for _, app := range space.Apps {
-		runningInstancesCount += int(app.Actual)
+		count += int(app.Actual)
 	}
-	return runningInstancesCount
+	return count
 }
 
-// ServicesCount -
+// ServicesCount returns total count of registered services in the space
+//
+// Keep in mind, if a single service ends up creating more service instances
+// (or application instances) in a different space (e.g., Spring Cloud Data Flow, etc.)
+// those aren't considered in this result. This only counts services registered which
+// show up in `cf services`
 func (space *Space) ServicesCount() int {
-	servicesCount := len(space.Services)
-	return servicesCount
+	count := len(space.Services)
+	return count
 }
 
-// ServiceInstancesCount -
-func (space *Space) ServiceInstancesCount(serviceType string) int {
-	boundedServiceInstancesCount := 0
+// ServicesCountByServiceLabel returns the number of service instances
+// within a space which contain the provided service label.
+//
+// Keep in mind, when we say "service label", we aren't talking about
+// metadata labels; this is the label property of the "service" object
+func (space *Space) ServicesCountByServiceLabel(serviceType string) int {
+	count := 0
 	for _, service := range space.Services {
 		if strings.Contains(service.Label, serviceType) {
-			boundedServiceInstancesCount++
+			count++
 		}
 	}
-	return boundedServiceInstancesCount
+	return count
+}
+
+// ServicesSuiteForPivotalPlatformCount returns the number of service instances
+// part of the "services suite for pivotal platform", e.g. Pivotal's MySQL/Redis/RMQ
+//
+// see: https://network.pivotal.io/products/pcf-services
+// (I know right? It's an intense function name)
+//
+// TODO come back and figure out labeling more appropriately
+func (space *Space) ServicesSuiteForPivotalPlatformCount() int {
+	count := 0
+
+	count += space.ServicesCountByServiceLabel("p-dataflow-servers")
+
+	count += space.ServicesCountByServiceLabel("p-mysql")
+	count += space.ServicesCountByServiceLabel("p.mysql")
+	count += space.ServicesCountByServiceLabel("pivotal-mysql")
+
+	count += space.ServicesCountByServiceLabel("p-redis")
+	count += space.ServicesCountByServiceLabel("p.redis")
+
+	count += space.ServicesCountByServiceLabel("p-rabbitmq")
+	count += space.ServicesCountByServiceLabel("p.rabbitmq")
+
+	return count
 }
 
 // Stats -
 func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 	for _, space := range spaces {
-		SCSCount := space.ServiceInstancesCount("p-spring-cloud-services")
-		SCDFCount := space.ServiceInstancesCount("p-dataflow-servers")
-		lApps := len(space.Apps)
-		rApps := space.RunningAppsCount()
-		sApps := lApps - rApps
+		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
+		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
+		totalUniqueApps := space.AppsCount()
+		runningUniqueApps := space.RunningAppsCount()
+		stoppedUniqueApps := totalUniqueApps - runningUniqueApps
 		// "canonical" appInstances are what we can use for setting a quota
-		canonicalAppInstances := space.InstancesCount()
+		canonicalAppInstances := space.AppInstancesCount()
+		// What _used_ to be reported as just "services"
+		servicesSuiteForPivotalPlatformCount := space.ServicesSuiteForPivotalPlatformCount()
 		// "lAIs" in this context is really "billableAIs", but I don't want to mess
 		// with the existing logic before getting a chance to rework this
-		lAIs := space.InstancesCount()
+		lAIs := space.AppInstancesCount()
 		lAIs += (SCSCount + (SCDFCount * 3))
-		rAIs := space.RunningInstancesCount()
+		rAIs := space.RunningAppInstancesCount()
 		rAIs += (SCSCount + (SCDFCount * 3))
 		sAIs := lAIs - rAIs
 		siCount := space.ServicesCount()
@@ -215,16 +314,17 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 			siCount = 0
 		}
 		c <- SpaceStats{
-			Name:                       space.Name,
-			DeployedAppsCount:          lApps,
-			RunningAppsCount:           rApps,
-			StoppedAppsCount:           sApps,
-			CanonicalAppInstancesCount: canonicalAppInstances,
-			DeployedAppInstancesCount:  lAIs,
-			RunningAppInstancesCount:   rAIs,
-			StoppedAppInstancesCount:   sAIs,
-			ServicesCount:              siCount,
-			ConsumedMemory:             rAIConsumedMemory,
+			Name:                                 space.Name,
+			DeployedAppsCount:                    totalUniqueApps,
+			RunningAppsCount:                     runningUniqueApps,
+			StoppedAppsCount:                     stoppedUniqueApps,
+			CanonicalAppInstancesCount:           canonicalAppInstances,
+			DeployedAppInstancesCount:            lAIs,
+			RunningAppInstancesCount:             rAIs,
+			StoppedAppInstancesCount:             sAIs,
+			ServicesCount:                        siCount,
+			ConsumedMemory:                       rAIConsumedMemory,
+			ServicesSuiteForPivotalPlatformCount: servicesSuiteForPivotalPlatformCount,
 		}
 	}
 	close(c)
@@ -236,8 +336,8 @@ func (orgs Orgs) Stats(c chan OrgStats) {
 		lApps := org.AppsCount()
 		rApps := org.RunningAppsCount()
 		sApps := lApps - rApps
-		lAIs := org.InstancesCount()
-		rAIs := org.RunningInstancesCount()
+		lAIs := org.AppInstancesCount()
+		rAIs := org.RunningAppInstancesCount()
 		sAIs := lAIs - rAIs
 		c <- OrgStats{
 			Name:                      org.Name,
@@ -298,7 +398,7 @@ func (report *Report) String() string {
 
 			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceState.DeployedAppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
 
-			response.WriteString(fmt.Sprintf(spaceServiceSuiteMsg, spaceState.ServicesCount))
+			response.WriteString(fmt.Sprintf(spaceServiceSuiteMsg, spaceState.ServicesSuiteForPivotalPlatformCount))
 
 		}
 		totalApps += orgStats.DeployedAppsCount
