@@ -367,6 +367,8 @@ func (orgs Orgs) Stats(c chan OrgStats) {
 		runningAppInstancesCount := org.RunningAppInstancesCount()
 		stoppedAppInstancesCount := appInstancesCount - runningAppInstancesCount
 
+		servicesCount := org.ServicesCount()
+
 		c <- OrgStats{
 			Name:                     org.Name,
 			MemoryQuota:              org.MemoryQuota,
@@ -378,7 +380,7 @@ func (orgs Orgs) Stats(c chan OrgStats) {
 			AppInstancesCount:        appInstancesCount,
 			RunningAppInstancesCount: runningAppInstancesCount,
 			StoppedAppInstancesCount: stoppedAppInstancesCount,
-			ServicesCount:            org.ServicesCount(),
+			ServicesCount:            servicesCount,
 		}
 	}
 	close(c)
