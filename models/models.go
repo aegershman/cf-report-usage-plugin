@@ -130,8 +130,6 @@ func (org *Org) RunningAppInstancesCount() int {
 // push-test-webhook-switchboard   started           2/2
 //
 // then you'd have "3 unique apps"
-//
-// TODO is this valuable? is this something that should be part of a Space type too?
 func (org *Org) AppsCount() int {
 	count := 0
 	for _, space := range org.Spaces {
@@ -220,6 +218,21 @@ func (space *Space) RunningAppInstancesCount() int {
 	return count
 }
 
+// AppsCount returns the count of unique canonical app guids
+// regardless of start/stop state
+//
+// for example, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "3 unique apps"
+func (space *Space) AppsCount() int {
+	count := len(space.Apps)
+	return count
+}
+
 // ServicesCount returns total count of registered services in the space
 //
 // Keep in mind, if a single service ends up creating more service instances
@@ -251,7 +264,7 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 	for _, space := range spaces {
 		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
 		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
-		lApps := len(space.Apps)
+		lApps := space.AppsCount()
 		rApps := space.RunningAppsCount()
 		sApps := lApps - rApps
 		// "canonical" appInstances are what we can use for setting a quota
