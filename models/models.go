@@ -3,7 +3,6 @@ package models
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"strings"
 )
 
@@ -290,8 +289,6 @@ func (space *Space) ServicesSuiteForPivotalPlatformCount() int {
 
 	count += space.ServicesCountByServiceLabel("p-rabbitmq")
 	count += space.ServicesCountByServiceLabel("p.rabbitmq")
-
-	log.Println(count)
 
 	return count
 }
