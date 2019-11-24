@@ -94,7 +94,8 @@ func (org *Org) InstancesCount() int {
 	return instancesCount
 }
 
-// RunningAppsCount -
+// RunningAppsCount returns the count of unique canonical app
+// guids with at least 1 running app instance across all spaces within the org
 func (org *Org) RunningAppsCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
@@ -103,14 +104,12 @@ func (org *Org) RunningAppsCount() int {
 	return instancesCount
 }
 
-// RunningInstancesCount -
-func (org *Org) RunningInstancesCount() int {
+// RunningAppInstancesCount returns the count of declared canonical app instances
+// which are actively running across all spaces within the org
+func (org *Org) RunningAppInstancesCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
 		instancesCount += space.RunningAppInstancesCount()
-		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
-		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
-		instancesCount += SCSCount + (SCDFCount * 3)
 	}
 	return instancesCount
 }
@@ -286,7 +285,7 @@ func (orgs Orgs) Stats(c chan OrgStats) {
 		rApps := org.RunningAppsCount()
 		sApps := lApps - rApps
 		lAIs := org.InstancesCount()
-		rAIs := org.RunningInstancesCount()
+		rAIs := org.RunningAppInstancesCount()
 		sAIs := lAIs - rAIs
 		c <- OrgStats{
 			Name:                      org.Name,
