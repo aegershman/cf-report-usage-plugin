@@ -363,9 +363,10 @@ func (orgs Orgs) Stats(c chan OrgStats) {
 		runningUniqueApps := org.RunningAppsCount()
 		stoppedUniqueApps := totalUniqueApps - runningUniqueApps
 
-		lAIs := org.AppInstancesCount()
-		rAIs := org.RunningAppInstancesCount()
-		sAIs := lAIs - rAIs
+		appInstancesCount := org.AppInstancesCount()
+		runningAppInstancesCount := org.RunningAppInstancesCount()
+		stoppedAppInstancesCount := appInstancesCount - runningAppInstancesCount
+
 		c <- OrgStats{
 			Name:                     org.Name,
 			MemoryQuota:              org.MemoryQuota,
@@ -374,9 +375,9 @@ func (orgs Orgs) Stats(c chan OrgStats) {
 			AppsCount:                totalUniqueApps,
 			RunningAppsCount:         runningUniqueApps,
 			StoppedAppsCount:         stoppedUniqueApps,
-			AppInstancesCount:        lAIs,
-			RunningAppInstancesCount: rAIs,
-			StoppedAppInstancesCount: sAIs,
+			AppInstancesCount:        appInstancesCount,
+			RunningAppInstancesCount: runningAppInstancesCount,
+			StoppedAppInstancesCount: stoppedAppInstancesCount,
 			ServicesCount:            org.ServicesCount(),
 		}
 	}
