@@ -174,7 +174,11 @@ func (space *Space) RunningInstancesCount() int {
 	return runningInstancesCount
 }
 
-// ServicesCount -
+// ServicesCount returns total count of registered services in the space
+// Keep in mind, if a single service ends up creating more service instances
+// (or application instances) in a different space (e.g., Spring Cloud Data Flow, etc.)
+// that's a different count. This is only for services registered within a given space,
+// which means they'd show up in a `cf services` call
 func (space *Space) ServicesCount() int {
 	servicesCount := len(space.Services)
 	return servicesCount
