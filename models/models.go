@@ -248,6 +248,21 @@ func (space *Space) ServicesCount() int {
 	return count
 }
 
+// ServicesCountByServiceLabel returns the number of service instances
+// within a space which contain the provided service label.
+//
+// Keep in mind, when we say "service label", we aren't talking about
+// metadata labels; this is the label property of the "service" object
+func (space *Space) ServicesCountByServiceLabel(serviceType string) int {
+	count := 0
+	for _, service := range space.Services {
+		if strings.Contains(service.Label, serviceType) {
+			count++
+		}
+	}
+	return count
+}
+
 // ServicesSuiteForPivotalPlatformCount returns the number of service instances
 // part of the "services suite for pivotal platform", e.g. Pivotal's MySQL/Redis/RMQ
 //
@@ -269,21 +284,6 @@ func (space *Space) ServicesSuiteForPivotalPlatformCount() int {
 	count += space.ServicesCountByServiceLabel("p-rabbitmq")
 	count += space.ServicesCountByServiceLabel("p.rabbitmq")
 
-	return count
-}
-
-// ServicesCountByServiceLabel returns the number of service instances
-// within a space which contain the provided service label.
-//
-// Keep in mind, when we say "service label", we aren't talking about
-// metadata labels; this is the label property of the "service" object
-func (space *Space) ServicesCountByServiceLabel(serviceType string) int {
-	count := 0
-	for _, service := range space.Services {
-		if strings.Contains(service.Label, serviceType) {
-			count++
-		}
-	}
 	return count
 }
 
