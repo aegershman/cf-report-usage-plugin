@@ -125,6 +125,8 @@ func (org *Org) RunningInstancesCount() int {
 // push-test-webhook-switchboard   started           2/2
 //
 // then you'd have "3 unique apps"
+//
+// TODO is this valuable? is this something that should be part of a Space type too?
 func (org *Org) AppsCount() int {
 	appsCount := 0
 	for _, space := range org.Spaces {
