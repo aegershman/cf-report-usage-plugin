@@ -24,4 +24,5 @@ So we know the two scs-service-broker's got added.
 
 ```txt
 cf curl '/v2/spaces/4ba83909-cde1-448e-873f-d53b27391604/summary'
+cf curl '/v2/organizations/a297887a-f58f-4266-9ba2-186563eec13a/summary'
 ```
