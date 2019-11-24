@@ -358,9 +358,11 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 // Stats -
 func (orgs Orgs) Stats(c chan OrgStats) {
 	for _, org := range orgs {
-		lApps := org.AppsCount()
-		rApps := org.RunningAppsCount()
-		sApps := lApps - rApps
+
+		totalUniqueApps := org.AppsCount()
+		runningUniqueApps := org.RunningAppsCount()
+		stoppedUniqueApps := totalUniqueApps - runningUniqueApps
+
 		lAIs := org.AppInstancesCount()
 		rAIs := org.RunningAppInstancesCount()
 		sAIs := lAIs - rAIs
@@ -369,9 +371,9 @@ func (orgs Orgs) Stats(c chan OrgStats) {
 			MemoryQuota:              org.MemoryQuota,
 			MemoryUsage:              org.MemoryUsage,
 			Spaces:                   org.Spaces,
-			AppsCount:                lApps,
-			RunningAppsCount:         rApps,
-			StoppedAppsCount:         sApps,
+			AppsCount:                totalUniqueApps,
+			RunningAppsCount:         runningUniqueApps,
+			StoppedAppsCount:         stoppedUniqueApps,
 			AppInstancesCount:        lAIs,
 			RunningAppInstancesCount: rAIs,
 			StoppedAppInstancesCount: sAIs,
