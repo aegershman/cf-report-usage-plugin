@@ -6,13 +6,24 @@ import (
 	"strings"
 )
 
-// Org -
-type Org struct {
-	Name        string
-	MemoryQuota int
-	MemoryUsage int
-	Spaces      Spaces
+// App -
+type App struct {
+	Actual int
+	Desire int
+	RAM    int
 }
+
+// Apps -
+type Apps []App
+
+// Service -
+type Service struct {
+	Label       string
+	ServicePlan string
+}
+
+// Services -
+type Services []Service
 
 // Space -
 type Space struct {
@@ -21,17 +32,23 @@ type Space struct {
 	Services Services
 }
 
-// App -
-type App struct {
-	Actual int
-	Desire int
-	RAM    int
+// Spaces -
+type Spaces []Space
+
+// Org -
+type Org struct {
+	Name        string
+	MemoryQuota int
+	MemoryUsage int
+	Spaces      Spaces
 }
 
-// Service -
-type Service struct {
-	Label       string
-	ServicePlan string
+// Orgs -
+type Orgs []Org
+
+// Report -
+type Report struct {
+	Orgs Orgs
 }
 
 // SpaceStats is a way to represent the 'business logic'
@@ -82,23 +99,6 @@ type OrgStats struct {
 	// count of anything which Pivotal deems "billable" as an SI; this might mean
 	// subtracting certain services (like SCS) from the count of `cf services`
 	BillableServicesCount int
-}
-
-// Orgs -
-type Orgs []Org
-
-// Spaces -
-type Spaces []Space
-
-// Apps -
-type Apps []App
-
-// Services -
-type Services []Service
-
-// Report -
-type Report struct {
-	Orgs Orgs
 }
 
 // AppInstancesCount returns the count of declared canonical app instances
