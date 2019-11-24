@@ -276,6 +276,7 @@ func (space *Space) ServicesSuiteForPivotalPlatformCount() int {
 	count += space.ServicesCountByServiceLabel("p-dataflow-servers")
 
 	count += space.ServicesCountByServiceLabel("p-mysql")
+	count += space.ServicesCountByServiceLabel("p.mysql")
 	count += space.ServicesCountByServiceLabel("pivotal-mysql")
 
 	count += space.ServicesCountByServiceLabel("p-redis")
