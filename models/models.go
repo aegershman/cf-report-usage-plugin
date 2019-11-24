@@ -146,13 +146,14 @@ func (org *Org) ServicesCount() int {
 	return servicesCount
 }
 
-// ConsumedMemory -
+// ConsumedMemory returns the amount of memory consumed by all
+// running canonical application instances within a space
 func (space *Space) ConsumedMemory() int {
-	consumed := 0
+	consumedMemory := 0
 	for _, app := range space.Apps {
-		consumed += int(app.Actual * app.RAM)
+		consumedMemory += int(app.Actual * app.RAM)
 	}
-	return consumed
+	return consumedMemory
 }
 
 // RunningAppsCount returns the count of unique canonical app
