@@ -297,6 +297,8 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 		stoppedUniqueApps := totalUniqueApps - runningUniqueApps
 		// "canonical" appInstances are what we can use for setting a quota
 		canonicalAppInstances := space.AppInstancesCount()
+		// What _used_ to be reported as just "services"
+		servicesSuiteForPivotalPlatformCount := space.ServicesSuiteForPivotalPlatformCount()
 		// "lAIs" in this context is really "billableAIs", but I don't want to mess
 		// with the existing logic before getting a chance to rework this
 		lAIs := space.AppInstancesCount()
@@ -311,16 +313,17 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 			siCount = 0
 		}
 		c <- SpaceStats{
-			Name:                       space.Name,
-			DeployedAppsCount:          totalUniqueApps,
-			RunningAppsCount:           runningUniqueApps,
-			StoppedAppsCount:           stoppedUniqueApps,
-			CanonicalAppInstancesCount: canonicalAppInstances,
-			DeployedAppInstancesCount:  lAIs,
-			RunningAppInstancesCount:   rAIs,
-			StoppedAppInstancesCount:   sAIs,
-			ServicesCount:              siCount,
-			ConsumedMemory:             rAIConsumedMemory,
+			Name:                                 space.Name,
+			DeployedAppsCount:                    totalUniqueApps,
+			RunningAppsCount:                     runningUniqueApps,
+			StoppedAppsCount:                     stoppedUniqueApps,
+			CanonicalAppInstancesCount:           canonicalAppInstances,
+			DeployedAppInstancesCount:            lAIs,
+			RunningAppInstancesCount:             rAIs,
+			StoppedAppInstancesCount:             sAIs,
+			ServicesCount:                        siCount,
+			ConsumedMemory:                       rAIConsumedMemory,
+			ServicesSuiteForPivotalPlatformCount: servicesSuiteForPivotalPlatformCount,
 		}
 	}
 	close(c)
@@ -394,7 +397,7 @@ func (report *Report) String() string {
 
 			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceState.DeployedAppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
 
-			response.WriteString(fmt.Sprintf(spaceServiceSuiteMsg, spaceState.ServicesCount))
+			response.WriteString(fmt.Sprintf(spaceServiceSuiteMsg, spaceState.ServicesSuiteForPivotalPlatformCount))
 
 		}
 		totalApps += orgStats.DeployedAppsCount
