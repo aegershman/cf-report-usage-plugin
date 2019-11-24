@@ -38,43 +38,50 @@ type Service struct {
 // of Spaces; we can use it as a way to decorate
 // a Space with extra info like billableAIs, etc.
 type SpaceStats struct {
-	Name                       string
-	DeployedAppsCount          int
-	RunningAppsCount           int
-	StoppedAppsCount           int
-	CanonicalAppInstancesCount int
-	DeployedAppInstancesCount  int
-	RunningAppInstancesCount   int
-	StoppedAppInstancesCount   int
-	ServicesCount              int // TODO misnomer
-	ConsumedMemory             int
+	Name                     string
+	AppsCount                int
+	RunningAppsCount         int
+	StoppedAppsCount         int
+	AppInstancesCount        int
+	RunningAppInstancesCount int
+	StoppedAppInstancesCount int
+	ServicesCount            int // TODO misnomer
+	ConsumedMemory           int
 
 	ServicesSuiteForPivotalPlatformCount int // TODO
 
 	// includes anything which Pivotal deems "billable" as an AI, even if CF
 	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
 	BillableAppInstancesCount int
+
+	// count of anything which Pivotal deems "billable" as an SI; this might mean
+	// subtracting certain services (like SCS) from the count of `cf services`
+	BillableServicesCount int
 }
 
 // OrgStats -
 type OrgStats struct {
-	Name                      string
-	MemoryQuota               int
-	MemoryUsage               int
-	Spaces                    Spaces
-	DeployedAppsCount         int
-	RunningAppsCount          int
-	StoppedAppsCount          int
-	DeployedAppInstancesCount int
-	RunningAppInstancesCount  int
-	StoppedAppInstancesCount  int
-	ServicesCount             int
+	Name                     string
+	MemoryQuota              int
+	MemoryUsage              int
+	Spaces                   Spaces
+	AppsCount                int
+	RunningAppsCount         int
+	StoppedAppsCount         int
+	AppInstancesCount        int
+	RunningAppInstancesCount int
+	StoppedAppInstancesCount int
+	ServicesCount            int
 
 	ServicesSuiteForPivotalPlatformCount int // TODO
 
 	// includes anything which Pivotal deems "billable" as an AI, even if CF
 	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
 	BillableAppInstancesCount int
+
+	// count of anything which Pivotal deems "billable" as an SI; this might mean
+	// subtracting certain services (like SCS) from the count of `cf services`
+	BillableServicesCount int
 }
 
 // Orgs -
@@ -268,12 +275,10 @@ func (space *Space) ServicesCountByServiceLabel(serviceType string) int {
 //
 // see: https://network.pivotal.io/products/pcf-services
 // (I know right? It's an intense function name)
-//
-// TODO come back and figure out labeling more appropriately
 func (space *Space) ServicesSuiteForPivotalPlatformCount() int {
 	count := 0
 
-	count += space.ServicesCountByServiceLabel("p-dataflow-servers")
+	count += space.ServicesCountByServiceLabel("p-dataflow-servers") // TODO
 
 	count += space.ServicesCountByServiceLabel("p-mysql")
 	count += space.ServicesCountByServiceLabel("p.mysql")
@@ -288,43 +293,63 @@ func (space *Space) ServicesSuiteForPivotalPlatformCount() int {
 	return count
 }
 
+// SpringCloudServicesCount returns the number of service instances
+// from "spring cloud services" tile, e.g. config-server/service-registry/circuit-breaker/etc.
+//
+// see: https://network.pivotal.io/products/p-spring-cloud-services/
+func (space *Space) SpringCloudServicesCount() int {
+	count := 0
+
+	// scs 2.x
+	count += space.ServicesCountByServiceLabel("p-config-server")
+	count += space.ServicesCountByServiceLabel("p-service-registry")
+	count += space.ServicesCountByServiceLabel("p-circuit-breaker")
+
+	// scs 3.x
+	count += space.ServicesCountByServiceLabel("p.config-server")
+	count += space.ServicesCountByServiceLabel("p.service-registry")
+
+	return count
+}
+
 // Stats -
 func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 	for _, space := range spaces {
-		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
-		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
+
 		totalUniqueApps := space.AppsCount()
 		runningUniqueApps := space.RunningAppsCount()
 		stoppedUniqueApps := totalUniqueApps - runningUniqueApps
-		// "canonical" appInstances are what we can use for setting a quota
-		canonicalAppInstances := space.AppInstancesCount()
+
 		// What _used_ to be reported as just "services"
 		servicesSuiteForPivotalPlatformCount := space.ServicesSuiteForPivotalPlatformCount()
-		// "lAIs" in this context is really "billableAIs", but I don't want to mess
-		// with the existing logic before getting a chance to rework this
-		lAIs := space.AppInstancesCount()
-		lAIs += (SCSCount + (SCDFCount * 3))
-		rAIs := space.RunningAppInstancesCount()
-		rAIs += (SCSCount + (SCDFCount * 3))
-		sAIs := lAIs - rAIs
-		siCount := space.ServicesCount()
-		siCount -= (SCSCount + SCDFCount)
-		rAIConsumedMemory := (space.ConsumedMemory() + (SCSCount * 1024) + (SCDFCount * 3 * 1024))
+
+		appInstancesCount := space.AppInstancesCount()
+		runningAppInstancesCount := space.RunningAppInstancesCount()
+		stoppedAppInstancesCount := appInstancesCount - runningAppInstancesCount
+
+		billableAppInstancesCount := space.AppInstancesCount()
+		billableAppInstancesCount += space.SpringCloudServicesCount()
+
+		consumedMemory := space.ConsumedMemory()
+		servicesCount := space.ServicesCount()
+		billableServicesCount := servicesCount - space.SpringCloudServicesCount()
 		if skipSIcount {
-			siCount = 0
+			servicesCount = 0
 		}
+
 		c <- SpaceStats{
 			Name:                                 space.Name,
-			DeployedAppsCount:                    totalUniqueApps,
+			AppsCount:                            totalUniqueApps,
 			RunningAppsCount:                     runningUniqueApps,
 			StoppedAppsCount:                     stoppedUniqueApps,
-			CanonicalAppInstancesCount:           canonicalAppInstances,
-			DeployedAppInstancesCount:            lAIs,
-			RunningAppInstancesCount:             rAIs,
-			StoppedAppInstancesCount:             sAIs,
-			ServicesCount:                        siCount,
-			ConsumedMemory:                       rAIConsumedMemory,
+			AppInstancesCount:                    appInstancesCount,
+			RunningAppInstancesCount:             runningAppInstancesCount,
+			StoppedAppInstancesCount:             stoppedAppInstancesCount,
+			ServicesCount:                        servicesCount,
+			ConsumedMemory:                       consumedMemory,
 			ServicesSuiteForPivotalPlatformCount: servicesSuiteForPivotalPlatformCount,
+			BillableAppInstancesCount:            billableAppInstancesCount,
+			BillableServicesCount:                billableServicesCount,
 		}
 	}
 	close(c)
@@ -333,24 +358,26 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 // Stats -
 func (orgs Orgs) Stats(c chan OrgStats) {
 	for _, org := range orgs {
-		lApps := org.AppsCount()
-		rApps := org.RunningAppsCount()
-		sApps := lApps - rApps
+
+		totalUniqueApps := org.AppsCount()
+		runningUniqueApps := org.RunningAppsCount()
+		stoppedUniqueApps := totalUniqueApps - runningUniqueApps
+
 		lAIs := org.AppInstancesCount()
 		rAIs := org.RunningAppInstancesCount()
 		sAIs := lAIs - rAIs
 		c <- OrgStats{
-			Name:                      org.Name,
-			MemoryQuota:               org.MemoryQuota,
-			MemoryUsage:               org.MemoryUsage,
-			Spaces:                    org.Spaces,
-			DeployedAppsCount:         lApps,
-			RunningAppsCount:          rApps,
-			StoppedAppsCount:          sApps,
-			DeployedAppInstancesCount: lAIs,
-			RunningAppInstancesCount:  rAIs,
-			StoppedAppInstancesCount:  sAIs,
-			ServicesCount:             org.ServicesCount(),
+			Name:                     org.Name,
+			MemoryQuota:              org.MemoryQuota,
+			MemoryUsage:              org.MemoryUsage,
+			Spaces:                   org.Spaces,
+			AppsCount:                totalUniqueApps,
+			RunningAppsCount:         runningUniqueApps,
+			StoppedAppsCount:         stoppedUniqueApps,
+			AppInstancesCount:        lAIs,
+			RunningAppInstancesCount: rAIs,
+			StoppedAppInstancesCount: sAIs,
+			ServicesCount:            org.ServicesCount(),
 		}
 	}
 	close(c)
@@ -369,7 +396,7 @@ func (report *Report) String() string {
 		orgOverviewMsg                = "Org %s is consuming %d MB of %d MB.\n"
 		spaceOverviewMsg              = "\tSpace %s is consuming %d MB memory (%d%%) of org quota.\n"
 		spaceCanonicalAppInstancesMsg = "\t\t%d canonical app instances\n"
-		spaceBillableAppInstancesMsg  = "\t\t%d billable app instances: %d running, %d stopped\n"
+		spaceBillableAppInstancesMsg  = "\t\t%d billable app instances (includes AIs and billable SIs, like SCS)\n"
 		spaceUniqueAppGuidsMsg        = "\t\t%d unique app_guids: %d running %d stopped\n"
 		spaceServiceSuiteMsg          = "\t\t%d service instances of type Service Suite (mysql, redis, rmq)\n"
 		reportSummaryMsg              = "[WARNING: THIS REPORT SUMMARY IS MISLEADING AND INCORRECT. IT WILL BE FIXED SOON.] You have deployed %d apps across %d org(s), with a total of %d app instances configured. You are currently running %d apps with %d app instances and using %d service instances of type Service Suite.\n"
@@ -391,18 +418,17 @@ func (report *Report) String() string {
 				response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceState.Name, spaceState.ConsumedMemory, spaceMemoryConsumedPercentage))
 			}
 
-			response.WriteString(fmt.Sprintf(spaceCanonicalAppInstancesMsg, spaceState.CanonicalAppInstancesCount))
+			response.WriteString(fmt.Sprintf(spaceCanonicalAppInstancesMsg, spaceState.AppInstancesCount))
 
-			response.WriteString(
-				fmt.Sprintf(spaceBillableAppInstancesMsg, spaceState.DeployedAppInstancesCount, spaceState.RunningAppInstancesCount, spaceState.StoppedAppInstancesCount))
+			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, spaceState.BillableAppInstancesCount))
 
-			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceState.DeployedAppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
+			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceState.AppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
 
 			response.WriteString(fmt.Sprintf(spaceServiceSuiteMsg, spaceState.ServicesSuiteForPivotalPlatformCount))
 
 		}
-		totalApps += orgStats.DeployedAppsCount
-		totalInstances += orgStats.DeployedAppInstancesCount
+		totalApps += orgStats.AppsCount
+		totalInstances += orgStats.AppInstancesCount
 		totalRunningApps += orgStats.RunningAppsCount
 		totalRunningInstances += orgStats.RunningAppInstancesCount
 		totalServiceInstances += orgStats.ServicesCount
