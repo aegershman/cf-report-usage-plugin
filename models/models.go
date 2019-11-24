@@ -86,7 +86,7 @@ type Report struct {
 func (org *Org) InstancesCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
-		instancesCount += space.InstancesCount()
+		instancesCount += space.AppInstancesCount()
 		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
 		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
 		instancesCount += SCSCount + (SCDFCount * 3)
@@ -165,7 +165,7 @@ func (space *Space) RunningAppsCount() int {
 	return runningAppsCount
 }
 
-// InstancesCount returns the count of declared canonical app instances
+// AppInstancesCount returns the count of declared canonical app instances
 // regardless of start/stop state
 //
 // for example, if you have the following result from `cf apps`:
@@ -175,12 +175,12 @@ func (space *Space) RunningAppsCount() int {
 // push-test-webhook-switchboard   started           2/2
 //
 // then you'd have "5 app instances"
-func (space *Space) InstancesCount() int {
-	instancesCount := 0
+func (space *Space) AppInstancesCount() int {
+	appInstancesCount := 0
 	for _, app := range space.Apps {
-		instancesCount += int(app.Desire)
+		appInstancesCount += int(app.Desire)
 	}
-	return instancesCount
+	return appInstancesCount
 }
 
 // RunningAppInstancesCount returns the count of declared canonical app instances
@@ -235,10 +235,10 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 		rApps := space.RunningAppsCount()
 		sApps := lApps - rApps
 		// "canonical" appInstances are what we can use for setting a quota
-		canonicalAppInstances := space.InstancesCount()
+		canonicalAppInstances := space.AppInstancesCount()
 		// "lAIs" in this context is really "billableAIs", but I don't want to mess
 		// with the existing logic before getting a chance to rework this
-		lAIs := space.InstancesCount()
+		lAIs := space.AppInstancesCount()
 		lAIs += (SCSCount + (SCDFCount * 3))
 		rAIs := space.RunningAppInstancesCount()
 		rAIs += (SCSCount + (SCDFCount * 3))
