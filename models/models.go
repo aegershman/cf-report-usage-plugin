@@ -82,14 +82,12 @@ type Report struct {
 	Orgs Orgs
 }
 
-// InstancesCount -
-func (org *Org) InstancesCount() int {
+// AppInstancesCount returns the count of declared canonical app instances
+// regardless of start/stop state across all spaces within the org
+func (org *Org) AppInstancesCount() int {
 	instancesCount := 0
 	for _, space := range org.Spaces {
 		instancesCount += space.AppInstancesCount()
-		SCSCount := space.ServicesCountByServiceLabel("p-spring-cloud-services")
-		SCDFCount := space.ServicesCountByServiceLabel("p-dataflow-servers")
-		instancesCount += SCSCount + (SCDFCount * 3)
 	}
 	return instancesCount
 }
@@ -284,7 +282,7 @@ func (orgs Orgs) Stats(c chan OrgStats) {
 		lApps := org.AppsCount()
 		rApps := org.RunningAppsCount()
 		sApps := lApps - rApps
-		lAIs := org.InstancesCount()
+		lAIs := org.AppInstancesCount()
 		rAIs := org.RunningAppInstancesCount()
 		sAIs := lAIs - rAIs
 		c <- OrgStats{
