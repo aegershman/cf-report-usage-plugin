@@ -145,7 +145,16 @@ func (space *Space) ConsumedMemory() int {
 	return consumed
 }
 
-// RunningAppsCount -
+// RunningAppsCount returns the count of unique canonical app
+// guids with at least 1 running app instance
+//
+// for example, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "2 running apps"
 func (space *Space) RunningAppsCount() int {
 	runningAppsCount := 0
 	for _, app := range space.Apps {
@@ -156,7 +165,16 @@ func (space *Space) RunningAppsCount() int {
 	return runningAppsCount
 }
 
-// InstancesCount -
+// InstancesCount returns the count of declared canonical app instances
+// regardless of start/stop state
+//
+// for example, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "5 app instances"
 func (space *Space) InstancesCount() int {
 	instancesCount := 0
 	for _, app := range space.Apps {
@@ -165,7 +183,16 @@ func (space *Space) InstancesCount() int {
 	return instancesCount
 }
 
-// RunningInstancesCount -
+// RunningInstancesCount returns the count of declared canonical app instances
+// which are actively running
+//
+// for example, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "4 running app instances"
 func (space *Space) RunningInstancesCount() int {
 	runningInstancesCount := 0
 	for _, app := range space.Apps {
