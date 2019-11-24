@@ -1,0 +1,194 @@
+{
+  "guid": "4ba83909-cde1-448e-873f-d53b27391604",
+  "name": "dev",
+  "apps": [
+    {
+      "guid": "11dcca25-c34d-4334-a61c-2edf2275d032",
+      "urls": [],
+      "routes": [],
+      "service_count": 0,
+      "service_names": [],
+      "running_instances": 2,
+      "name": "golang-sputnik",
+      "production": false,
+      "space_guid": "4ba83909-cde1-448e-873f-d53b27391604",
+      "stack_guid": "841d2f2c-c9c7-47f5-9b63-0f1dd1ef280f",
+      "buildpack": "go_buildpack",
+      "detected_buildpack": "go",
+      "detected_buildpack_guid": "7b670acb-d586-4147-bc6f-02dc1b161b34",
+      "environment_json": {
+        "BEEP_RATE": "5000",
+        "CUSTOM_MESSAGE": "",
+        "GOPACKAGENAME": "main"
+      },
+      "memory": 12,
+      "instances": 2,
+      "disk_quota": 1024,
+      "state": "STARTED",
+      "version": "aefb3747-8804-40b8-8162-118ba0ad98fe",
+      "command": null,
+      "console": false,
+      "debug": null,
+      "staging_task_id": "13f46035-1ccf-4aef-ac64-2909134bd552",
+      "package_state": "STAGED",
+      "health_check_type": "process",
+      "health_check_timeout": null,
+      "health_check_http_endpoint": "",
+      "staging_failed_reason": null,
+      "staging_failed_description": null,
+      "diego": true,
+      "docker_image": null,
+      "package_updated_at": "2019-11-24T18:52:32Z",
+      "detected_start_command": "./bin/main",
+      "enable_ssh": true,
+      "ports": null
+    }
+  ],
+  "services": [
+    {
+      "guid": "c1eac4dc-26d7-4078-b8c0-181664941c2b",
+      "name": "circuit-breaker",
+      "bound_app_count": 0,
+      "type": "managed_service_instance",
+      "last_operation": {
+        "type": "create",
+        "state": "succeeded",
+        "description": "",
+        "updated_at": "2019-11-24T18:53:12Z",
+        "created_at": "2019-11-24T18:50:05Z"
+      },
+      "dashboard_url": "https://spring-cloud-service-broker.cfapps.io/dashboard/p-circuit-breaker-dashboard/c1eac4dc-26d7-4078-b8c0-181664941c2b",
+      "shared_from": null,
+      "shared_to": [],
+      "service_broker_name": "p-spring-cloud-services",
+      "maintenance_info": {},
+      "service_plan": {
+        "guid": "22538102-ea0c-45d6-af14-623546b16116",
+        "name": "trial",
+        "maintenance_info": {},
+        "service": {
+          "guid": "120c9e32-463e-4132-89b1-2af5c7a93f64",
+          "label": "p-circuit-breaker-dashboard",
+          "provider": null,
+          "version": null
+        }
+      }
+    },
+    {
+      "guid": "21e9444d-3407-4604-a54e-4c2538cb621e",
+      "name": "config-server",
+      "bound_app_count": 0,
+      "type": "managed_service_instance",
+      "last_operation": {
+        "type": "create",
+        "state": "succeeded",
+        "description": "",
+        "updated_at": "2019-11-24T18:52:20Z",
+        "created_at": "2019-11-24T18:50:15Z"
+      },
+      "dashboard_url": "https://spring-cloud-service-broker.cfapps.io/dashboard/p-config-server/21e9444d-3407-4604-a54e-4c2538cb621e",
+      "shared_from": null,
+      "shared_to": [],
+      "service_broker_name": "p-spring-cloud-services",
+      "maintenance_info": {},
+      "service_plan": {
+        "guid": "314d0bb1-d0ad-4765-80e4-4d8f27350cd0",
+        "name": "trial",
+        "maintenance_info": {},
+        "service": {
+          "guid": "07ce7df4-66c4-4b55-87cf-a183fb371b65",
+          "label": "p-config-server",
+          "provider": null,
+          "version": null
+        }
+      }
+    },
+    {
+      "guid": "aa7e5ce5-04ac-48ab-a48a-7005b765842b",
+      "name": "redis-cloud",
+      "bound_app_count": 0,
+      "type": "managed_service_instance",
+      "last_operation": {
+        "type": "create",
+        "state": "succeeded",
+        "description": "",
+        "updated_at": "2019-11-24T18:51:18Z",
+        "created_at": "2019-11-24T18:51:18Z"
+      },
+      "dashboard_url": "https://cloudfoundry.appdirect.com/api/custom/cloudfoundry/v2/sso/start?serviceUuid=aa7e5ce5-04ac-48ab-a48a-7005b765842b",
+      "shared_from": null,
+      "shared_to": [],
+      "service_broker_name": "appdirect",
+      "maintenance_info": {},
+      "service_plan": {
+        "guid": "1c5a2ed5-35ea-4786-9ca7-8bc13593fae3",
+        "name": "30mb",
+        "maintenance_info": {},
+        "service": {
+          "guid": "99b6e48d-f319-4a72-b854-a6e43eea9c3c",
+          "label": "rediscloud",
+          "provider": null,
+          "version": null
+        }
+      }
+    },
+    {
+      "guid": "6567564a-b009-48ba-91bd-5d73592f23e2",
+      "name": "service-registry",
+      "bound_app_count": 0,
+      "type": "managed_service_instance",
+      "last_operation": {
+        "type": "create",
+        "state": "succeeded",
+        "description": "",
+        "updated_at": "2019-11-24T18:52:31Z",
+        "created_at": "2019-11-24T18:50:25Z"
+      },
+      "dashboard_url": "https://spring-cloud-service-broker.cfapps.io/dashboard/p-service-registry/6567564a-b009-48ba-91bd-5d73592f23e2",
+      "shared_from": null,
+      "shared_to": [],
+      "service_broker_name": "p-spring-cloud-services",
+      "maintenance_info": {},
+      "service_plan": {
+        "guid": "b9242b2c-c6f6-430b-8f39-f270e7d838ac",
+        "name": "trial",
+        "maintenance_info": {},
+        "service": {
+          "guid": "dfb4bee2-c56a-4257-93c4-0499e35637b3",
+          "label": "p-service-registry",
+          "provider": null,
+          "version": null
+        }
+      }
+    },
+    {
+      "guid": "1045f0cb-2e8a-4379-883d-5e73b37e1861",
+      "name": "tinysql",
+      "bound_app_count": 0,
+      "type": "managed_service_instance",
+      "last_operation": {
+        "type": "create",
+        "state": "succeeded",
+        "description": "",
+        "updated_at": "2019-11-24T18:49:53Z",
+        "created_at": "2019-11-24T18:49:53Z"
+      },
+      "dashboard_url": "https://cloudfoundry.appdirect.com/api/custom/cloudfoundry/v2/sso/start?serviceUuid=1045f0cb-2e8a-4379-883d-5e73b37e1861",
+      "shared_from": null,
+      "shared_to": [],
+      "service_broker_name": "appdirect",
+      "maintenance_info": {},
+      "service_plan": {
+        "guid": "fbcec3af-3e8d-4ee7-adfe-3f12a137ed66",
+        "name": "turtle",
+        "maintenance_info": {},
+        "service": {
+          "guid": "34dbc753-34ed-4cf1-9a87-a224dfca569b",
+          "label": "elephantsql",
+          "provider": null,
+          "version": null
+        }
+      }
+    }
+  ]
+}

@@ -21,3 +21,7 @@ Space scratchpad is consuming 10816 MB memory (52%) of org quota.
 ```
 
 So we know the two scs-service-broker's got added.
+
+```txt
+cf curl '/v2/spaces/4ba83909-cde1-448e-873f-d53b27391604/summary'
+```
