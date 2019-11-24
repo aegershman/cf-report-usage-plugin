@@ -54,6 +54,10 @@ type SpaceStats struct {
 	// includes anything which Pivotal deems "billable" as an AI, even if CF
 	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
 	BillableAppInstancesCount int
+
+	// count of anything which Pivotal deems "billable" as an SI; this might mean
+	// subtracting certain services (like SCS) from the count of `cf services`
+	BillableServicesCount int
 }
 
 // OrgStats -
@@ -75,6 +79,10 @@ type OrgStats struct {
 	// includes anything which Pivotal deems "billable" as an AI, even if CF
 	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
 	BillableAppInstancesCount int
+
+	// count of anything which Pivotal deems "billable" as an SI; this might mean
+	// subtracting certain services (like SCS) from the count of `cf services`
+	BillableServicesCount int
 }
 
 // Orgs -
