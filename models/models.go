@@ -3,6 +3,7 @@ package models
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -275,8 +276,6 @@ func (space *Space) ServicesCountByServiceLabel(serviceType string) int {
 //
 // see: https://network.pivotal.io/products/pcf-services
 // (I know right? It's an intense function name)
-//
-// TODO come back and figure out labeling more appropriately
 func (space *Space) ServicesSuiteForPivotalPlatformCount() int {
 	count := 0
 
@@ -292,6 +291,8 @@ func (space *Space) ServicesSuiteForPivotalPlatformCount() int {
 	count += space.ServicesCountByServiceLabel("p-rabbitmq")
 	count += space.ServicesCountByServiceLabel("p.rabbitmq")
 
+	log.Println(count)
+
 	return count
 }
 
@@ -299,13 +300,17 @@ func (space *Space) ServicesSuiteForPivotalPlatformCount() int {
 // from "spring cloud services" tile, e.g. config-server/service-registry/circuit-breaker/etc.
 //
 // see: https://network.pivotal.io/products/p-spring-cloud-services/
-//
-// TODO come back and figure out labeling more appropriately
 func (space *Space) SpringCloudServicesCount() int {
 	count := 0
 
-	count += space.ServicesCountByServiceLabel("p-spring-cloud-services")
-	count += space.ServicesCountByServiceLabel("scs-service-broker")
+	// scs 2.x
+	count += space.ServicesCountByServiceLabel("p-config-server")
+	count += space.ServicesCountByServiceLabel("p-service-registry")
+	count += space.ServicesCountByServiceLabel("p-circuit-breaker")
+
+	// scs 3.x
+	count += space.ServicesCountByServiceLabel("p.config-server")
+	count += space.ServicesCountByServiceLabel("p.service-registry")
 
 	return count
 }
