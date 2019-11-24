@@ -29,35 +29,41 @@ cf trueup-view -o firstorg -o secondorg [-o orgName...]
 
 ```txt
 Org myorg is consuming 12864 MB of 20480 MB.
-        Space docs is consuming 4096 MB memory (20%) of org quota.
-                0 canonical app instances
-                4 billable app instances: 4 running, 0 stopped
+        Space docs is consuming 0 MB memory (0%) of org quota.
+                0 app instances: 0 running 0 stopped
+                4 billable app instances (includes AIs and billable SIs, like SCS)
                 0 unique app_guids: 0 running 0 stopped
+                4 service instances total
                 0 service instances of type Service Suite (mysql, redis, rmq)
         Space probots is consuming 6144 MB memory (30%) of org quota.
-                4 canonical app instances
-                4 billable app instances: 4 running, 0 stopped
+                4 app instances: 4 running 0 stopped
+                4 billable app instances (includes AIs and billable SIs, like SCS)
                 3 unique app_guids: 3 running 0 stopped
+                0 service instances total
                 0 service instances of type Service Suite (mysql, redis, rmq)
         Space route53-sync is consuming 0 MB memory (0%) of org quota.
-                0 canonical app instances
-                0 billable app instances: 0 running, 0 stopped
+                0 app instances: 0 running 0 stopped
+                0 billable app instances (includes AIs and billable SIs, like SCS)
                 0 unique app_guids: 0 running 0 stopped
+                0 service instances total
                 0 service instances of type Service Suite (mysql, redis, rmq)
-        Space scratchpad is consuming 10816 MB memory (52%) of org quota.
-                10 canonical app instances
-                15 billable app instances: 13 running, 2 stopped
+        Space scratchpad is consuming 5696 MB memory (27%) of org quota.
+                10 app instances: 8 running 2 stopped
+                15 billable app instances (includes AIs and billable SIs, like SCS)
                 8 unique app_guids: 6 running 2 stopped
+                17 service instances total
                 4 service instances of type Service Suite (mysql, redis, rmq)
         Space splunk-firehose is consuming 1024 MB memory (5%) of org quota.
-                2 canonical app instances
-                2 billable app instances: 2 running, 0 stopped
+                2 app instances: 2 running 0 stopped
+                2 billable app instances (includes AIs and billable SIs, like SCS)
                 1 unique app_guids: 1 running 0 stopped
+                0 service instances total
                 0 service instances of type Service Suite (mysql, redis, rmq)
         Space sso is consuming 0 MB memory (0%) of org quota.
-                0 canonical app instances
-                0 billable app instances: 0 running, 0 stopped
+                0 app instances: 0 running 0 stopped
+                0 billable app instances (includes AIs and billable SIs, like SCS)
                 0 unique app_guids: 0 running 0 stopped
+                1 service instances total
                 0 service instances of type Service Suite (mysql, redis, rmq)
-[WARNING: THIS REPORT SUMMARY IS MISLEADING AND INCORRECT. IT WILL BE FIXED SOON.] You have deployed 12 apps across 1 org(s), with a total of 25 app instances configured. You are currently running 10 apps with 23 app instances and using 4 service instances of type Service Suite.
+[WARNING: THIS REPORT SUMMARY IS MISLEADING AND INCORRECT. IT WILL BE FIXED SOON.] You have deployed 12 apps across 1 org(s), with a total of 16 app instances configured. You are currently running 10 apps with 14 app instances and using 22 service instances of type Service Suite.
 ```
