@@ -43,7 +43,7 @@ type SpaceStats struct {
 	RunningAppsCount           int
 	StoppedAppsCount           int
 	CanonicalAppInstancesCount int
-	DeployedAppInstancesCount  int
+	AppInstancesCount          int
 	RunningAppInstancesCount   int
 	StoppedAppInstancesCount   int
 	ServicesCount              int // TODO misnomer
@@ -62,17 +62,17 @@ type SpaceStats struct {
 
 // OrgStats -
 type OrgStats struct {
-	Name                      string
-	MemoryQuota               int
-	MemoryUsage               int
-	Spaces                    Spaces
-	AppsCount                 int
-	RunningAppsCount          int
-	StoppedAppsCount          int
-	DeployedAppInstancesCount int
-	RunningAppInstancesCount  int
-	StoppedAppInstancesCount  int
-	ServicesCount             int
+	Name                     string
+	MemoryQuota              int
+	MemoryUsage              int
+	Spaces                   Spaces
+	AppsCount                int
+	RunningAppsCount         int
+	StoppedAppsCount         int
+	AppInstancesCount        int
+	RunningAppInstancesCount int
+	StoppedAppInstancesCount int
+	ServicesCount            int
 
 	ServicesSuiteForPivotalPlatformCount int // TODO
 
@@ -325,11 +325,9 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 		// What _used_ to be reported as just "services"
 		servicesSuiteForPivotalPlatformCount := space.ServicesSuiteForPivotalPlatformCount()
 
-		// "lAIs" in this context is really "billableAIs", but I don't want to mess
-		// with the existing logic before getting a chance to rework this
-		lAIs := space.AppInstancesCount()
-		rAIs := space.RunningAppInstancesCount()
-		sAIs := lAIs - rAIs
+		appInstancesCount := space.AppInstancesCount()
+		runningAppInstancesCount := space.RunningAppInstancesCount()
+		stoppedAppInstancesCount := appInstancesCount - runningAppInstancesCount
 
 		consumedMemory := space.ConsumedMemory()
 		servicesCount := space.ServicesCount()
@@ -344,9 +342,9 @@ func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
 			RunningAppsCount:                     runningUniqueApps,
 			StoppedAppsCount:                     stoppedUniqueApps,
 			CanonicalAppInstancesCount:           canonicalAppInstances,
-			DeployedAppInstancesCount:            lAIs,
-			RunningAppInstancesCount:             rAIs,
-			StoppedAppInstancesCount:             sAIs,
+			AppInstancesCount:                    appInstancesCount,
+			RunningAppInstancesCount:             runningAppInstancesCount,
+			StoppedAppInstancesCount:             stoppedAppInstancesCount,
 			ServicesCount:                        servicesCount,
 			ConsumedMemory:                       consumedMemory,
 			ServicesSuiteForPivotalPlatformCount: servicesSuiteForPivotalPlatformCount,
@@ -366,17 +364,17 @@ func (orgs Orgs) Stats(c chan OrgStats) {
 		rAIs := org.RunningAppInstancesCount()
 		sAIs := lAIs - rAIs
 		c <- OrgStats{
-			Name:                      org.Name,
-			MemoryQuota:               org.MemoryQuota,
-			MemoryUsage:               org.MemoryUsage,
-			Spaces:                    org.Spaces,
-			AppsCount:                 lApps,
-			RunningAppsCount:          rApps,
-			StoppedAppsCount:          sApps,
-			DeployedAppInstancesCount: lAIs,
-			RunningAppInstancesCount:  rAIs,
-			StoppedAppInstancesCount:  sAIs,
-			ServicesCount:             org.ServicesCount(),
+			Name:                     org.Name,
+			MemoryQuota:              org.MemoryQuota,
+			MemoryUsage:              org.MemoryUsage,
+			Spaces:                   org.Spaces,
+			AppsCount:                lApps,
+			RunningAppsCount:         rApps,
+			StoppedAppsCount:         sApps,
+			AppInstancesCount:        lAIs,
+			RunningAppInstancesCount: rAIs,
+			StoppedAppInstancesCount: sAIs,
+			ServicesCount:            org.ServicesCount(),
 		}
 	}
 	close(c)
@@ -420,7 +418,7 @@ func (report *Report) String() string {
 			response.WriteString(fmt.Sprintf(spaceCanonicalAppInstancesMsg, spaceState.CanonicalAppInstancesCount))
 
 			response.WriteString(
-				fmt.Sprintf(spaceBillableAppInstancesMsg, spaceState.DeployedAppInstancesCount, spaceState.RunningAppInstancesCount, spaceState.StoppedAppInstancesCount))
+				fmt.Sprintf(spaceBillableAppInstancesMsg, spaceState.AppInstancesCount, spaceState.RunningAppInstancesCount, spaceState.StoppedAppInstancesCount))
 
 			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceState.AppsCount, spaceState.RunningAppsCount, spaceState.StoppedAppsCount))
 
@@ -428,7 +426,7 @@ func (report *Report) String() string {
 
 		}
 		totalApps += orgStats.AppsCount
-		totalInstances += orgStats.DeployedAppInstancesCount
+		totalInstances += orgStats.AppInstancesCount
 		totalRunningApps += orgStats.RunningAppsCount
 		totalRunningInstances += orgStats.RunningAppInstancesCount
 		totalServiceInstances += orgStats.ServicesCount
