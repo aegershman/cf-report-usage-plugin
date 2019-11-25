@@ -2,6 +2,7 @@ package models
 
 // OrgStats -
 type OrgStats struct {
+	Org                                  Org
 	Name                                 string
 	MemoryQuota                          int
 	MemoryUsage                          int
@@ -14,10 +15,7 @@ type OrgStats struct {
 	RunningAppInstancesCount             int
 	StoppedAppInstancesCount             int
 	ServicesCount                        int
-	SpringCloudServicesCount             int
 	ServicesSuiteForPivotalPlatformCount int
-	BillableAppInstancesCount            int
-	BillableServicesCount                int
 }
 
 // Stats -
@@ -29,36 +27,42 @@ func (orgs Orgs) Stats(c chan OrgStats) {
 	close(c)
 }
 
-// NewOrgStats converts an Org into something decorated with more information
-// that can be used for presenting business logic and such
+// NewOrgStats todo
 func NewOrgStats(org Org) OrgStats {
-	totalUniqueApps := org.AppsCount()
-	runningUniqueApps := org.RunningAppsCount()
-	stoppedUniqueApps := totalUniqueApps - runningUniqueApps
-
-	billableAppInstancesCount := org.BillableAppInstancesCount()
-	appInstancesCount := org.AppInstancesCount()
-	runningAppInstancesCount := org.RunningAppInstancesCount()
-	stoppedAppInstancesCount := appInstancesCount - runningAppInstancesCount
-
-	billableServicesCount := org.BillableServicesCount()
-	servicesCount := org.ServicesCount()
-	springCloudServicesCount := org.SpringCloudServicesCount()
-
 	return OrgStats{
-		Name:                      org.Name,
-		MemoryQuota:               org.MemoryQuota,
-		MemoryUsage:               org.MemoryUsage,
-		Spaces:                    org.Spaces,
-		AppsCount:                 totalUniqueApps,
-		RunningAppsCount:          runningUniqueApps,
-		StoppedAppsCount:          stoppedUniqueApps,
-		AppInstancesCount:         appInstancesCount,
-		RunningAppInstancesCount:  runningAppInstancesCount,
-		StoppedAppInstancesCount:  stoppedAppInstancesCount,
-		SpringCloudServicesCount:  springCloudServicesCount,
-		BillableAppInstancesCount: billableAppInstancesCount,
-		BillableServicesCount:     billableServicesCount,
-		ServicesCount:             servicesCount,
+		Org: org,
 	}
+}
+
+// SpringCloudServicesCount returns total count of SCS services across all spaces of the org
+func (os *OrgStats) SpringCloudServicesCount() int {
+	count := 0
+	for _, ss := range os.SpaceStats {
+		count += ss.SpringCloudServicesCount()
+	}
+	return count
+}
+
+// BillableAppInstancesCount returns the count of "billable" AIs across all spaces of the org
+//
+// This includes anything which Pivotal deems "billable" as an AI, even if CF
+// considers it a service; e.g., SCS instances (config server, service registry, etc.)
+func (os *OrgStats) BillableAppInstancesCount() int {
+	count := 0
+	for _, ss := range os.SpaceStats {
+		count += ss.BillableAppInstancesCount()
+	}
+	return count
+}
+
+// BillableServicesCount returns the count of "billable" SIs across all spaces of the org
+//
+// This includes anything which Pivotal deems "billable" as an SI; this might mean
+// subtracting certain services (like SCS) from the count of `cf services`
+func (os *OrgStats) BillableServicesCount() int {
+	count := 0
+	for _, ss := range os.SpaceStats {
+		count += ss.BillableServicesCount()
+	}
+	return count
 }

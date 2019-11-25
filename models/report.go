@@ -70,12 +70,12 @@ func (r *Report) Execute() {
 
 		}
 
-		aggregateBillableAppInstancesCount += orgStat.BillableAppInstancesCount
+		aggregateBillableAppInstancesCount += orgStat.BillableAppInstancesCount()
 		aggregateAppInstancesCount += orgStat.AppInstancesCount
 		aggregateRunningAppInstancesCount += orgStat.RunningAppInstancesCount
 		aggregateStoppedAppInstancesCount += orgStat.StoppedAppInstancesCount
-		aggregateSpringCloudServicesCount += orgStat.SpringCloudServicesCount
-		aggregateBillableServicesCount += orgStat.BillableServicesCount
+		aggregateSpringCloudServicesCount += orgStat.SpringCloudServicesCount()
+		aggregateBillableServicesCount += orgStat.BillableServicesCount()
 
 		aggregateOrgStats = append(aggregateOrgStats, orgStat)
 
