@@ -218,9 +218,9 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 			theApp := a.(map[string]interface{})
 			apps = append(apps,
 				cf.AppSummary{
-					RunningInstances: theApp["running_instances"].(int),
-					Instances:        theApp["instances"].(int),
-					Memory:           theApp["memory"].(int),
+					RunningInstances: int(theApp["running_instances"].(float64)),
+					Instances:        int(theApp["instances"].(float64)),
+					Memory:           int(theApp["memory"].(float64)),
 				})
 		}
 	}
