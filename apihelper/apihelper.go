@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/aegershman/cf-trueup-plugin/cfcurl"
+	"github.com/aegershman/cf-usage-report-plugin/cfcurl"
 	"github.com/cloudfoundry/cli/plugin"
 )
 

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/aegershman/cf-trueup-plugin/apihelper"
-	"github.com/aegershman/cf-trueup-plugin/models"
-	"github.com/aegershman/cf-trueup-plugin/presenters"
+	"github.com/aegershman/cf-usage-report-plugin/apihelper"
+	"github.com/aegershman/cf-usage-report-plugin/models"
+	"github.com/aegershman/cf-usage-report-plugin/presenters"
 	"github.com/cloudfoundry/cli/plugin"
 	log "github.com/sirupsen/logrus"
 )
