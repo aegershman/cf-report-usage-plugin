@@ -39,7 +39,8 @@ func NewReport(orgs Orgs) Report {
 // below only exists within the context of a given "OrgStats".
 // Then we aggregate together all the "OrgStats" for the Report
 func (r *Report) Execute() {
-	chOrgStats := make(chan OrgStats, len(r.Orgs))
+
+	var aggregateOrgStats []OrgStats
 
 	aggregateBillableAppInstancesCount := 0
 	aggregateAppInstancesCount := 0
@@ -48,8 +49,7 @@ func (r *Report) Execute() {
 	aggregateSpringCloudServicesCount := 0
 	aggregateBillableServicesCount := 0
 
-	var aggregateOrgStats []OrgStats
-
+	chOrgStats := make(chan OrgStats, len(r.Orgs))
 	go r.Orgs.Stats(chOrgStats)
 	for orgStat := range chOrgStats {
 
@@ -58,7 +58,7 @@ func (r *Report) Execute() {
 		}).Traceln("processing")
 
 		chSpaceStats := make(chan SpaceStats, len(orgStat.Spaces))
-		go orgStat.Spaces.Stats(chSpaceStats, orgStat.Name == "p-spring-cloud-services") // TODO make this more dynamic
+		go orgStat.Spaces.Stats(chSpaceStats)
 		for spaceStat := range chSpaceStats {
 
 			log.WithFields(log.Fields{
