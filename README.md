@@ -25,10 +25,16 @@ cf trueup-view
 # report specific orgs
 cf trueup-view -o myorg
 cf trueup-view -o firstorg -o secondorg [-o orgName...]
+
+# report using different formats ("string" is default)
+cf trueup-view -o firstorg -o secondorg -f string
+cf trueup-view -o firstorg -o secondorg -f table
 ```
 
+Example of `string` format:
+
 ```txt
-Org myorg is consuming 12864 MB of 20480 MB.
+Org firstorg is consuming 12864 MB of 20480 MB.
         Space docs is consuming 0 MB memory (0%) of org quota.
                 0 app instances: 0 running 0 stopped
                 4 billable app instances (includes AIs and billable SIs, like SCS)
@@ -65,5 +71,27 @@ Org myorg is consuming 12864 MB of 20480 MB.
                 0 unique app_guids: 0 running 0 stopped
                 1 service instances total
                 0 service instances of type Service Suite (mysql, redis, rmq)
-[WARNING: THIS REPORT SUMMARY IS MISLEADING AND INCORRECT. IT WILL BE FIXED SOON.] You have deployed 12 apps across 1 org(s), with a total of 16 app instances configured. You are currently running 10 apps with 14 app instances and using 22 service instances of type Service Suite.
+Org secondorg is consuming 30720 MB of 65536 MB.
+        Space dev is consuming 30720 MB memory (46%) of org quota.
+                30 app instances: 30 running 0 stopped
+                31 billable app instances (includes AIs and billable SIs, like SCS)
+                30 unique app_guids: 30 running 0 stopped
+                3 service instances total
+                2 service instances of type Service Suite (mysql, redis, rmq)
+```
+
+And the `table` format (wip):
+
+```txt
++-------------+-----------------+--------------+--------------+
+|     ORG     |      SPACE      | BILLABLE AIS | BILLABLE SIS |
++-------------+-----------------+--------------+--------------+
+| firstorg    | docs            | 4            | 0            |
+| firstorg    | probots         | 4            | 0            |
+| firstorg    | route53-sync    | 0            | 0            |
+| firstorg    | scratchpad      | 15           | 12           |
+| firstorg    | splunk-firehose | 2            | 0            |
+| firstorg    | sso             | 0            | 1            |
+| secondorg   | dev             | 31           | 2            |
++-------------+-----------------+--------------+--------------+
 ```
