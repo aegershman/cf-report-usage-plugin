@@ -31,20 +31,11 @@ type Space struct {
 	SummaryURL string
 }
 
-// Service -
-type Service struct {
-	Label       string
-	ServicePlan string
-}
-
 // Orgs -
 type Orgs []Organization
 
 // Spaces -
 type Spaces []Space
-
-// Services -
-type Services []Service
 
 // CFAPIHelper wraps cf curl results
 type CFAPIHelper interface {
@@ -54,7 +45,7 @@ type CFAPIHelper interface {
 	GetQuotaMemoryLimit(string) (float64, error)
 	GetOrgMemoryUsage(Organization) (float64, error)
 	GetOrgSpaces(string) (Spaces, error)
-	GetSpaceAppsAndServices(string) (models.Apps, Services, error)
+	GetSpaceAppsAndServices(string) (models.Apps, models.Services, error)
 }
 
 // APIHelper -
@@ -204,9 +195,9 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
 // Granted, on the other hand, this isn't the "cf go library" so if it makes opinionated
 // decisions about what to return it's not the end of the world. But even still, we probably
 // don't want to make those decisions here. We'll want to make them in a specific view.
-func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (models.Apps, Services, error) {
+func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (models.Apps, models.Services, error) {
 	apps := models.Apps{}
-	services := []Service{}
+	services := models.Services{}
 	summaryJSON, err := cfcurl.Curl(api.cli, summaryURL)
 	if nil != err {
 		return nil, nil, err
@@ -240,7 +231,7 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (models.Apps, S
 					// and then act as though the only services that exist in
 					// a space are the ones that have passed the filter
 					services = append(services,
-						Service{
+						models.Service{
 							Label:       label,
 							ServicePlan: servicePlan["name"].(string),
 						})
