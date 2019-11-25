@@ -20,21 +20,37 @@ func NewReport(orgs Orgs) Report {
 func (r *Report) Execute() {
 	chOrgStats := make(chan OrgStats, len(r.Orgs))
 
+	aggregateAppInstancesCount := 0
+	aggregateRunningAppInstancesCount := 0
+	aggregateStoppedAppInstancesCount := 0
+	aggregateBillableAppInstancesCount := 0
+
 	var aggregateOrgStats []OrgStats
 
 	go r.Orgs.Stats(chOrgStats)
 	for orgStat := range chOrgStats {
-		log.Debugf("processing %s\n", orgStat.Name) // todo just testing
+		log.Tracef("processing %s\n", orgStat.Name) // todo just testing
 		chSpaceStats := make(chan SpaceStats, len(orgStat.Spaces))
-		// TODO make this more dynamic
-		go orgStat.Spaces.Stats(chSpaceStats, orgStat.Name == "p-spring-cloud-services")
+		go orgStat.Spaces.Stats(chSpaceStats, orgStat.Name == "p-spring-cloud-services") // TODO make this more dynamic
 		for spaceStat := range chSpaceStats {
-			log.Debugf("processing %s\n", spaceStat.Name) // todo just testing
+			log.Tracef("processing %s\n", spaceStat.Name) // todo just testing
 			orgStat.SpaceStats = append(orgStat.SpaceStats, spaceStat)
 		}
+
+		aggregateAppInstancesCount += orgStat.AppInstancesCount
+		aggregateRunningAppInstancesCount += orgStat.RunningAppInstancesCount
+		aggregateStoppedAppInstancesCount += orgStat.StoppedAppInstancesCount
+		aggregateBillableAppInstancesCount += orgStat.BillableAppInstancesCount
+
 		aggregateOrgStats = append(aggregateOrgStats, orgStat)
 	}
 
 	r.OrgStats = aggregateOrgStats
+	r.AggregateOrgStats = AggregateOrgStats{
+		AppInstancesCount:         aggregateAppInstancesCount,
+		RunningAppInstancesCount:  aggregateRunningAppInstancesCount,
+		StoppedAppInstancesCount:  aggregateStoppedAppInstancesCount,
+		BillableAppInstancesCount: aggregateBillableAppInstancesCount,
+	}
 
 }
