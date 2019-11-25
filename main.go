@@ -178,16 +178,9 @@ func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]models.Space, error) {
 }
 
 func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, []models.Service, error) {
-	apps, rawServices, err := cmd.apiHelper.GetSpaceAppsAndServices(summaryURL)
+	apps, services, err := cmd.apiHelper.GetSpaceAppsAndServices(summaryURL)
 	if nil != err {
 		return nil, nil, err
-	}
-	var services = []models.Service{}
-	for _, s := range rawServices {
-		services = append(services, models.Service{
-			Label:       string(s.Label),
-			ServicePlan: string(s.ServicePlan),
-		})
 	}
 	return apps, services, nil
 }

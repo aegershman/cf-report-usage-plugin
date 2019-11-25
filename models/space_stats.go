@@ -51,7 +51,7 @@ func NewSpaceStats(space Space) SpaceStats {
 func (ss *SpaceStats) ServicesCountByServiceLabel(serviceType string) int {
 	count := 0
 	for _, service := range ss.Space.Services {
-		if strings.Contains(service.Label, serviceType) {
+		if strings.Contains(service.ServicePlanLabel, serviceType) {
 			count++
 		}
 	}
