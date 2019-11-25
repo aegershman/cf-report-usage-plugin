@@ -4,6 +4,16 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// Report -
+// TODO consider breaking into "pre-init" and "post-init" structs,
+// e.g. "reportPlan" and "report"? Possibly makes it clearer that you're
+// supposed to "execute" the reportPlan to get it to generate the data?
+type Report struct {
+	Orgs              Orgs
+	OrgStats          []OrgStats
+	AggregateOrgStats AggregateOrgStats
+}
+
 // NewReport -
 func NewReport(orgs Orgs) Report {
 	return Report{

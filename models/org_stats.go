@@ -1,5 +1,36 @@
 package models
 
+// OrgStats -
+type OrgStats struct {
+	Name                                 string
+	MemoryQuota                          int
+	MemoryUsage                          int
+	Spaces                               Spaces
+	SpaceStats                           []SpaceStats // TODO unsure if this is best model...?
+	AppsCount                            int
+	RunningAppsCount                     int
+	StoppedAppsCount                     int
+	AppInstancesCount                    int
+	RunningAppInstancesCount             int
+	StoppedAppInstancesCount             int
+	ServicesCount                        int
+	SpringCloudServicesCount             int
+	ServicesSuiteForPivotalPlatformCount int
+	BillableAppInstancesCount            int
+	BillableServicesCount                int
+}
+
+// AggregateOrgStats describes an aggregated view
+// of multiple OrgStats after a Report Execution run
+type AggregateOrgStats struct {
+	AppInstancesCount         int
+	RunningAppInstancesCount  int
+	StoppedAppInstancesCount  int
+	BillableAppInstancesCount int
+	SpringCloudServicesCount  int
+	BillableServicesCount     int
+}
+
 // Stats -
 func (orgs Orgs) Stats(c chan OrgStats) {
 	for _, org := range orgs {
