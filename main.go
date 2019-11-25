@@ -186,9 +186,9 @@ func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, 
 	var services = []models.Service{}
 	for _, a := range rawApps {
 		apps = append(apps, models.App{
-			Actual: int(a.Actual),
-			Desire: int(a.Desire),
-			RAM:    int(a.RAM),
+			RunningInstances: int(a.Actual),
+			Instances:        int(a.Desire),
+			Memory:           int(a.RAM),
 		})
 	}
 	for _, s := range rawServices {
