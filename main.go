@@ -45,8 +45,9 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 				UsageDetails: plugin.Usage{
 					Usage: "cf trueup-view [-o orgName...] -f string",
 					Options: map[string]string{
-						"o": "organization(s) included in report. Flag can be provided multiple times.",
-						"f": "format to print as (options: string,table) (default: string)",
+						"o":         "organization(s) included in report. Flag can be provided multiple times.",
+						"f":         "format to print as (options: string,table) (default: string)",
+						"log-level": "(currently unused)",
 					},
 				},
 			},
