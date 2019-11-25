@@ -7,6 +7,7 @@ import (
 
 	"github.com/aegershman/cf-trueup-plugin/apihelper"
 	"github.com/aegershman/cf-trueup-plugin/models"
+	p "github.com/aegershman/cf-trueup-plugin/presenters"
 	"github.com/cloudfoundry/cli/plugin"
 )
 
@@ -35,7 +36,7 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		Version: plugin.VersionType{
 			Major: 2,
 			Minor: 7,
-			Build: 1,
+			Build: 2,
 		},
 		Commands: []plugin.Command{
 			{
@@ -85,7 +86,8 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 
 	report.Orgs = orgs
 
-	fmt.Println(report.String())
+	presenter := p.NewPresenter(report)
+	presenter.AsString()
 }
 
 func (cmd *UsageReportCmd) getOrgs() ([]models.Org, error) {
