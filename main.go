@@ -43,9 +43,10 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 				Name:     "trueup-view",
 				HelpText: "View AIs, SIs and memory usage for orgs and spaces",
 				UsageDetails: plugin.Usage{
-					Usage: "cf trueup-view [-o orgName]",
+					Usage: "cf trueup-view [-o orgName...] --format string",
 					Options: map[string]string{
-						"o": "organization to include in report. flag can be provided multiple times.",
+						"-o":       "organization(s) included in report. Flag can be provided multiple times.",
+						"--format": "format to print as (options: string,table) (default: string)",
 					},
 				},
 			},
