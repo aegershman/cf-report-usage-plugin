@@ -30,12 +30,22 @@ func (r *Report) Execute() {
 
 	go r.Orgs.Stats(chOrgStats)
 	for orgStat := range chOrgStats {
-		log.Tracef("processing %s\n", orgStat.Name) // todo just testing
+
+		log.WithFields(log.Fields{
+			"org": orgStat.Name,
+		}).Traceln("processing")
+
 		chSpaceStats := make(chan SpaceStats, len(orgStat.Spaces))
 		go orgStat.Spaces.Stats(chSpaceStats, orgStat.Name == "p-spring-cloud-services") // TODO make this more dynamic
 		for spaceStat := range chSpaceStats {
-			log.Tracef("processing %s\n", spaceStat.Name) // todo just testing
+
+			log.WithFields(log.Fields{
+				"org":   orgStat.Name,
+				"space": spaceStat.Name,
+			}).Traceln("processing")
+
 			orgStat.SpaceStats = append(orgStat.SpaceStats, spaceStat)
+
 		}
 
 		aggregateAppInstancesCount += orgStat.AppInstancesCount
@@ -45,6 +55,7 @@ func (r *Report) Execute() {
 		aggregateSpringCloudServicesCount += orgStat.SpringCloudServicesCount
 
 		aggregateOrgStats = append(aggregateOrgStats, orgStat)
+
 	}
 
 	r.OrgStats = aggregateOrgStats
