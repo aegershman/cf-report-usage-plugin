@@ -63,7 +63,7 @@ func (r *Report) Execute() {
 	r.OrgStats = aggregateOrgStats
 	r.AggregateOrgStats = AggregateOrgStats{
 		BillableAppInstancesCount: aggregateBillableAppInstancesCount,
-		BillableServicesCount:     aggregateBillableAppInstancesCount,
+		BillableServicesCount:     aggregateBillableServicesCount,
 		AppInstancesCount:         aggregateAppInstancesCount,
 		RunningAppInstancesCount:  aggregateRunningAppInstancesCount,
 		StoppedAppInstancesCount:  aggregateStoppedAppInstancesCount,
