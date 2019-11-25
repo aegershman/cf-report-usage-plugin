@@ -4,6 +4,17 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// AggregateOrgStats describes an aggregated view
+// of multiple OrgStats after a Report Execution run
+type AggregateOrgStats struct {
+	AppInstancesCount         int
+	RunningAppInstancesCount  int
+	StoppedAppInstancesCount  int
+	BillableAppInstancesCount int
+	SpringCloudServicesCount  int
+	BillableServicesCount     int
+}
+
 // Report -
 // TODO consider breaking into "pre-init" and "post-init" structs,
 // e.g. "reportPlan" and "report"? Possibly makes it clearer that you're

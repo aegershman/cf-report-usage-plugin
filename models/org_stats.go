@@ -20,17 +20,6 @@ type OrgStats struct {
 	BillableServicesCount                int
 }
 
-// AggregateOrgStats describes an aggregated view
-// of multiple OrgStats after a Report Execution run
-type AggregateOrgStats struct {
-	AppInstancesCount         int
-	RunningAppInstancesCount  int
-	StoppedAppInstancesCount  int
-	BillableAppInstancesCount int
-	SpringCloudServicesCount  int
-	BillableServicesCount     int
-}
-
 // Stats -
 func (orgs Orgs) Stats(c chan OrgStats) {
 	for _, org := range orgs {
