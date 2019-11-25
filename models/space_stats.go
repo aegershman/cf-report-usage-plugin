@@ -19,20 +19,16 @@ type SpaceStats struct {
 }
 
 // Stats -
-func (spaces Spaces) Stats(c chan SpaceStats, skipSIcount bool) {
+func (spaces Spaces) Stats(c chan SpaceStats) {
 	for _, space := range spaces {
-		spaceStats := NewSpaceStats(space, skipSIcount)
+		spaceStats := NewSpaceStats(space)
 		c <- spaceStats
 	}
 	close(c)
 }
 
-// NewSpaceStats todo
-func NewSpaceStats(space Space, skipSIcount bool) SpaceStats {
-	if skipSIcount {
-		//
-	}
-
+// NewSpaceStats -
+func NewSpaceStats(space Space) SpaceStats {
 	return SpaceStats{
 		Space:                    space,
 		Name:                     space.Name,
