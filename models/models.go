@@ -105,6 +105,5 @@ type AggregateOrgStats struct {
 type Report struct {
 	Orgs              Orgs
 	OrgStats          []OrgStats
-	SpaceStats        []SpaceStats
 	AggregateOrgStats AggregateOrgStats
 }

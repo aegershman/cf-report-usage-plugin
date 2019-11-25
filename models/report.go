@@ -8,29 +8,27 @@ func NewReport(orgs Orgs) Report {
 }
 
 // Execute -
+//
+// Since "[]SpaceStats" are a property of every individual "OrgStats"
+// within "[]OrgStats" (whew), we make sure that "aggregateSpaceStats"
+// below only exists within the context of a given "OrgStats".
+// Then we aggregate together all the "OrgStats" for the Report
 func (r *Report) Execute() {
 	chOrgStats := make(chan OrgStats, len(r.Orgs))
 
-	// vars we'll use to track the aggregation of Org/Space Stats as they
-	// come in off the channels
-	var (
-		aggregatedOrgStats   []OrgStats
-		aggregatedSpaceStats []SpaceStats
-	)
+	var aggregateOrgStats []OrgStats
 
 	go r.Orgs.Stats(chOrgStats)
 	for orgStat := range chOrgStats {
 		chSpaceStats := make(chan SpaceStats, len(orgStat.Spaces))
+		// TODO make this more dynamic
 		go orgStat.Spaces.Stats(chSpaceStats, orgStat.Name == "p-spring-cloud-services")
 		for spaceStat := range chSpaceStats {
-			aggregatedSpaceStats = append(aggregatedSpaceStats, spaceStat)
+			orgStat.SpaceStats = append(orgStat.SpaceStats, spaceStat)
 		}
-		aggregatedOrgStats = append(aggregatedOrgStats, orgStat)
+		aggregateOrgStats = append(aggregateOrgStats, orgStat)
 	}
 
-	r.OrgStats = aggregatedOrgStats
-	r.SpaceStats = aggregatedSpaceStats
-
-	// TODO deal with aggregate org stats
+	r.OrgStats = aggregateOrgStats
 
 }
