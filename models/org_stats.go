@@ -16,15 +16,14 @@ func NewOrgStats(org Org) OrgStats {
 	runningUniqueApps := org.RunningAppsCount()
 	stoppedUniqueApps := totalUniqueApps - runningUniqueApps
 
+	billableAppInstancesCount := org.BillableAppInstancesCount()
 	appInstancesCount := org.AppInstancesCount()
 	runningAppInstancesCount := org.RunningAppInstancesCount()
 	stoppedAppInstancesCount := appInstancesCount - runningAppInstancesCount
 
-	springCloudServicesCount := org.SpringCloudServicesCount()
-
-	billableAppInstancesCount := org.BillableAppInstancesCount()
-
+	billableServicesCount := org.BillableServicesCount()
 	servicesCount := org.ServicesCount()
+	springCloudServicesCount := org.SpringCloudServicesCount()
 
 	return OrgStats{
 		Name:                      org.Name,
@@ -39,6 +38,7 @@ func NewOrgStats(org Org) OrgStats {
 		StoppedAppInstancesCount:  stoppedAppInstancesCount,
 		SpringCloudServicesCount:  springCloudServicesCount,
 		BillableAppInstancesCount: billableAppInstancesCount,
+		BillableServicesCount:     billableServicesCount,
 		ServicesCount:             servicesCount,
 	}
 }

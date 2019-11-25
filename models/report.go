@@ -20,11 +20,12 @@ func NewReport(orgs Orgs) Report {
 func (r *Report) Execute() {
 	chOrgStats := make(chan OrgStats, len(r.Orgs))
 
+	aggregateBillableAppInstancesCount := 0
 	aggregateAppInstancesCount := 0
 	aggregateRunningAppInstancesCount := 0
 	aggregateStoppedAppInstancesCount := 0
-	aggregateBillableAppInstancesCount := 0
 	aggregateSpringCloudServicesCount := 0
+	aggregateBillableServicesCount := 0
 
 	var aggregateOrgStats []OrgStats
 
@@ -48,11 +49,12 @@ func (r *Report) Execute() {
 
 		}
 
+		aggregateBillableAppInstancesCount += orgStat.BillableAppInstancesCount
 		aggregateAppInstancesCount += orgStat.AppInstancesCount
 		aggregateRunningAppInstancesCount += orgStat.RunningAppInstancesCount
 		aggregateStoppedAppInstancesCount += orgStat.StoppedAppInstancesCount
-		aggregateBillableAppInstancesCount += orgStat.BillableAppInstancesCount
 		aggregateSpringCloudServicesCount += orgStat.SpringCloudServicesCount
+		aggregateBillableServicesCount += orgStat.BillableServicesCount
 
 		aggregateOrgStats = append(aggregateOrgStats, orgStat)
 
@@ -60,10 +62,11 @@ func (r *Report) Execute() {
 
 	r.OrgStats = aggregateOrgStats
 	r.AggregateOrgStats = AggregateOrgStats{
+		BillableAppInstancesCount: aggregateBillableAppInstancesCount,
+		BillableServicesCount:     aggregateBillableAppInstancesCount,
 		AppInstancesCount:         aggregateAppInstancesCount,
 		RunningAppInstancesCount:  aggregateRunningAppInstancesCount,
 		StoppedAppInstancesCount:  aggregateStoppedAppInstancesCount,
-		BillableAppInstancesCount: aggregateBillableAppInstancesCount,
 		SpringCloudServicesCount:  aggregateSpringCloudServicesCount,
 	}
 

@@ -82,3 +82,15 @@ func (org *Org) BillableAppInstancesCount() int {
 	}
 	return count
 }
+
+// BillableServicesCount returns the count of "billable" SIs across all spaces of the org
+//
+// This includes anything which Pivotal deems "billable" as an SI; this might mean
+// subtracting certain services (like SCS) from the count of `cf services`
+func (org *Org) BillableServicesCount() int {
+	count := 0
+	for _, space := range org.Spaces {
+		count += space.BillableAppInstancesCount()
+	}
+	return count
+}
