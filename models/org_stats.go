@@ -22,20 +22,23 @@ func NewOrgStats(org Org) OrgStats {
 
 	springCloudServicesCount := org.SpringCloudServicesCount()
 
+	billableAppInstancesCount := org.BillableAppInstancesCount()
+
 	servicesCount := org.ServicesCount()
 
 	return OrgStats{
-		Name:                     org.Name,
-		MemoryQuota:              org.MemoryQuota,
-		MemoryUsage:              org.MemoryUsage,
-		Spaces:                   org.Spaces,
-		AppsCount:                totalUniqueApps,
-		RunningAppsCount:         runningUniqueApps,
-		StoppedAppsCount:         stoppedUniqueApps,
-		AppInstancesCount:        appInstancesCount,
-		RunningAppInstancesCount: runningAppInstancesCount,
-		StoppedAppInstancesCount: stoppedAppInstancesCount,
-		SpringCloudServicesCount: springCloudServicesCount,
-		ServicesCount:            servicesCount,
+		Name:                      org.Name,
+		MemoryQuota:               org.MemoryQuota,
+		MemoryUsage:               org.MemoryUsage,
+		Spaces:                    org.Spaces,
+		AppsCount:                 totalUniqueApps,
+		RunningAppsCount:          runningUniqueApps,
+		StoppedAppsCount:          stoppedUniqueApps,
+		AppInstancesCount:         appInstancesCount,
+		RunningAppInstancesCount:  runningAppInstancesCount,
+		StoppedAppInstancesCount:  stoppedAppInstancesCount,
+		SpringCloudServicesCount:  springCloudServicesCount,
+		BillableAppInstancesCount: billableAppInstancesCount,
+		ServicesCount:             servicesCount,
 	}
 }

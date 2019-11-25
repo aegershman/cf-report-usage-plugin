@@ -24,8 +24,7 @@ func NewSpaceStats(space Space, skipSIcount bool) SpaceStats {
 
 	springCloudServicesCount := space.SpringCloudServicesCount()
 
-	billableAppInstancesCount := space.AppInstancesCount()
-	billableAppInstancesCount += springCloudServicesCount
+	billableAppInstancesCount := space.BillableAppInstancesCount()
 
 	consumedMemory := space.ConsumedMemory()
 	servicesCount := space.ServicesCount()
