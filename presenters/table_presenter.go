@@ -22,8 +22,8 @@ func (p *Presenter) asTable() {
 			table.Append([]string{
 				orgStat.Name,
 				spaceStat.Name,
-				strconv.Itoa(spaceStat.BillableAppInstancesCount),
-				strconv.Itoa(spaceStat.BillableServicesCount),
+				strconv.Itoa(spaceStat.BillableAppInstancesCount()),
+				strconv.Itoa(spaceStat.BillableServicesCount()),
 			})
 		}
 	}
