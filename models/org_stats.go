@@ -7,7 +7,7 @@ type OrgStats struct {
 	MemoryQuota                          int
 	MemoryUsage                          int
 	Spaces                               Spaces
-	SpaceStats                           []SpaceStats // TODO unsure if this is best model...?
+	SpaceStats                           []SpaceStats
 	AppsCount                            int
 	RunningAppsCount                     int
 	StoppedAppsCount                     int
@@ -27,10 +27,21 @@ func (orgs Orgs) Stats(c chan OrgStats) {
 	close(c)
 }
 
-// NewOrgStats todo
+// NewOrgStats -
 func NewOrgStats(org Org) OrgStats {
 	return OrgStats{
-		Org: org,
+		Org:                      org,
+		Name:                     org.Name,
+		MemoryQuota:              org.MemoryQuota,
+		MemoryUsage:              org.MemoryUsage,
+		Spaces:                   org.Spaces,
+		AppsCount:                org.AppsCount(),
+		RunningAppsCount:         org.RunningAppsCount(),
+		StoppedAppsCount:         org.AppsCount() - org.RunningAppsCount(),
+		AppInstancesCount:        org.AppInstancesCount(),
+		RunningAppInstancesCount: org.RunningAppInstancesCount(),
+		StoppedAppInstancesCount: org.AppInstancesCount() - org.RunningAppInstancesCount(),
+		ServicesCount:            org.ServicesCount(),
 	}
 }
 
