@@ -40,36 +40,42 @@ Org firstorg is consuming 12864 MB of 20480 MB.
                 4 billable app instances (includes AIs and billable SIs, like SCS)
                 0 unique app_guids: 0 running 0 stopped
                 4 service instances total
+                4 service instances of type SCS (config-server, eureka, etc.)
                 0 service instances of type Service Suite (mysql, redis, rmq)
         Space probots is consuming 6144 MB memory (30%) of org quota.
                 4 app instances: 4 running 0 stopped
                 4 billable app instances (includes AIs and billable SIs, like SCS)
                 3 unique app_guids: 3 running 0 stopped
                 0 service instances total
+                0 service instances of type SCS (config-server, eureka, etc.)
                 0 service instances of type Service Suite (mysql, redis, rmq)
         Space route53-sync is consuming 0 MB memory (0%) of org quota.
                 0 app instances: 0 running 0 stopped
                 0 billable app instances (includes AIs and billable SIs, like SCS)
                 0 unique app_guids: 0 running 0 stopped
                 0 service instances total
+                0 service instances of type SCS (config-server, eureka, etc.)
                 0 service instances of type Service Suite (mysql, redis, rmq)
         Space scratchpad is consuming 5696 MB memory (27%) of org quota.
                 10 app instances: 8 running 2 stopped
                 15 billable app instances (includes AIs and billable SIs, like SCS)
                 8 unique app_guids: 6 running 2 stopped
                 17 service instances total
+                5 service instances of type SCS (config-server, eureka, etc.)
                 4 service instances of type Service Suite (mysql, redis, rmq)
         Space splunk-firehose is consuming 1024 MB memory (5%) of org quota.
                 2 app instances: 2 running 0 stopped
                 2 billable app instances (includes AIs and billable SIs, like SCS)
                 1 unique app_guids: 1 running 0 stopped
                 0 service instances total
+                0 service instances of type SCS (config-server, eureka, etc.)
                 0 service instances of type Service Suite (mysql, redis, rmq)
         Space sso is consuming 0 MB memory (0%) of org quota.
                 0 app instances: 0 running 0 stopped
                 0 billable app instances (includes AIs and billable SIs, like SCS)
                 0 unique app_guids: 0 running 0 stopped
                 1 service instances total
+                0 service instances of type SCS (config-server, eureka, etc.)
                 0 service instances of type Service Suite (mysql, redis, rmq)
 Org secondorg is consuming 30720 MB of 65536 MB.
         Space dev is consuming 30720 MB memory (46%) of org quota.
@@ -77,7 +83,9 @@ Org secondorg is consuming 30720 MB of 65536 MB.
                 31 billable app instances (includes AIs and billable SIs, like SCS)
                 30 unique app_guids: 30 running 0 stopped
                 3 service instances total
+                1 service instances of type SCS (config-server, eureka, etc.)
                 2 service instances of type Service Suite (mysql, redis, rmq)
+Across 2 org(s), you have 56 billable AIs, 46 are canonical AIs (44 running, 2 stopped), 10 are SCS instances
 ```
 
 And the `table` format (wip):
