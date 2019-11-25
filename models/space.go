@@ -1,29 +1,11 @@
 package models
 
-// App -
-type App struct {
-	Actual int
-	Desire int
-	RAM    int
-}
-
-// Apps -
-type Apps []App
-
-// Service -
-type Service struct {
-	Label       string
-	ServicePlan string
-}
-
-// Services -
-type Services []Service
-
 // Space -
 type Space struct {
-	Name     string
-	Apps     Apps
-	Services Services
+	Name       string
+	Apps       Apps
+	Services   Services
+	SummaryURL string
 }
 
 // Spaces -
@@ -34,7 +16,7 @@ type Spaces []Space
 func (space *Space) ConsumedMemory() int {
 	count := 0
 	for _, app := range space.Apps {
-		count += int(app.Actual * app.RAM)
+		count += int(app.RunningInstances * app.Memory)
 	}
 	return count
 }
@@ -67,7 +49,7 @@ func (space *Space) AppsCount() int {
 func (space *Space) RunningAppsCount() int {
 	count := 0
 	for _, app := range space.Apps {
-		if app.Actual > 0 {
+		if app.RunningInstances > 0 {
 			count++
 		}
 	}
@@ -87,7 +69,7 @@ func (space *Space) RunningAppsCount() int {
 func (space *Space) AppInstancesCount() int {
 	count := 0
 	for _, app := range space.Apps {
-		count += int(app.Desire)
+		count += int(app.Instances)
 	}
 	return count
 }
@@ -105,7 +87,7 @@ func (space *Space) AppInstancesCount() int {
 func (space *Space) RunningAppInstancesCount() int {
 	count := 0
 	for _, app := range space.Apps {
-		count += int(app.Actual)
+		count += int(app.RunningInstances)
 	}
 	return count
 }

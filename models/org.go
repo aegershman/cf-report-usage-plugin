@@ -6,6 +6,9 @@ type Org struct {
 	MemoryQuota int
 	MemoryUsage int
 	Spaces      Spaces
+	QuotaURL    string
+	SpacesURL   string
+	URL         string
 }
 
 // Orgs -

@@ -37,7 +37,7 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		Version: plugin.VersionType{
 			Major: 2,
 			Minor: 8,
-			Build: 1,
+			Build: 2,
 		},
 		Commands: []plugin.Command{
 			{
@@ -133,7 +133,7 @@ func (cmd *UsageReportCmd) getOrg(name string) (models.Org, error) {
 	return cmd.getOrgDetails(rawOrg)
 }
 
-func (cmd *UsageReportCmd) getOrgDetails(o apihelper.Organization) (models.Org, error) {
+func (cmd *UsageReportCmd) getOrgDetails(o models.Org) (models.Org, error) {
 	usage, err := cmd.apiHelper.GetOrgMemoryUsage(o)
 	if nil != err {
 		return models.Org{}, err
@@ -178,19 +178,11 @@ func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]models.Space, error) {
 }
 
 func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, []models.Service, error) {
-	rawApps, rawServices, err := cmd.apiHelper.GetSpaceAppsAndServices(summaryURL)
+	apps, rawServices, err := cmd.apiHelper.GetSpaceAppsAndServices(summaryURL)
 	if nil != err {
 		return nil, nil, err
 	}
-	var apps = []models.App{}
 	var services = []models.Service{}
-	for _, a := range rawApps {
-		apps = append(apps, models.App{
-			Actual: int(a.Actual),
-			Desire: int(a.Desire),
-			RAM:    int(a.RAM),
-		})
-	}
 	for _, s := range rawServices {
 		services = append(services, models.Service{
 			Label:       string(s.Label),

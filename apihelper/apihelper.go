@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"strconv"
 
+	"github.com/aegershman/cf-usage-report-plugin/models"
+
 	"github.com/aegershman/cf-usage-report-plugin/cfcurl"
 	"github.com/cloudfoundry/cli/plugin"
 )
@@ -15,54 +17,15 @@ var (
 	ErrOrgNotFound = errors.New("organization not found")
 )
 
-// Organization -
-type Organization struct {
-	URL       string
-	Name      string
-	QuotaURL  string
-	SpacesURL string
-}
-
-// Space -
-type Space struct {
-	Name       string
-	SummaryURL string
-}
-
-// App -
-type App struct {
-	Actual float64
-	Desire float64
-	RAM    float64
-}
-
-// Service -
-type Service struct {
-	Label       string
-	ServicePlan string
-}
-
-// Orgs -
-type Orgs []Organization
-
-// Spaces -
-type Spaces []Space
-
-// Apps -
-type Apps []App
-
-// Services -
-type Services []Service
-
 // CFAPIHelper wraps cf curl results
 type CFAPIHelper interface {
 	GetTarget() string
-	GetOrgs() (Orgs, error)
-	GetOrg(string) (Organization, error)
+	GetOrgs() (models.Orgs, error)
+	GetOrg(string) (models.Org, error)
 	GetQuotaMemoryLimit(string) (float64, error)
-	GetOrgMemoryUsage(Organization) (float64, error)
-	GetOrgSpaces(string) (Spaces, error)
-	GetSpaceAppsAndServices(string) (Apps, Services, error)
+	GetOrgMemoryUsage(models.Org) (float64, error)
+	GetOrgSpaces(string) (models.Spaces, error)
+	GetSpaceAppsAndServices(string) (models.Apps, models.Services, error)
 }
 
 // APIHelper -
@@ -91,13 +54,13 @@ func (api *APIHelper) GetTarget() string {
 }
 
 // GetOrgs -
-func (api *APIHelper) GetOrgs() (Orgs, error) {
+func (api *APIHelper) GetOrgs() (models.Orgs, error) {
 	orgsJSON, err := cfcurl.Curl(api.cli, "/v2/organizations")
 	if nil != err {
 		return nil, err
 	}
 	pages := int(orgsJSON["total_pages"].(float64))
-	orgs := []Organization{}
+	orgs := models.Orgs{}
 	for i := 1; i <= pages; i++ {
 		if 1 != i {
 			orgsJSON, err = cfcurl.Curl(api.cli, "/v2/organizations?page="+strconv.Itoa(i))
@@ -111,7 +74,7 @@ func (api *APIHelper) GetOrgs() (Orgs, error) {
 			}
 			metadata := theOrg["metadata"].(map[string]interface{})
 			orgs = append(orgs,
-				Organization{
+				models.Org{
 					Name:      name,
 					URL:       metadata["url"].(string),
 					QuotaURL:  entity["quota_definition_url"].(string),
@@ -123,17 +86,17 @@ func (api *APIHelper) GetOrgs() (Orgs, error) {
 }
 
 // GetOrg -
-func (api *APIHelper) GetOrg(name string) (Organization, error) {
+func (api *APIHelper) GetOrg(name string) (models.Org, error) {
 	query := fmt.Sprintf("name:%s", name)
 	path := fmt.Sprintf("/v2/organizations?q=%s", url.QueryEscape(query))
 	orgsJSON, err := cfcurl.Curl(api.cli, path)
 	if nil != err {
-		return Organization{}, err
+		return models.Org{}, err
 	}
 
 	results := int(orgsJSON["total_results"].(float64))
 	if results == 0 {
-		return Organization{}, ErrOrgNotFound
+		return models.Org{}, ErrOrgNotFound
 	}
 
 	orgResource := orgsJSON["resources"].([]interface{})[0]
@@ -142,11 +105,11 @@ func (api *APIHelper) GetOrg(name string) (Organization, error) {
 	return org, nil
 }
 
-func (api *APIHelper) orgResourceToOrg(o interface{}) Organization {
+func (api *APIHelper) orgResourceToOrg(o interface{}) models.Org {
 	theOrg := o.(map[string]interface{})
 	entity := theOrg["entity"].(map[string]interface{})
 	metadata := theOrg["metadata"].(map[string]interface{})
-	return Organization{
+	return models.Org{
 		Name:      entity["name"].(string),
 		URL:       metadata["url"].(string),
 		QuotaURL:  entity["quota_definition_url"].(string),
@@ -164,7 +127,7 @@ func (api *APIHelper) GetQuotaMemoryLimit(quotaURL string) (float64, error) {
 }
 
 // GetOrgMemoryUsage returns amount of memory (in MB) a given org is currently using
-func (api *APIHelper) GetOrgMemoryUsage(org Organization) (float64, error) {
+func (api *APIHelper) GetOrgMemoryUsage(org models.Org) (float64, error) {
 	usageJSON, err := cfcurl.Curl(api.cli, org.URL+"/memory_usage")
 	if nil != err {
 		return 0, err
@@ -173,9 +136,9 @@ func (api *APIHelper) GetOrgMemoryUsage(org Organization) (float64, error) {
 }
 
 // GetOrgSpaces returns the spaces in an org
-func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
+func (api *APIHelper) GetOrgSpaces(spacesURL string) (models.Spaces, error) {
 	nextURL := spacesURL
-	spaces := []Space{}
+	spaces := models.Spaces{}
 	for nextURL != "" {
 		spacesJSON, err := cfcurl.Curl(api.cli, nextURL)
 		if nil != err {
@@ -186,7 +149,7 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
 			metadata := theSpace["metadata"].(map[string]interface{})
 			entity := theSpace["entity"].(map[string]interface{})
 			spaces = append(spaces,
-				Space{
+				models.Space{
 					Name:       entity["name"].(string),
 					SummaryURL: metadata["url"].(string) + "/summary",
 				})
@@ -212,9 +175,9 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
 // Granted, on the other hand, this isn't the "cf go library" so if it makes opinionated
 // decisions about what to return it's not the end of the world. But even still, we probably
 // don't want to make those decisions here. We'll want to make them in a specific view.
-func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services, error) {
-	apps := []App{}
-	services := []Service{}
+func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (models.Apps, models.Services, error) {
+	apps := models.Apps{}
+	services := models.Services{}
 	summaryJSON, err := cfcurl.Curl(api.cli, summaryURL)
 	if nil != err {
 		return nil, nil, err
@@ -223,10 +186,10 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 		for _, a := range summaryJSON["apps"].([]interface{}) {
 			theApp := a.(map[string]interface{})
 			apps = append(apps,
-				App{
-					Actual: theApp["running_instances"].(float64),
-					Desire: theApp["instances"].(float64),
-					RAM:    theApp["memory"].(float64),
+				models.App{
+					RunningInstances: int(theApp["running_instances"].(float64)),
+					Instances:        int(theApp["instances"].(float64)),
+					Memory:           int(theApp["memory"].(float64)),
 				})
 		}
 	}
@@ -248,7 +211,7 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 					// and then act as though the only services that exist in
 					// a space are the ones that have passed the filter
 					services = append(services,
-						Service{
+						models.Service{
 							Label:       label,
 							ServicePlan: servicePlan["name"].(string),
 						})
