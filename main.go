@@ -45,8 +45,8 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 				UsageDetails: plugin.Usage{
 					Usage: "cf trueup-view [-o orgName...] -f string",
 					Options: map[string]string{
-						"-o": "organization(s) included in report. Flag can be provided multiple times.",
-						"-f": "format to print as (options: string,table) (default: string)",
+						"o": "organization(s) included in report. Flag can be provided multiple times.",
+						"f": "format to print as (options: string,table) (default: string)",
 					},
 				},
 			},
@@ -60,7 +60,7 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 	var formatFlag string
 
 	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
-	flagss.Var(&userFlags, "o", "-o orgName")
+	flagss.Var(&userFlags, "o", "")
 	flagss.StringVar(&formatFlag, "f", "string", "")
 	err := flagss.Parse(args[1:])
 	if err != nil {
