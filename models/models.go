@@ -91,6 +91,9 @@ type OrgStats struct {
 }
 
 // Report -
+// TODO consider breaking into "pre-init" and "post-init" structs,
+// e.g. "reportPlan" and "report"? Possibly makes it clearer that you're
+// supposed to "execute" the reportPlan to get it to generate the data?
 type Report struct {
 	Orgs       Orgs
 	orgStats   []OrgStats
