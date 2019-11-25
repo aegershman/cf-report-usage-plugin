@@ -24,6 +24,7 @@ func (r *Report) Execute() {
 	aggregateRunningAppInstancesCount := 0
 	aggregateStoppedAppInstancesCount := 0
 	aggregateBillableAppInstancesCount := 0
+	aggregateSpringCloudServicesCount := 0
 
 	var aggregateOrgStats []OrgStats
 
@@ -41,6 +42,7 @@ func (r *Report) Execute() {
 		aggregateRunningAppInstancesCount += orgStat.RunningAppInstancesCount
 		aggregateStoppedAppInstancesCount += orgStat.StoppedAppInstancesCount
 		aggregateBillableAppInstancesCount += orgStat.BillableAppInstancesCount
+		aggregateSpringCloudServicesCount += orgStat.SpringCloudServicesCount
 
 		aggregateOrgStats = append(aggregateOrgStats, orgStat)
 	}
@@ -51,6 +53,7 @@ func (r *Report) Execute() {
 		RunningAppInstancesCount:  aggregateRunningAppInstancesCount,
 		StoppedAppInstancesCount:  aggregateStoppedAppInstancesCount,
 		BillableAppInstancesCount: aggregateBillableAppInstancesCount,
+		SpringCloudServicesCount:  aggregateSpringCloudServicesCount,
 	}
 
 }

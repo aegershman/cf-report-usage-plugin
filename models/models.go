@@ -100,6 +100,7 @@ type AggregateOrgStats struct {
 	RunningAppInstancesCount  int
 	StoppedAppInstancesCount  int
 	BillableAppInstancesCount int
+	SpringCloudServicesCount  int
 }
 
 // Report -
