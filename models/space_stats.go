@@ -6,17 +6,16 @@ import "strings"
 // of Spaces; we can use it as a way to decorate
 // a Space with extra info like billableAIs, etc.
 type SpaceStats struct {
-	Space                     Space
-	Name                      string
-	AppsCount                 int
-	RunningAppsCount          int
-	StoppedAppsCount          int
-	AppInstancesCount         int
-	RunningAppInstancesCount  int
-	StoppedAppInstancesCount  int
-	ServicesCount             int
-	ConsumedMemory            int
-	BillableAppInstancesCount int
+	Space                    Space
+	Name                     string
+	AppsCount                int
+	RunningAppsCount         int
+	StoppedAppsCount         int
+	AppInstancesCount        int
+	RunningAppInstancesCount int
+	StoppedAppInstancesCount int
+	ServicesCount            int
+	ConsumedMemory           int
 }
 
 // Stats -
@@ -141,5 +140,16 @@ func (ss *SpaceStats) SpringCloudServicesCount() int {
 func (ss *SpaceStats) BillableServicesCount() int {
 	count := ss.Space.ServicesCount()
 	count -= ss.SpringCloudServicesCount()
+	return count
+}
+
+// BillableAppInstancesCount returns the count of "billable" AIs
+//
+// This includes anything which Pivotal deems "billable" as an AI, even if CF
+// considers it a service; e.g., SCS instances (config server, service registry, etc.)
+func (ss *SpaceStats) BillableAppInstancesCount() int {
+	count := 0
+	count += ss.Space.AppInstancesCount()
+	count += ss.SpringCloudServicesCount()
 	return count
 }
