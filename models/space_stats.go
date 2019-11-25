@@ -34,7 +34,16 @@ func NewSpaceStats(space Space, skipSIcount bool) SpaceStats {
 	}
 
 	return SpaceStats{
-		Space: space,
+		Space:                    space,
+		Name:                     space.Name,
+		AppsCount:                space.AppsCount(),
+		RunningAppsCount:         space.RunningAppsCount(),
+		StoppedAppsCount:         space.AppsCount() - space.RunningAppsCount(),
+		AppInstancesCount:        space.AppInstancesCount(),
+		RunningAppInstancesCount: space.RunningAppInstancesCount(),
+		StoppedAppInstancesCount: space.AppInstancesCount() - space.RunningAppInstancesCount(),
+		ServicesCount:            space.ServicesCount(),
+		ConsumedMemory:           space.ConsumedMemory(),
 	}
 }
 
