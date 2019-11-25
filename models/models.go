@@ -92,5 +92,7 @@ type OrgStats struct {
 
 // Report -
 type Report struct {
-	Orgs Orgs
+	Orgs       Orgs
+	orgStats   []OrgStats
+	spaceStats []SpaceStats
 }
