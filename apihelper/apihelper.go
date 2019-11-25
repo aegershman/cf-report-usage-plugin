@@ -201,20 +201,16 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (models.Apps, m
 			if _, servicePlanExist := theService["service_plan"]; servicePlanExist {
 				servicePlan := theService["service_plan"].(map[string]interface{})
 				if _, serviceExist := servicePlan["service"]; serviceExist {
+
 					service := servicePlan["service"].(map[string]interface{})
 					label := service["label"].(string)
-					// Don't do filtering here: filter in a different location.
-					// Here we just want to aggregate the data into something we
-					// can use in a presenter somewhere else.
-					//
-					// Also we shouldn't do premature filtering here
-					// and then act as though the only services that exist in
-					// a space are the ones that have passed the filter
+
 					services = append(services,
 						models.Service{
-							Label:       label,
-							ServicePlan: servicePlan["name"].(string),
+							ServicePlanLabel: label,
+							ServicePlanName:  servicePlan["name"].(string),
 						})
+
 				}
 			}
 		}
