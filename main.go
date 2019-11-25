@@ -44,10 +44,10 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 				Name:     "usage-report",
 				HelpText: "View AIs, SIs and memory usage for orgs and spaces",
 				UsageDetails: plugin.Usage{
-					Usage: "cf usage-report [-o orgName...] --format string",
+					Usage: "cf usage-report [-o orgName...] --format formatChoice",
 					Options: map[string]string{
 						"o":         "organization(s) included in report. Flag can be provided multiple times.",
-						"format":    "format to print as (options: string,table) (default: string)",
+						"format":    "format to print as (options: string,table) (default: table)",
 						"log-level": "(options: info,debug,trace) (default: info)",
 					},
 				},
@@ -66,7 +66,7 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 
 	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
 	flagss.Var(&userFlags, "o", "")
-	flagss.StringVar(&formatFlag, "format", "string", "")
+	flagss.StringVar(&formatFlag, "format", "table", "")
 	flagss.StringVar(&logLevelFlag, "log-level", "info", "")
 	err := flagss.Parse(args[1:])
 	if err != nil {

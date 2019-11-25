@@ -12,7 +12,7 @@ cf usage-report
 cf usage-report -o myorg
 cf usage-report -o firstorg -o secondorg [-o orgName...]
 
-# report using different formats ("string" is default)
+# report using different formats
 cf usage-report -o firstorg -o secondorg --format string
 cf usage-report -o firstorg -o secondorg --format table
 ```
