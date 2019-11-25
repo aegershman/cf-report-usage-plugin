@@ -16,7 +16,7 @@ func (p *Presenter) asString() {
 		spaceUniqueAppGuidsMsg       = "\t\t%d unique app_guids: %d running %d stopped\n"
 		spaceServiceMsg              = "\t\t%d service instances total\n"
 		spaceServiceSuiteMsg         = "\t\t%d service instances of type Service Suite (mysql, redis, rmq)\n"
-		reportSummaryMsg             = "Across %d org(s), you have %d billable AIs, %d are canonical AIs (%d running, %d stopped)\n"
+		reportSummaryMsg             = "Across %d org(s), you have %d billable AIs, %d are canonical AIs (%d running, %d stopped), %d are SCS instances\n"
 	)
 
 	for _, orgStat := range p.Report.OrgStats {
@@ -42,7 +42,9 @@ func (p *Presenter) asString() {
 			p.Report.AggregateOrgStats.AppInstancesCount,
 			p.Report.AggregateOrgStats.RunningAppInstancesCount,
 			p.Report.AggregateOrgStats.StoppedAppInstancesCount,
-			nil))
+			p.Report.AggregateOrgStats.SpringCloudServicesCount,
+		),
+	)
 
 	fmt.Println(response.String())
 }
