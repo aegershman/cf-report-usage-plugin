@@ -48,7 +48,7 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 					Options: map[string]string{
 						"o":         "organization(s) included in report. Flag can be provided multiple times.",
 						"format":    "format to print as (options: string,table) (default: string)",
-						"log-level": "(options: info,debug) (default: info)",
+						"log-level": "(options: info,debug,trace) (default: info)",
 					},
 				},
 			},
