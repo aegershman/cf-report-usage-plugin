@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
 
 	"github.com/aegershman/cf-usage-report-plugin/apihelper"
 	"github.com/aegershman/cf-usage-report-plugin/models"
@@ -68,34 +67,32 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 	flagss.Var(&userFlags, "o", "")
 	flagss.StringVar(&formatFlag, "format", "table", "")
 	flagss.StringVar(&logLevelFlag, "log-level", "info", "")
+
 	err := flagss.Parse(args[1:])
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	logLevel, err := log.ParseLevel(logLevelFlag)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatalln(err)
 	}
 
+	logLevel, err := log.ParseLevel(logLevelFlag)
+	if err != nil {
+		log.Fatalln(err)
+	}
 	log.SetLevel(logLevel)
+
 	var orgs []models.Org
 
 	if len(userFlags.OrgNames) > 0 {
 		for _, orgArg := range userFlags.OrgNames {
 			org, err := cmd.getOrg(orgArg)
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
+			if err != nil {
+				log.Fatalln(err)
 			}
 			orgs = append(orgs, org)
 		}
 	} else {
 		orgs, err = cmd.getOrgs()
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
+		if err != nil {
+			log.Fatalln(err)
 		}
 	}
 
