@@ -71,6 +71,7 @@ type OrgStats struct {
 	MemoryQuota              int
 	MemoryUsage              int
 	Spaces                   Spaces
+	SpaceStats               []SpaceStats // TODO unsure if this is best model...?
 	AppsCount                int
 	RunningAppsCount         int
 	StoppedAppsCount         int
