@@ -93,8 +93,10 @@ type OrgStats struct {
 
 // AggregateOrgStats describes an aggregated view
 // of multiple OrgStats after a Report Execution run
-// (TODO wip, mostly a placeholder)
 type AggregateOrgStats struct {
+	AppInstancesCount         int
+	RunningAppInstancesCount  int
+	StoppedAppInstancesCount  int
 	BillableAppInstancesCount int
 }
 
