@@ -47,6 +47,17 @@ func (space *Space) RunningAppsCount() int {
 	return count
 }
 
+// BillableAppInstancesCount returns the count of "billable" AIs
+//
+// This includes anything which Pivotal deems "billable" as an AI, even if CF
+// considers it a service; e.g., SCS instances (config server, service registry, etc.)
+func (space *Space) BillableAppInstancesCount() int {
+	count := 0
+	count += space.AppInstancesCount()
+	count += space.SpringCloudServicesCount()
+	return count
+}
+
 // AppInstancesCount returns the count of declared canonical app instances
 // regardless of start/stop state
 //
@@ -91,6 +102,16 @@ func (space *Space) RunningAppInstancesCount() int {
 // show up in `cf services`
 func (space *Space) ServicesCount() int {
 	count := len(space.Services)
+	return count
+}
+
+// BillableServicesCount returns the count of "billable" SIs
+//
+// This includes anything which Pivotal deems "billable" as an SI; this might mean
+// subtracting certain services (like SCS) from the count of `cf services`
+func (space *Space) BillableServicesCount() int {
+	count := space.ServicesCount()
+	count -= space.SpringCloudServicesCount()
 	return count
 }
 

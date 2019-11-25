@@ -16,18 +16,18 @@ func NewSpaceStats(space Space, skipSIcount bool) SpaceStats {
 	runningUniqueApps := space.RunningAppsCount()
 	stoppedUniqueApps := totalUniqueApps - runningUniqueApps
 
-	servicesSuiteForPivotalPlatformCount := space.ServicesSuiteForPivotalPlatformCount()
-
+	billableAppInstancesCount := space.BillableAppInstancesCount()
 	appInstancesCount := space.AppInstancesCount()
 	runningAppInstancesCount := space.RunningAppInstancesCount()
 	stoppedAppInstancesCount := appInstancesCount - runningAppInstancesCount
 
-	billableAppInstancesCount := space.AppInstancesCount()
-	billableAppInstancesCount += space.SpringCloudServicesCount()
-
 	consumedMemory := space.ConsumedMemory()
+
+	billableServicesCount := space.BillableServicesCount()
 	servicesCount := space.ServicesCount()
-	billableServicesCount := servicesCount - space.SpringCloudServicesCount()
+	springCloudServicesCount := space.SpringCloudServicesCount()
+	servicesSuiteForPivotalPlatformCount := space.ServicesSuiteForPivotalPlatformCount()
+
 	if skipSIcount {
 		servicesCount = 0
 	}
@@ -42,6 +42,7 @@ func NewSpaceStats(space Space, skipSIcount bool) SpaceStats {
 		StoppedAppInstancesCount:             stoppedAppInstancesCount,
 		ServicesCount:                        servicesCount,
 		ConsumedMemory:                       consumedMemory,
+		SpringCloudServicesCount:             springCloudServicesCount,
 		ServicesSuiteForPivotalPlatformCount: servicesSuiteForPivotalPlatformCount,
 		BillableAppInstancesCount:            billableAppInstancesCount,
 		BillableServicesCount:                billableServicesCount,

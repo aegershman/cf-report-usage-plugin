@@ -20,21 +20,54 @@ func NewReport(orgs Orgs) Report {
 func (r *Report) Execute() {
 	chOrgStats := make(chan OrgStats, len(r.Orgs))
 
+	aggregateBillableAppInstancesCount := 0
+	aggregateAppInstancesCount := 0
+	aggregateRunningAppInstancesCount := 0
+	aggregateStoppedAppInstancesCount := 0
+	aggregateSpringCloudServicesCount := 0
+	aggregateBillableServicesCount := 0
+
 	var aggregateOrgStats []OrgStats
 
 	go r.Orgs.Stats(chOrgStats)
 	for orgStat := range chOrgStats {
-		log.Debugf("processing %s\n", orgStat.Name) // todo just testing
+
+		log.WithFields(log.Fields{
+			"org": orgStat.Name,
+		}).Traceln("processing")
+
 		chSpaceStats := make(chan SpaceStats, len(orgStat.Spaces))
-		// TODO make this more dynamic
-		go orgStat.Spaces.Stats(chSpaceStats, orgStat.Name == "p-spring-cloud-services")
+		go orgStat.Spaces.Stats(chSpaceStats, orgStat.Name == "p-spring-cloud-services") // TODO make this more dynamic
 		for spaceStat := range chSpaceStats {
-			log.Debugf("processing %s\n", spaceStat.Name) // todo just testing
+
+			log.WithFields(log.Fields{
+				"org":   orgStat.Name,
+				"space": spaceStat.Name,
+			}).Traceln("processing")
+
 			orgStat.SpaceStats = append(orgStat.SpaceStats, spaceStat)
+
 		}
+
+		aggregateBillableAppInstancesCount += orgStat.BillableAppInstancesCount
+		aggregateAppInstancesCount += orgStat.AppInstancesCount
+		aggregateRunningAppInstancesCount += orgStat.RunningAppInstancesCount
+		aggregateStoppedAppInstancesCount += orgStat.StoppedAppInstancesCount
+		aggregateSpringCloudServicesCount += orgStat.SpringCloudServicesCount
+		aggregateBillableServicesCount += orgStat.BillableServicesCount
+
 		aggregateOrgStats = append(aggregateOrgStats, orgStat)
+
 	}
 
 	r.OrgStats = aggregateOrgStats
+	r.AggregateOrgStats = AggregateOrgStats{
+		BillableAppInstancesCount: aggregateBillableAppInstancesCount,
+		BillableServicesCount:     aggregateBillableServicesCount,
+		AppInstancesCount:         aggregateAppInstancesCount,
+		RunningAppInstancesCount:  aggregateRunningAppInstancesCount,
+		StoppedAppInstancesCount:  aggregateStoppedAppInstancesCount,
+		SpringCloudServicesCount:  aggregateSpringCloudServicesCount,
+	}
 
 }

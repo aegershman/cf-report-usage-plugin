@@ -44,58 +44,50 @@ type Orgs []Org
 // of Spaces; we can use it as a way to decorate
 // a Space with extra info like billableAIs, etc.
 type SpaceStats struct {
-	Name                     string
-	AppsCount                int
-	RunningAppsCount         int
-	StoppedAppsCount         int
-	AppInstancesCount        int
-	RunningAppInstancesCount int
-	StoppedAppInstancesCount int
-	ServicesCount            int
-	ConsumedMemory           int
-
+	Name                                 string
+	AppsCount                            int
+	RunningAppsCount                     int
+	StoppedAppsCount                     int
+	AppInstancesCount                    int
+	RunningAppInstancesCount             int
+	StoppedAppInstancesCount             int
+	ServicesCount                        int
+	ConsumedMemory                       int
+	SpringCloudServicesCount             int
 	ServicesSuiteForPivotalPlatformCount int
-
-	// includes anything which Pivotal deems "billable" as an AI, even if CF
-	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
-	BillableAppInstancesCount int
-
-	// count of anything which Pivotal deems "billable" as an SI; this might mean
-	// subtracting certain services (like SCS) from the count of `cf services`
-	BillableServicesCount int
+	BillableAppInstancesCount            int
+	BillableServicesCount                int
 }
 
 // OrgStats -
 type OrgStats struct {
-	Name                     string
-	MemoryQuota              int
-	MemoryUsage              int
-	Spaces                   Spaces
-	SpaceStats               []SpaceStats // TODO unsure if this is best model...?
-	AppsCount                int
-	RunningAppsCount         int
-	StoppedAppsCount         int
-	AppInstancesCount        int
-	RunningAppInstancesCount int
-	StoppedAppInstancesCount int
-	ServicesCount            int
-
+	Name                                 string
+	MemoryQuota                          int
+	MemoryUsage                          int
+	Spaces                               Spaces
+	SpaceStats                           []SpaceStats // TODO unsure if this is best model...?
+	AppsCount                            int
+	RunningAppsCount                     int
+	StoppedAppsCount                     int
+	AppInstancesCount                    int
+	RunningAppInstancesCount             int
+	StoppedAppInstancesCount             int
+	ServicesCount                        int
+	SpringCloudServicesCount             int
 	ServicesSuiteForPivotalPlatformCount int
-
-	// includes anything which Pivotal deems "billable" as an AI, even if CF
-	// considers it a service; e.g., SCS instances (config server, service registry, etc.)
-	BillableAppInstancesCount int
-
-	// count of anything which Pivotal deems "billable" as an SI; this might mean
-	// subtracting certain services (like SCS) from the count of `cf services`
-	BillableServicesCount int
+	BillableAppInstancesCount            int
+	BillableServicesCount                int
 }
 
 // AggregateOrgStats describes an aggregated view
 // of multiple OrgStats after a Report Execution run
-// (TODO wip, mostly a placeholder)
 type AggregateOrgStats struct {
+	AppInstancesCount         int
+	RunningAppInstancesCount  int
+	StoppedAppInstancesCount  int
 	BillableAppInstancesCount int
+	SpringCloudServicesCount  int
+	BillableServicesCount     int
 }
 
 // Report -

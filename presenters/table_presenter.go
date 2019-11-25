@@ -28,6 +28,13 @@ func (p *Presenter) asTable() {
 		}
 	}
 
+	table.SetFooter([]string{
+		"-",
+		"Total",
+		strconv.Itoa(p.Report.AggregateOrgStats.BillableAppInstancesCount),
+		strconv.Itoa(p.Report.AggregateOrgStats.BillableServicesCount),
+	})
+
 	table.Render()
 
 }
