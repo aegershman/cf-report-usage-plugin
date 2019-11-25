@@ -4,6 +4,17 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// AggregateOrgStats describes an aggregated view
+// of multiple OrgStats after a Report Execution run
+type AggregateOrgStats struct {
+	AppInstancesCount         int
+	RunningAppInstancesCount  int
+	StoppedAppInstancesCount  int
+	BillableAppInstancesCount int
+	SpringCloudServicesCount  int
+	BillableServicesCount     int
+}
+
 // Report -
 // TODO consider breaking into "pre-init" and "post-init" structs,
 // e.g. "reportPlan" and "report"? Possibly makes it clearer that you're
@@ -59,12 +70,12 @@ func (r *Report) Execute() {
 
 		}
 
-		aggregateBillableAppInstancesCount += orgStat.BillableAppInstancesCount
+		aggregateBillableAppInstancesCount += orgStat.BillableAppInstancesCount()
 		aggregateAppInstancesCount += orgStat.AppInstancesCount
 		aggregateRunningAppInstancesCount += orgStat.RunningAppInstancesCount
 		aggregateStoppedAppInstancesCount += orgStat.StoppedAppInstancesCount
-		aggregateSpringCloudServicesCount += orgStat.SpringCloudServicesCount
-		aggregateBillableServicesCount += orgStat.BillableServicesCount
+		aggregateSpringCloudServicesCount += orgStat.SpringCloudServicesCount()
+		aggregateBillableServicesCount += orgStat.BillableServicesCount()
 
 		aggregateOrgStats = append(aggregateOrgStats, orgStat)
 

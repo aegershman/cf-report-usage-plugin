@@ -28,11 +28,11 @@ func (p *Presenter) asString() {
 				response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceStat.Name, spaceStat.ConsumedMemory, spaceMemoryConsumedPercentage))
 			}
 			response.WriteString(fmt.Sprintf(spaceAppInstancesMsg, spaceStat.AppInstancesCount, spaceStat.RunningAppInstancesCount, spaceStat.StoppedAppInstancesCount))
-			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, spaceStat.BillableAppInstancesCount))
+			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, spaceStat.BillableAppInstancesCount()))
 			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceStat.AppsCount, spaceStat.RunningAppsCount, spaceStat.StoppedAppsCount))
 			response.WriteString(fmt.Sprintf(spaceServiceMsg, spaceStat.ServicesCount))
-			response.WriteString(fmt.Sprintf(spaceSCSMsg, spaceStat.SpringCloudServicesCount))
-			response.WriteString(fmt.Sprintf(spaceServiceSuiteMsg, spaceStat.ServicesSuiteForPivotalPlatformCount))
+			response.WriteString(fmt.Sprintf(spaceSCSMsg, spaceStat.SpringCloudServicesCount()))
+			response.WriteString(fmt.Sprintf(spaceServiceSuiteMsg, spaceStat.ServicesSuiteForPivotalPlatformCount()))
 		}
 	}
 

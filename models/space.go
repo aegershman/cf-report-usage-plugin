@@ -1,7 +1,5 @@
 package models
 
-import "strings"
-
 // App -
 type App struct {
 	Actual int
@@ -76,17 +74,6 @@ func (space *Space) RunningAppsCount() int {
 	return count
 }
 
-// BillableAppInstancesCount returns the count of "billable" AIs
-//
-// This includes anything which Pivotal deems "billable" as an AI, even if CF
-// considers it a service; e.g., SCS instances (config server, service registry, etc.)
-func (space *Space) BillableAppInstancesCount() int {
-	count := 0
-	count += space.AppInstancesCount()
-	count += space.SpringCloudServicesCount()
-	return count
-}
-
 // AppInstancesCount returns the count of declared canonical app instances
 // regardless of start/stop state
 //
@@ -131,72 +118,5 @@ func (space *Space) RunningAppInstancesCount() int {
 // show up in `cf services`
 func (space *Space) ServicesCount() int {
 	count := len(space.Services)
-	return count
-}
-
-// BillableServicesCount returns the count of "billable" SIs
-//
-// This includes anything which Pivotal deems "billable" as an SI; this might mean
-// subtracting certain services (like SCS) from the count of `cf services`
-func (space *Space) BillableServicesCount() int {
-	count := space.ServicesCount()
-	count -= space.SpringCloudServicesCount()
-	return count
-}
-
-// ServicesCountByServiceLabel returns the number of service instances
-// within a space which contain the provided service label.
-//
-// Keep in mind, when we say "service label", we aren't talking about
-// metadata labels; this is the label property of the "service" object
-func (space *Space) ServicesCountByServiceLabel(serviceType string) int {
-	count := 0
-	for _, service := range space.Services {
-		if strings.Contains(service.Label, serviceType) {
-			count++
-		}
-	}
-	return count
-}
-
-// ServicesSuiteForPivotalPlatformCount returns the number of service instances
-// part of the "services suite for pivotal platform", e.g. Pivotal's MySQL/Redis/RMQ
-//
-// see: https://network.pivotal.io/products/pcf-services
-// (I know right? It's an intense function name)
-func (space *Space) ServicesSuiteForPivotalPlatformCount() int {
-	count := 0
-
-	count += space.ServicesCountByServiceLabel("p-dataflow-servers") // TODO
-
-	count += space.ServicesCountByServiceLabel("p-mysql")
-	count += space.ServicesCountByServiceLabel("p.mysql")
-	count += space.ServicesCountByServiceLabel("pivotal-mysql")
-
-	count += space.ServicesCountByServiceLabel("p-redis")
-	count += space.ServicesCountByServiceLabel("p.redis")
-
-	count += space.ServicesCountByServiceLabel("p-rabbitmq")
-	count += space.ServicesCountByServiceLabel("p.rabbitmq")
-
-	return count
-}
-
-// SpringCloudServicesCount returns the number of service instances
-// from "spring cloud services" tile, e.g. config-server/service-registry/circuit-breaker/etc.
-//
-// see: https://network.pivotal.io/products/p-spring-cloud-services/
-func (space *Space) SpringCloudServicesCount() int {
-	count := 0
-
-	// scs 2.x
-	count += space.ServicesCountByServiceLabel("p-config-server")
-	count += space.ServicesCountByServiceLabel("p-service-registry")
-	count += space.ServicesCountByServiceLabel("p-circuit-breaker")
-
-	// scs 3.x
-	count += space.ServicesCountByServiceLabel("p.config-server")
-	count += space.ServicesCountByServiceLabel("p.service-registry")
-
 	return count
 }
