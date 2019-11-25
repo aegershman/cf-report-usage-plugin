@@ -1,5 +1,9 @@
 package models
 
+import (
+	log "github.com/sirupsen/logrus"
+)
+
 // NewReport -
 func NewReport(orgs Orgs) Report {
 	return Report{
@@ -20,10 +24,12 @@ func (r *Report) Execute() {
 
 	go r.Orgs.Stats(chOrgStats)
 	for orgStat := range chOrgStats {
+		log.Debugf("processing %s\n", orgStat.Name) // todo just testing
 		chSpaceStats := make(chan SpaceStats, len(orgStat.Spaces))
 		// TODO make this more dynamic
 		go orgStat.Spaces.Stats(chSpaceStats, orgStat.Name == "p-spring-cloud-services")
 		for spaceStat := range chSpaceStats {
+			log.Debugf("processing %s\n", spaceStat.Name) // todo just testing
 			orgStat.SpaceStats = append(orgStat.SpaceStats, spaceStat)
 		}
 		aggregateOrgStats = append(aggregateOrgStats, orgStat)
