@@ -105,6 +105,16 @@ func (space *Space) ServicesCount() int {
 	return count
 }
 
+// BillableServicesCount returns the count of "billable" SIs
+//
+// This includes anything which Pivotal deems "billable" as an SI; this might mean
+// subtracting certain services (like SCS) from the count of `cf services`
+func (space *Space) BillableServicesCount() int {
+	count := space.ServicesCount()
+	count -= space.SpringCloudServicesCount()
+	return count
+}
+
 // ServicesCountByServiceLabel returns the number of service instances
 // within a space which contain the provided service label.
 //
