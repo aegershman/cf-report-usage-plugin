@@ -90,12 +90,20 @@ type OrgStats struct {
 	BillableServicesCount int
 }
 
+// AggregateOrgStats describes an aggregated view
+// of multiple OrgStats after a Report Execution run
+// (TODO wip, mostly a placeholder)
+type AggregateOrgStats struct {
+	BillableAppInstancesCount int
+}
+
 // Report -
 // TODO consider breaking into "pre-init" and "post-init" structs,
 // e.g. "reportPlan" and "report"? Possibly makes it clearer that you're
 // supposed to "execute" the reportPlan to get it to generate the data?
 type Report struct {
-	Orgs       Orgs
-	orgStats   []OrgStats
-	spaceStats []SpaceStats
+	Orgs              Orgs
+	orgStats          []OrgStats
+	spaceStats        []SpaceStats
+	aggregateOrgStats AggregateOrgStats
 }
