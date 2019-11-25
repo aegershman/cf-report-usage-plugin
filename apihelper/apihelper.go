@@ -25,17 +25,8 @@ type Organization struct {
 	SpacesURL string
 }
 
-// Space -
-type Space struct {
-	Name       string
-	SummaryURL string
-}
-
 // Orgs -
 type Orgs []Organization
-
-// Spaces -
-type Spaces []Space
 
 // CFAPIHelper wraps cf curl results
 type CFAPIHelper interface {
@@ -44,7 +35,7 @@ type CFAPIHelper interface {
 	GetOrg(string) (Organization, error)
 	GetQuotaMemoryLimit(string) (float64, error)
 	GetOrgMemoryUsage(Organization) (float64, error)
-	GetOrgSpaces(string) (Spaces, error)
+	GetOrgSpaces(string) (models.Spaces, error)
 	GetSpaceAppsAndServices(string) (models.Apps, models.Services, error)
 }
 
@@ -156,9 +147,9 @@ func (api *APIHelper) GetOrgMemoryUsage(org Organization) (float64, error) {
 }
 
 // GetOrgSpaces returns the spaces in an org
-func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
+func (api *APIHelper) GetOrgSpaces(spacesURL string) (models.Spaces, error) {
 	nextURL := spacesURL
-	spaces := []Space{}
+	spaces := models.Spaces{}
 	for nextURL != "" {
 		spacesJSON, err := cfcurl.Curl(api.cli, nextURL)
 		if nil != err {
@@ -169,7 +160,7 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
 			metadata := theSpace["metadata"].(map[string]interface{})
 			entity := theSpace["entity"].(map[string]interface{})
 			spaces = append(spaces,
-				Space{
+				models.Space{
 					Name:       entity["name"].(string),
 					SummaryURL: metadata["url"].(string) + "/summary",
 				})

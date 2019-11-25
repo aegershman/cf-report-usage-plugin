@@ -2,9 +2,10 @@ package models
 
 // Space -
 type Space struct {
-	Name     string
-	Apps     Apps
-	Services Services
+	Name       string
+	Apps       Apps
+	Services   Services
+	SummaryURL string
 }
 
 // Spaces -
