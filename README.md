@@ -27,8 +27,8 @@ cf trueup-view -o myorg
 cf trueup-view -o firstorg -o secondorg [-o orgName...]
 
 # report using different formats ("string" is default)
-cf trueup-view -o firstorg -o secondorg -f string
-cf trueup-view -o firstorg -o secondorg -f table
+cf trueup-view -o firstorg -o secondorg --format string
+cf trueup-view -o firstorg -o secondorg --format table
 ```
 
 Example of `string` format:

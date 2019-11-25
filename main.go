@@ -9,6 +9,7 @@ import (
 	"github.com/aegershman/cf-trueup-plugin/models"
 	"github.com/aegershman/cf-trueup-plugin/presenters"
 	"github.com/cloudfoundry/cli/plugin"
+	log "github.com/sirupsen/logrus"
 )
 
 // UsageReportCmd -
@@ -36,17 +37,18 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		Version: plugin.VersionType{
 			Major: 2,
 			Minor: 7,
-			Build: 4,
+			Build: 5,
 		},
 		Commands: []plugin.Command{
 			{
 				Name:     "trueup-view",
 				HelpText: "View AIs, SIs and memory usage for orgs and spaces",
 				UsageDetails: plugin.Usage{
-					Usage: "cf trueup-view [-o orgName...] -f string",
+					Usage: "cf trueup-view [-o orgName...] --format string",
 					Options: map[string]string{
-						"-o": "organization(s) included in report. Flag can be provided multiple times.",
-						"-f": "format to print as (options: string,table) (default: string)",
+						"o":         "organization(s) included in report. Flag can be provided multiple times.",
+						"format":    "format to print as (options: string,table) (default: string)",
+						"log-level": "(options: info,debug) (default: info)",
 					},
 				},
 			},
@@ -56,18 +58,28 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 
 // UsageReportCommand -
 func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
-	var userFlags flags
-	var formatFlag string
+	var (
+		userFlags    flags
+		formatFlag   string
+		logLevelFlag string
+	)
 
 	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
-	flagss.Var(&userFlags, "o", "-o orgName")
-	flagss.StringVar(&formatFlag, "f", "string", "")
+	flagss.Var(&userFlags, "o", "")
+	flagss.StringVar(&formatFlag, "format", "string", "")
+	flagss.StringVar(&logLevelFlag, "log-level", "info", "")
 	err := flagss.Parse(args[1:])
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	logLevel, err := log.ParseLevel(logLevelFlag)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
+	log.SetLevel(logLevel)
 	var orgs []models.Org
 
 	if len(userFlags.OrgNames) > 0 {
