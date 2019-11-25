@@ -1,17 +1,17 @@
 package presenters
 
 import (
-	m "github.com/aegershman/cf-trueup-plugin/models"
+	"github.com/aegershman/cf-trueup-plugin/models"
 )
 
 // Presenter -
 type Presenter struct {
-	Report m.Report
+	Report models.Report
 	Format string
 }
 
 // NewPresenter -
-func NewPresenter(r m.Report, format string) Presenter {
+func NewPresenter(r models.Report, format string) Presenter {
 	return Presenter{
 		Report: r,
 		Format: format,

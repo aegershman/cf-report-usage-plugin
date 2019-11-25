@@ -7,7 +7,7 @@ import (
 
 	"github.com/aegershman/cf-trueup-plugin/apihelper"
 	"github.com/aegershman/cf-trueup-plugin/models"
-	p "github.com/aegershman/cf-trueup-plugin/presenters"
+	"github.com/aegershman/cf-trueup-plugin/presenters"
 	"github.com/cloudfoundry/cli/plugin"
 )
 
@@ -69,7 +69,6 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 	}
 
 	var orgs []models.Org
-	var report models.Report
 
 	if len(userFlags.OrgNames) > 0 {
 		for _, orgArg := range userFlags.OrgNames {
@@ -88,9 +87,10 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 		}
 	}
 
-	report.Orgs = orgs
+	report := models.NewReport(orgs)
+	report.Execute()
 
-	presenter := p.NewPresenter(report, formatFlag)
+	presenter := presenters.NewPresenter(report, formatFlag)
 	presenter.Render()
 }
 

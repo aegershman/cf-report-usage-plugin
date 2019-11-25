@@ -40,11 +40,6 @@ type Org struct {
 // Orgs -
 type Orgs []Org
 
-// Report -
-type Report struct {
-	Orgs Orgs
-}
-
 // SpaceStats is a way to represent the 'business logic'
 // of Spaces; we can use it as a way to decorate
 // a Space with extra info like billableAIs, etc.
@@ -93,4 +88,22 @@ type OrgStats struct {
 	// count of anything which Pivotal deems "billable" as an SI; this might mean
 	// subtracting certain services (like SCS) from the count of `cf services`
 	BillableServicesCount int
+}
+
+// AggregateOrgStats describes an aggregated view
+// of multiple OrgStats after a Report Execution run
+// (TODO wip, mostly a placeholder)
+type AggregateOrgStats struct {
+	BillableAppInstancesCount int
+}
+
+// Report -
+// TODO consider breaking into "pre-init" and "post-init" structs,
+// e.g. "reportPlan" and "report"? Possibly makes it clearer that you're
+// supposed to "execute" the reportPlan to get it to generate the data?
+type Report struct {
+	Orgs              Orgs
+	OrgStats          []OrgStats
+	SpaceStats        []SpaceStats
+	AggregateOrgStats AggregateOrgStats
 }
