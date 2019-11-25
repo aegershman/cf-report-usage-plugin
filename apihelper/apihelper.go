@@ -17,24 +17,13 @@ var (
 	ErrOrgNotFound = errors.New("organization not found")
 )
 
-// Organization -
-type Organization struct {
-	URL       string
-	Name      string
-	QuotaURL  string
-	SpacesURL string
-}
-
-// Orgs -
-type Orgs []Organization
-
 // CFAPIHelper wraps cf curl results
 type CFAPIHelper interface {
 	GetTarget() string
-	GetOrgs() (Orgs, error)
-	GetOrg(string) (Organization, error)
+	GetOrgs() (models.Orgs, error)
+	GetOrg(string) (models.Org, error)
 	GetQuotaMemoryLimit(string) (float64, error)
-	GetOrgMemoryUsage(Organization) (float64, error)
+	GetOrgMemoryUsage(models.Org) (float64, error)
 	GetOrgSpaces(string) (models.Spaces, error)
 	GetSpaceAppsAndServices(string) (models.Apps, models.Services, error)
 }
@@ -65,13 +54,13 @@ func (api *APIHelper) GetTarget() string {
 }
 
 // GetOrgs -
-func (api *APIHelper) GetOrgs() (Orgs, error) {
+func (api *APIHelper) GetOrgs() (models.Orgs, error) {
 	orgsJSON, err := cfcurl.Curl(api.cli, "/v2/organizations")
 	if nil != err {
 		return nil, err
 	}
 	pages := int(orgsJSON["total_pages"].(float64))
-	orgs := []Organization{}
+	orgs := models.Orgs{}
 	for i := 1; i <= pages; i++ {
 		if 1 != i {
 			orgsJSON, err = cfcurl.Curl(api.cli, "/v2/organizations?page="+strconv.Itoa(i))
@@ -85,7 +74,7 @@ func (api *APIHelper) GetOrgs() (Orgs, error) {
 			}
 			metadata := theOrg["metadata"].(map[string]interface{})
 			orgs = append(orgs,
-				Organization{
+				models.Org{
 					Name:      name,
 					URL:       metadata["url"].(string),
 					QuotaURL:  entity["quota_definition_url"].(string),
@@ -97,17 +86,17 @@ func (api *APIHelper) GetOrgs() (Orgs, error) {
 }
 
 // GetOrg -
-func (api *APIHelper) GetOrg(name string) (Organization, error) {
+func (api *APIHelper) GetOrg(name string) (models.Org, error) {
 	query := fmt.Sprintf("name:%s", name)
 	path := fmt.Sprintf("/v2/organizations?q=%s", url.QueryEscape(query))
 	orgsJSON, err := cfcurl.Curl(api.cli, path)
 	if nil != err {
-		return Organization{}, err
+		return models.Org{}, err
 	}
 
 	results := int(orgsJSON["total_results"].(float64))
 	if results == 0 {
-		return Organization{}, ErrOrgNotFound
+		return models.Org{}, ErrOrgNotFound
 	}
 
 	orgResource := orgsJSON["resources"].([]interface{})[0]
@@ -116,11 +105,11 @@ func (api *APIHelper) GetOrg(name string) (Organization, error) {
 	return org, nil
 }
 
-func (api *APIHelper) orgResourceToOrg(o interface{}) Organization {
+func (api *APIHelper) orgResourceToOrg(o interface{}) models.Org {
 	theOrg := o.(map[string]interface{})
 	entity := theOrg["entity"].(map[string]interface{})
 	metadata := theOrg["metadata"].(map[string]interface{})
-	return Organization{
+	return models.Org{
 		Name:      entity["name"].(string),
 		URL:       metadata["url"].(string),
 		QuotaURL:  entity["quota_definition_url"].(string),
@@ -138,7 +127,7 @@ func (api *APIHelper) GetQuotaMemoryLimit(quotaURL string) (float64, error) {
 }
 
 // GetOrgMemoryUsage returns amount of memory (in MB) a given org is currently using
-func (api *APIHelper) GetOrgMemoryUsage(org Organization) (float64, error) {
+func (api *APIHelper) GetOrgMemoryUsage(org models.Org) (float64, error) {
 	usageJSON, err := cfcurl.Curl(api.cli, org.URL+"/memory_usage")
 	if nil != err {
 		return 0, err

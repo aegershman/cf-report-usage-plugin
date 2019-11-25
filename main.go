@@ -133,7 +133,7 @@ func (cmd *UsageReportCmd) getOrg(name string) (models.Org, error) {
 	return cmd.getOrgDetails(rawOrg)
 }
 
-func (cmd *UsageReportCmd) getOrgDetails(o apihelper.Organization) (models.Org, error) {
+func (cmd *UsageReportCmd) getOrgDetails(o models.Org) (models.Org, error) {
 	usage, err := cmd.apiHelper.GetOrgMemoryUsage(o)
 	if nil != err {
 		return models.Org{}, err
