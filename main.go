@@ -43,10 +43,10 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 				Name:     "trueup-view",
 				HelpText: "View AIs, SIs and memory usage for orgs and spaces",
 				UsageDetails: plugin.Usage{
-					Usage: "cf trueup-view [-o orgName...] --format string",
+					Usage: "cf trueup-view [-o orgName...] -f string",
 					Options: map[string]string{
-						"-o":       "organization(s) included in report. Flag can be provided multiple times.",
-						"--format": "format to print as (options: string,table) (default: string)",
+						"-o": "organization(s) included in report. Flag can be provided multiple times.",
+						"-f": "format to print as (options: string,table) (default: string)",
 					},
 				},
 			},
@@ -57,8 +57,11 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 // UsageReportCommand -
 func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 	var userFlags flags
+	var formatFlag string
+
 	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
 	flagss.Var(&userFlags, "o", "-o orgName")
+	flagss.StringVar(&formatFlag, "f", "string", "")
 	err := flagss.Parse(args[1:])
 	if err != nil {
 		fmt.Println(err)
@@ -87,8 +90,8 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 
 	report.Orgs = orgs
 
-	presenter := p.NewPresenter(report)
-	presenter.AsString()
+	presenter := p.NewPresenter(report, formatFlag)
+	presenter.Render()
 }
 
 func (cmd *UsageReportCmd) getOrgs() ([]models.Org, error) {
