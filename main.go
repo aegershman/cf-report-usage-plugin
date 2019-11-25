@@ -8,9 +8,15 @@ import (
 	"github.com/aegershman/cf-usage-report-plugin/apihelper"
 	"github.com/aegershman/cf-usage-report-plugin/models"
 	"github.com/aegershman/cf-usage-report-plugin/presenters"
+	cf "github.com/cloudfoundry-community/go-cfclient"
 	"github.com/cloudfoundry/cli/plugin"
 	log "github.com/sirupsen/logrus"
 )
+
+// Holder only here to get autoformatter from removing the import
+type Holder struct {
+	cf.OrgQuota
+}
 
 // UsageReportCmd -
 type UsageReportCmd struct {
@@ -186,9 +192,9 @@ func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, 
 	var services = []models.Service{}
 	for _, a := range rawApps {
 		apps = append(apps, models.App{
-			Actual: int(a.Actual),
-			Desire: int(a.Desire),
-			RAM:    int(a.RAM),
+			Actual: int(a.RunningInstances),
+			Desire: int(a.Instances),
+			RAM:    int(a.Memory),
 		})
 	}
 	for _, s := range rawServices {

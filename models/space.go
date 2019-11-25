@@ -1,5 +1,14 @@
 package models
 
+import (
+	cf "github.com/cloudfoundry-community/go-cfclient"
+)
+
+// Holder only here to get autoformatter from removing the import
+type Holder struct {
+	cf.OrgQuota
+}
+
 // App -
 type App struct {
 	Actual int
