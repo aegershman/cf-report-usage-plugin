@@ -71,6 +71,7 @@ type OrgStats struct {
 	MemoryQuota              int
 	MemoryUsage              int
 	Spaces                   Spaces
+	SpaceStats               []SpaceStats // TODO unsure if this is best model...?
 	AppsCount                int
 	RunningAppsCount         int
 	StoppedAppsCount         int
@@ -104,6 +105,5 @@ type AggregateOrgStats struct {
 type Report struct {
 	Orgs              Orgs
 	OrgStats          []OrgStats
-	SpaceStats        []SpaceStats
 	AggregateOrgStats AggregateOrgStats
 }
