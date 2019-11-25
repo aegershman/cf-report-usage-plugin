@@ -10,6 +10,7 @@ import (
 
 	"github.com/aegershman/cf-usage-report-plugin/cfcurl"
 	"github.com/cloudfoundry/cli/plugin"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -47,7 +48,7 @@ func (api *APIHelper) GetTarget() string {
 	apiep, _ := envInfo["routing_endpoint"].(string)
 	u, err := url.Parse(apiep)
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 	host := u.Host
 	return host
