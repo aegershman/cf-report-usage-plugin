@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/aegershman/cf-usage-report-plugin/cfcurl"
+	cf "github.com/cloudfoundry-community/go-cfclient"
 	"github.com/cloudfoundry/cli/plugin"
 )
 
@@ -30,6 +31,7 @@ type Space struct {
 }
 
 // App -
+// Going to try and replace this
 type App struct {
 	Actual float64
 	Desire float64
@@ -49,7 +51,7 @@ type Orgs []Organization
 type Spaces []Space
 
 // Apps -
-type Apps []App
+type Apps []cf.AppSummary
 
 // Services -
 type Services []Service
@@ -213,7 +215,7 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
 // decisions about what to return it's not the end of the world. But even still, we probably
 // don't want to make those decisions here. We'll want to make them in a specific view.
 func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services, error) {
-	apps := []App{}
+	apps := []cf.AppSummary{}
 	services := []Service{}
 	summaryJSON, err := cfcurl.Curl(api.cli, summaryURL)
 	if nil != err {
@@ -223,10 +225,10 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 		for _, a := range summaryJSON["apps"].([]interface{}) {
 			theApp := a.(map[string]interface{})
 			apps = append(apps,
-				App{
-					Actual: theApp["running_instances"].(float64),
-					Desire: theApp["instances"].(float64),
-					RAM:    theApp["memory"].(float64),
+				cf.AppSummary{
+					RunningInstances: theApp["running_instances"].(int),
+					Instances:        theApp["instances"].(int),
+					Memory:           theApp["memory"].(int),
 				})
 		}
 	}
