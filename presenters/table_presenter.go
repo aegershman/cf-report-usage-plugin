@@ -10,14 +10,22 @@ import (
 // TODO just testing, just goofing off, I know this is wrong, etc...
 func (p *Presenter) asTable() {
 
-	for _, orgStats := range p.Report.OrgStats {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetHeader([]string{
+		"Org",
+		"Space",
+		"MB",
+		"cAIs",
+		"bAIs",
+		"cSIs",
+		"bSIs",
+	})
 
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetAlignment(tablewriter.ALIGN_LEFT)
-		table.SetHeader([]string{"Space", "MB", "cAIs", "bAIs", "cSIs", "bSIs"})
-
-		for _, spaceStat := range orgStats.SpaceStats {
+	for _, orgStat := range p.Report.OrgStats {
+		for _, spaceStat := range orgStat.SpaceStats {
 			table.Append([]string{
+				orgStat.Name,
 				spaceStat.Name,
 				strconv.Itoa(spaceStat.ConsumedMemory),
 				strconv.Itoa(spaceStat.AppInstancesCount),
