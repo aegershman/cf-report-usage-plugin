@@ -85,7 +85,8 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 
 	report.Orgs = orgs
 
-	fmt.Println(report.String())
+	// fmt.Println(report.String())
+	report.Stringg() // TODO, of course
 }
 
 func (cmd *UsageReportCmd) getOrgs() ([]models.Org, error) {
