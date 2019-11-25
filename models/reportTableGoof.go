@@ -20,20 +20,23 @@ func (report *Report) Stringg() {
 		// TODO dynamic filtering?
 		go orgStats.Spaces.Stats(chSpaceStats, orgStats.Name == "p-spring-cloud-services")
 
+		// TODO just testing, just goofing off, I know this is wrong, etc...
+		table := tablewriter.NewWriter(os.Stdout)
+		table.SetAlignment(tablewriter.ALIGN_LEFT)
+		table.SetHeader([]string{"Space", "MB", "cAIs", "bAIs", "cSIs", "bSIs"})
+
 		for spaceState := range chSpaceStats {
-
-			// TODO just testing, just goofing off, I know this is wrong, etc...
-
-			table := tablewriter.NewWriter(os.Stdout)
-			table.SetAlignment(tablewriter.ALIGN_LEFT)
-
-			table.SetHeader([]string{"Name", "MB Consumed", "App Instances"})
-
-			table.Append([]string{spaceState.Name, strconv.Itoa(spaceState.ConsumedMemory), strconv.Itoa(spaceState.AppInstancesCount)})
-
-			table.Render()
-
+			table.Append([]string{
+				spaceState.Name,
+				strconv.Itoa(spaceState.ConsumedMemory),
+				strconv.Itoa(spaceState.AppInstancesCount),
+				strconv.Itoa(spaceState.BillableAppInstancesCount),
+				strconv.Itoa(spaceState.ServicesCount),
+				strconv.Itoa(spaceState.BillableServicesCount),
+			})
 		}
+
+		table.Render()
 
 	}
 
