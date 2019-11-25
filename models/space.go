@@ -2,6 +2,35 @@ package models
 
 import "strings"
 
+// App -
+type App struct {
+	Actual int
+	Desire int
+	RAM    int
+}
+
+// Apps -
+type Apps []App
+
+// Service -
+type Service struct {
+	Label       string
+	ServicePlan string
+}
+
+// Services -
+type Services []Service
+
+// Space -
+type Space struct {
+	Name     string
+	Apps     Apps
+	Services Services
+}
+
+// Spaces -
+type Spaces []Space
+
 // ConsumedMemory returns the amount of memory consumed by all
 // running canonical application instances within a space
 func (space *Space) ConsumedMemory() int {

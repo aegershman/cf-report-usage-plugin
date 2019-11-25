@@ -1,5 +1,16 @@
 package models
 
+// Org -
+type Org struct {
+	Name        string
+	MemoryQuota int
+	MemoryUsage int
+	Spaces      Spaces
+}
+
+// Orgs -
+type Orgs []Org
+
 // AppInstancesCount returns the count of declared canonical app instances
 // regardless of start/stop state across all spaces within the org
 func (org *Org) AppInstancesCount() int {
