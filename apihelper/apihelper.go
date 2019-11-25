@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"strconv"
 
+	"github.com/aegershman/cf-usage-report-plugin/models"
+
 	"github.com/aegershman/cf-usage-report-plugin/cfcurl"
 	"github.com/cloudfoundry/cli/plugin"
 )
@@ -29,13 +31,6 @@ type Space struct {
 	SummaryURL string
 }
 
-// App -
-type App struct {
-	Actual float64
-	Desire float64
-	RAM    float64
-}
-
 // Service -
 type Service struct {
 	Label       string
@@ -48,9 +43,6 @@ type Orgs []Organization
 // Spaces -
 type Spaces []Space
 
-// Apps -
-type Apps []App
-
 // Services -
 type Services []Service
 
@@ -62,7 +54,7 @@ type CFAPIHelper interface {
 	GetQuotaMemoryLimit(string) (float64, error)
 	GetOrgMemoryUsage(Organization) (float64, error)
 	GetOrgSpaces(string) (Spaces, error)
-	GetSpaceAppsAndServices(string) (Apps, Services, error)
+	GetSpaceAppsAndServices(string) (models.Apps, Services, error)
 }
 
 // APIHelper -
@@ -212,8 +204,8 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) (Spaces, error) {
 // Granted, on the other hand, this isn't the "cf go library" so if it makes opinionated
 // decisions about what to return it's not the end of the world. But even still, we probably
 // don't want to make those decisions here. We'll want to make them in a specific view.
-func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services, error) {
-	apps := []App{}
+func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (models.Apps, Services, error) {
+	apps := models.Apps{}
 	services := []Service{}
 	summaryJSON, err := cfcurl.Curl(api.cli, summaryURL)
 	if nil != err {
@@ -223,10 +215,10 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (Apps, Services
 		for _, a := range summaryJSON["apps"].([]interface{}) {
 			theApp := a.(map[string]interface{})
 			apps = append(apps,
-				App{
-					Actual: theApp["running_instances"].(float64),
-					Desire: theApp["instances"].(float64),
-					RAM:    theApp["memory"].(float64),
+				models.App{
+					RunningInstances: int(theApp["running_instances"].(float64)),
+					Instances:        int(theApp["instances"].(float64)),
+					Memory:           int(theApp["memory"].(float64)),
 				})
 		}
 	}
