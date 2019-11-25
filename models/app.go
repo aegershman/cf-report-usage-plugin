@@ -3,8 +3,9 @@ package models
 // App -
 type App struct {
 	RunningInstances int
-	Instances        int
+	Name             string
 	Memory           int
+	Instances        int
 }
 
 // Apps -
