@@ -1,7 +1,7 @@
 package presenters
 
 import (
-	"github.com/aegershman/cf-trueup-plugin/models"
+	"github.com/aegershman/cf-usage-report-plugin/models"
 )
 
 // Presenter -

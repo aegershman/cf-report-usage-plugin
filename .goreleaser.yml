@@ -54,5 +54,5 @@ release:
   # nearly all of these are the defaults, just being explicit about them
   github:
     owner: aegershman
-    name: cf-trueup-plugin
+    name: cf-usage-report-plugin
   name_template: "{{ .Tag }}"

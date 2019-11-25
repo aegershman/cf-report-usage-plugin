@@ -4,11 +4,11 @@ tasks:
   install:
     cmds:
       - task: build
-      - cf install-plugin dist/darwin_darwin_amd64/cf-trueup-plugin -f
+      - cf install-plugin dist/darwin_darwin_amd64/cf-usage-report-plugin -f
 
   uninstall:
     cmds:
-      - cf uninstall-plugin cf-trueup-plugin
+      - cf uninstall-plugin cf-usage-report-plugin
 
   build:
     cmds:

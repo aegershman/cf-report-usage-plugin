@@ -1,4 +1,4 @@
-# cf-trueup-plugin
+# cf-usage-report-plugin
 
 cf-cli plugin showing memory consumption, application instances (AIs), and service instances (SIs) for each org and space you have permission to access.
 
@@ -6,18 +6,36 @@ cf-cli plugin showing memory consumption, application instances (AIs), and servi
 
 ```sh
 # report all orgs you have access to
-cf trueup-view
+cf usage-report
 
 # report specific orgs
-cf trueup-view -o myorg
-cf trueup-view -o firstorg -o secondorg [-o orgName...]
+cf usage-report -o myorg
+cf usage-report -o firstorg -o secondorg [-o orgName...]
 
 # report using different formats ("string" is default)
-cf trueup-view -o firstorg -o secondorg --format string
-cf trueup-view -o firstorg -o secondorg --format table
+cf usage-report -o firstorg -o secondorg --format string
+cf usage-report -o firstorg -o secondorg --format table
 ```
 
-Example of `string` format:
+`--format table`:
+
+```txt
++-------------+-----------------+--------------+--------------+
+|     ORG     |      SPACE      | BILLABLE AIS | BILLABLE SIS |
++-------------+-----------------+--------------+--------------+
+| firstorg    | docs            | 4            | 0            |
+| firstorg    | probots         | 4            | 0            |
+| firstorg    | route53-sync    | 0            | 0            |
+| firstorg    | scratchpad      | 15           | 12           |
+| firstorg    | splunk-firehose | 2            | 0            |
+| firstorg    | sso             | 0            | 1            |
+| secondorg   | dev             | 31           | 2            |
++-------------+-----------------+--------------+--------------+
+|      -      |      TOTAL      |      56      |      15      |
++-------------+-----------------+--------------+--------------+
+```
+
+`--format string`:
 
 ```txt
 Org firstorg is consuming 12864 MB of 20480 MB.
@@ -72,24 +90,6 @@ Org secondorg is consuming 30720 MB of 65536 MB.
                 1 service instances of type SCS (config-server, eureka, etc.)
                 2 service instances of type Service Suite (mysql, redis, rmq)
 Across 2 org(s), you have 56 billable AIs, 46 are canonical AIs (44 running, 2 stopped), 10 are SCS instances
-```
-
-And the `table` format (wip):
-
-```txt
-+-------------+-----------------+--------------+--------------+
-|     ORG     |      SPACE      | BILLABLE AIS | BILLABLE SIS |
-+-------------+-----------------+--------------+--------------+
-| firstorg    | docs            | 4            | 0            |
-| firstorg    | probots         | 4            | 0            |
-| firstorg    | route53-sync    | 0            | 0            |
-| firstorg    | scratchpad      | 15           | 12           |
-| firstorg    | splunk-firehose | 2            | 0            |
-| firstorg    | sso             | 0            | 1            |
-| secondorg   | dev             | 31           | 2            |
-+-------------+-----------------+--------------+--------------+
-|      -      |      TOTAL      |      56      |      15      |
-+-------------+-----------------+--------------+--------------+
 ```
 
 ## use in pivotal licensing
