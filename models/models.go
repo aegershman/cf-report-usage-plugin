@@ -40,11 +40,6 @@ type Org struct {
 // Orgs -
 type Orgs []Org
 
-// Report -
-type Report struct {
-	Orgs Orgs
-}
-
 // SpaceStats is a way to represent the 'business logic'
 // of Spaces; we can use it as a way to decorate
 // a Space with extra info like billableAIs, etc.
@@ -93,4 +88,9 @@ type OrgStats struct {
 	// count of anything which Pivotal deems "billable" as an SI; this might mean
 	// subtracting certain services (like SCS) from the count of `cf services`
 	BillableServicesCount int
+}
+
+// Report -
+type Report struct {
+	Orgs Orgs
 }
