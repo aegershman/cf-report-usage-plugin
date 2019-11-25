@@ -33,7 +33,7 @@ func (f *flags) Set(value string) error {
 // GetMetadata -
 func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
-		Name: "cf-trueup-plugin",
+		Name: "cf-usage-report-plugin",
 		Version: plugin.VersionType{
 			Major: 2,
 			Minor: 8,
@@ -41,10 +41,10 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		},
 		Commands: []plugin.Command{
 			{
-				Name:     "trueup-view",
+				Name:     "usage-report",
 				HelpText: "View AIs, SIs and memory usage for orgs and spaces",
 				UsageDetails: plugin.Usage{
-					Usage: "cf trueup-view [-o orgName...] --format string",
+					Usage: "cf usage-report [-o orgName...] --format string",
 					Options: map[string]string{
 						"o":         "organization(s) included in report. Flag can be provided multiple times.",
 						"format":    "format to print as (options: string,table) (default: string)",
@@ -202,7 +202,7 @@ func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, 
 
 // Run -
 func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
-	if args[0] == "trueup-view" {
+	if args[0] == "usage-report" {
 		cmd.apiHelper = apihelper.New(cli)
 		cmd.UsageReportCommand(args)
 	}
