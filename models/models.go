@@ -54,6 +54,7 @@ type SpaceStats struct {
 	ServicesCount            int
 	ConsumedMemory           int
 
+	SpringCloudServicesCount             int
 	ServicesSuiteForPivotalPlatformCount int
 
 	// includes anything which Pivotal deems "billable" as an AI, even if CF
@@ -80,6 +81,7 @@ type OrgStats struct {
 	StoppedAppInstancesCount int
 	ServicesCount            int
 
+	SpringCloudServicesCount             int
 	ServicesSuiteForPivotalPlatformCount int
 
 	// includes anything which Pivotal deems "billable" as an AI, even if CF

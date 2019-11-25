@@ -20,6 +20,8 @@ func NewOrgStats(org Org) OrgStats {
 	runningAppInstancesCount := org.RunningAppInstancesCount()
 	stoppedAppInstancesCount := appInstancesCount - runningAppInstancesCount
 
+	springCloudServicesCount := org.SpringCloudServicesCount()
+
 	servicesCount := org.ServicesCount()
 
 	return OrgStats{
@@ -33,6 +35,7 @@ func NewOrgStats(org Org) OrgStats {
 		AppInstancesCount:        appInstancesCount,
 		RunningAppInstancesCount: runningAppInstancesCount,
 		StoppedAppInstancesCount: stoppedAppInstancesCount,
+		SpringCloudServicesCount: springCloudServicesCount,
 		ServicesCount:            servicesCount,
 	}
 }

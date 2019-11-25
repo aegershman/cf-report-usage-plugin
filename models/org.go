@@ -61,3 +61,12 @@ func (org *Org) ServicesCount() int {
 	}
 	return count
 }
+
+// SpringCloudServicesCount returns total count of SCS services across all spaces of the org
+func (org *Org) SpringCloudServicesCount() int {
+	count := 0
+	for _, space := range org.Spaces {
+		count += space.SpringCloudServicesCount()
+	}
+	return count
+}
