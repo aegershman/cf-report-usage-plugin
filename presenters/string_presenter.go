@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
-	m "github.com/aegershman/cf-trueup-plugin/models"
+	"github.com/aegershman/cf-trueup-plugin/models"
 )
 
 func (p *Presenter) asString() {
@@ -27,12 +27,12 @@ func (p *Presenter) asString() {
 		reportSummaryMsg             = "[WARNING: THIS REPORT SUMMARY IS MISLEADING AND INCORRECT. IT WILL BE FIXED SOON.] You have deployed %d apps across %d org(s), with a total of %d app instances configured. You are currently running %d apps with %d app instances and using %d service instances of type Service Suite.\n"
 	)
 
-	chOrgStats := make(chan m.OrgStats, len(p.Report.Orgs))
+	chOrgStats := make(chan models.OrgStats, len(p.Report.Orgs))
 
 	go p.Report.Orgs.Stats(chOrgStats)
 	for orgStats := range chOrgStats {
 		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgStats.Name, orgStats.MemoryUsage, orgStats.MemoryQuota))
-		chSpaceStats := make(chan m.SpaceStats, len(orgStats.Spaces))
+		chSpaceStats := make(chan models.SpaceStats, len(orgStats.Spaces))
 		// TODO dynamic filtering?
 		go orgStats.Spaces.Stats(chSpaceStats, orgStats.Name == "p-spring-cloud-services")
 		for spaceState := range chSpaceStats {

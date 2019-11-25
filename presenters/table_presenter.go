@@ -4,18 +4,18 @@ import (
 	"os"
 	"strconv"
 
-	m "github.com/aegershman/cf-trueup-plugin/models"
+	"github.com/aegershman/cf-trueup-plugin/models"
 	"github.com/olekukonko/tablewriter"
 )
 
 func (p *Presenter) asTable() {
 
-	chOrgStats := make(chan m.OrgStats, len(p.Report.Orgs))
+	chOrgStats := make(chan models.OrgStats, len(p.Report.Orgs))
 
 	go p.Report.Orgs.Stats(chOrgStats)
 	for orgStats := range chOrgStats {
 
-		chSpaceStats := make(chan m.SpaceStats, len(orgStats.Spaces))
+		chSpaceStats := make(chan models.SpaceStats, len(orgStats.Spaces))
 
 		// TODO dynamic filtering?
 		go orgStats.Spaces.Stats(chSpaceStats, orgStats.Name == "p-spring-cloud-services")
