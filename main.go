@@ -9,6 +9,7 @@ import (
 	"github.com/aegershman/cf-trueup-plugin/models"
 	"github.com/aegershman/cf-trueup-plugin/presenters"
 	"github.com/cloudfoundry/cli/plugin"
+	log "github.com/sirupsen/logrus"
 )
 
 // UsageReportCmd -
@@ -47,7 +48,7 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 					Options: map[string]string{
 						"o":         "organization(s) included in report. Flag can be provided multiple times.",
 						"f":         "format to print as (options: string,table) (default: string)",
-						"log-level": "(currently unused)",
+						"log-level": "(options: info,debug) (default: info)",
 					},
 				},
 			},
@@ -57,18 +58,28 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 
 // UsageReportCommand -
 func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
-	var userFlags flags
-	var formatFlag string
+	var (
+		userFlags    flags
+		formatFlag   string
+		logLevelFlag string
+	)
 
 	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
 	flagss.Var(&userFlags, "o", "")
 	flagss.StringVar(&formatFlag, "f", "string", "")
+	flagss.StringVar(&logLevelFlag, "log-level", "info", "")
 	err := flagss.Parse(args[1:])
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	logLevel, err := log.ParseLevel(logLevelFlag)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
+	log.SetLevel(logLevel)
 	var orgs []models.Org
 
 	if len(userFlags.OrgNames) > 0 {
