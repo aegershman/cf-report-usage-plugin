@@ -16,6 +16,7 @@ func (p *Presenter) asString() {
 		spaceUniqueAppGuidsMsg       = "\t\t%d unique app_guids: %d running %d stopped\n"
 		spaceServiceMsg              = "\t\t%d service instances total\n"
 		spaceServiceSuiteMsg         = "\t\t%d service instances of type Service Suite (mysql, redis, rmq)\n"
+		spaceSCSMsg                  = "\t\t%d service instances of type SCS (config-server, eureka, etc.)\n"
 		reportSummaryMsg             = "Across %d org(s), you have %d billable AIs, %d are canonical AIs (%d running, %d stopped), %d are SCS instances\n"
 	)
 
@@ -30,6 +31,7 @@ func (p *Presenter) asString() {
 			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, spaceStat.BillableAppInstancesCount))
 			response.WriteString(fmt.Sprintf(spaceUniqueAppGuidsMsg, spaceStat.AppsCount, spaceStat.RunningAppsCount, spaceStat.StoppedAppsCount))
 			response.WriteString(fmt.Sprintf(spaceServiceMsg, spaceStat.ServicesCount))
+			response.WriteString(fmt.Sprintf(spaceSCSMsg, spaceStat.SpringCloudServicesCount))
 			response.WriteString(fmt.Sprintf(spaceServiceSuiteMsg, spaceStat.ServicesSuiteForPivotalPlatformCount))
 		}
 	}
