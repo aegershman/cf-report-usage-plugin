@@ -90,7 +90,7 @@ func (org *Org) BillableAppInstancesCount() int {
 func (org *Org) BillableServicesCount() int {
 	count := 0
 	for _, space := range org.Spaces {
-		count += space.BillableAppInstancesCount()
+		count += space.BillableServicesCount()
 	}
 	return count
 }
