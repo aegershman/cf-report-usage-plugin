@@ -7,8 +7,7 @@ import (
 	m "github.com/aegershman/cf-trueup-plugin/models"
 )
 
-// AsString -
-func (p *Presenter) AsString() {
+func (p *Presenter) asString() {
 	var response bytes.Buffer
 
 	totalApps := 0

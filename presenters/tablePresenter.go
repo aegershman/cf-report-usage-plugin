@@ -8,8 +8,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-// AsTable -
-func (p *Presenter) AsTable() {
+func (p *Presenter) asTable() {
 
 	chOrgStats := make(chan m.OrgStats, len(p.Report.Orgs))
 

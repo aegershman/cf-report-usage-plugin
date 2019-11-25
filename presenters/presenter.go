@@ -22,14 +22,14 @@ func NewPresenter(r m.Report, format string) Presenter {
 func (p *Presenter) Render() {
 	switch p.Format {
 	case "string":
-		p.AsString()
+		p.asString()
 	case "table":
-		p.AsTable()
+		p.asTable()
 	default:
 		// TODO
 		// yeah this is kind of awful I know, I'm sorry, I'm still learning,
 		// I'll fix this along with much better and earlier error handling on this
 		// I'll fix this, I promise
-		p.AsString()
+		p.asString()
 	}
 }
