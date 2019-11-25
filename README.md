@@ -1,20 +1,6 @@
 # cf-trueup-plugin
 
-(some of the reporting data in this plugin has been wrong; fixing it to be accurate and extensible is a work in progress)
-
 cf-cli plugin showing memory consumption, application instances (AIs), and service instances (SIs) for each org and space you have permission to access.
-
-Reported SIs are for the "pivotal service suite", which as of writing this includes the following:
-
-- RabbitMQ (`p-rabbit`, `p.rabbitmq`)
-- Redis (`p.redis`, `p-redis`)
-- MySQL (`p.mysql`, `p-mysql`)
-
-Services part of the "spring cloud config" (SCS) suite, although are "SIs" from the perspective of CF, are treated as AIs from the perspective of billing. The following service instances are _billed_ and currently in this tool _reported_ as running AIs:
-
-- Spring Cloud Config (`p-spring-cloud-config` in 2.x, `p.spring-cloud-config` in 3.x)
-- Service Registry (`p-service-registry` in 2.x, `p.service-registry` in 3.x)
-- Circuit Breaker (`p-circuit-breaker` in 2.x, non-existant in 3.x)
 
 ## usage
 
@@ -102,4 +88,22 @@ And the `table` format (wip):
 | firstorg    | sso             | 0            | 1            |
 | secondorg   | dev             | 31           | 2            |
 +-------------+-----------------+--------------+--------------+
+|      -      |      TOTAL      |      56      |      15      |
++-------------+-----------------+--------------+--------------+
 ```
+
+## use in pivotal licensing
+
+This plugin's usefulness for reporting things Pivotal's licensing on AI/SI packs and such is definitely a work in progress
+
+Reported SIs are for the "pivotal service suite", which as of writing this includes the following:
+
+- RabbitMQ (`p-rabbit`, `p.rabbitmq`)
+- Redis (`p.redis`, `p-redis`)
+- MySQL (`p.mysql`, `p-mysql`)
+
+Services part of the "spring cloud config" (SCS) suite, although are "SIs" from the perspective of CF, are treated as AIs from the perspective of billing. The following service instances are _billed_ and currently in this tool _reported_ as running AIs:
+
+- Spring Cloud Config (`p-spring-cloud-config` in 2.x, `p.spring-cloud-config` in 3.x)
+- Service Registry (`p-service-registry` in 2.x, `p.service-registry` in 3.x)
+- Circuit Breaker (`p-circuit-breaker` in 2.x, non-existant in 3.x)
