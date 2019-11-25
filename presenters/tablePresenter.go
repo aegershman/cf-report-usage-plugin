@@ -1,21 +1,22 @@
-package models
+package presenters
 
 import (
 	"os"
 	"strconv"
 
+	m "github.com/aegershman/cf-trueup-plugin/models"
 	"github.com/olekukonko/tablewriter"
 )
 
-// Stringg -
-func (report *Report) Stringg() {
+// AsTable -
+func (p *Presenter) AsTable() {
 
-	chOrgStats := make(chan OrgStats, len(report.Orgs))
+	chOrgStats := make(chan m.OrgStats, len(p.Report.Orgs))
 
-	go report.Orgs.Stats(chOrgStats)
+	go p.Report.Orgs.Stats(chOrgStats)
 	for orgStats := range chOrgStats {
 
-		chSpaceStats := make(chan SpaceStats, len(orgStats.Spaces))
+		chSpaceStats := make(chan m.SpaceStats, len(orgStats.Spaces))
 
 		// TODO dynamic filtering?
 		go orgStats.Spaces.Stats(chSpaceStats, orgStats.Name == "p-spring-cloud-services")

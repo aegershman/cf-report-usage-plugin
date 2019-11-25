@@ -1,11 +1,14 @@
-package models
+package presenters
 
 import (
 	"bytes"
 	"fmt"
+
+	m "github.com/aegershman/cf-trueup-plugin/models"
 )
 
-func (report *Report) String() string {
+// AsString -
+func (p *Presenter) AsString() {
 	var response bytes.Buffer
 
 	totalApps := 0
@@ -25,12 +28,12 @@ func (report *Report) String() string {
 		reportSummaryMsg             = "[WARNING: THIS REPORT SUMMARY IS MISLEADING AND INCORRECT. IT WILL BE FIXED SOON.] You have deployed %d apps across %d org(s), with a total of %d app instances configured. You are currently running %d apps with %d app instances and using %d service instances of type Service Suite.\n"
 	)
 
-	chOrgStats := make(chan OrgStats, len(report.Orgs))
+	chOrgStats := make(chan m.OrgStats, len(p.Report.Orgs))
 
-	go report.Orgs.Stats(chOrgStats)
+	go p.Report.Orgs.Stats(chOrgStats)
 	for orgStats := range chOrgStats {
 		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgStats.Name, orgStats.MemoryUsage, orgStats.MemoryQuota))
-		chSpaceStats := make(chan SpaceStats, len(orgStats.Spaces))
+		chSpaceStats := make(chan m.SpaceStats, len(orgStats.Spaces))
 		// TODO dynamic filtering?
 		go orgStats.Spaces.Stats(chSpaceStats, orgStats.Name == "p-spring-cloud-services")
 		for spaceState := range chSpaceStats {
@@ -59,7 +62,7 @@ func (report *Report) String() string {
 		totalServiceInstances += orgStats.ServicesCount
 	}
 
-	response.WriteString(fmt.Sprintf(reportSummaryMsg, totalApps, len(report.Orgs), totalInstances, totalRunningApps, totalRunningInstances, totalServiceInstances))
+	response.WriteString(fmt.Sprintf(reportSummaryMsg, totalApps, len(p.Report.Orgs), totalInstances, totalRunningApps, totalRunningInstances, totalServiceInstances))
 
-	return response.String()
+	fmt.Println(response.String())
 }
