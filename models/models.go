@@ -103,7 +103,7 @@ type AggregateOrgStats struct {
 // supposed to "execute" the reportPlan to get it to generate the data?
 type Report struct {
 	Orgs              Orgs
-	orgStats          []OrgStats
-	spaceStats        []SpaceStats
-	aggregateOrgStats AggregateOrgStats
+	OrgStats          []OrgStats
+	SpaceStats        []SpaceStats
+	AggregateOrgStats AggregateOrgStats
 }

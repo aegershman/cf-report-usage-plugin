@@ -28,8 +28,8 @@ func (r *Report) Execute() {
 		aggregatedOrgStats = append(aggregatedOrgStats, orgStat)
 	}
 
-	r.orgStats = aggregatedOrgStats
-	r.spaceStats = aggregatedSpaceStats
+	r.OrgStats = aggregatedOrgStats
+	r.SpaceStats = aggregatedSpaceStats
 
 	// TODO deal with aggregate org stats
 
