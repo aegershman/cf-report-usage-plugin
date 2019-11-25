@@ -205,9 +205,9 @@ func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (models.Apps, m
 			}
 
 			// believe this only occurs with "type: managed_service_instance"
-			if _, servicePlanExist := theService["service_plan"]; servicePlanExist {
+			if _, servicePlanExists := theService["service_plan"]; servicePlanExists {
 				servicePlan := theService["service_plan"].(map[string]interface{})
-				if _, serviceExist := servicePlan["service"]; serviceExist {
+				if _, serviceExists := servicePlan["service"]; serviceExists {
 					service := servicePlan["service"].(map[string]interface{})
 					label := service["label"].(string)
 					servicePlanName := servicePlan["name"].(string)
