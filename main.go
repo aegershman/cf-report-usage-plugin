@@ -13,11 +13,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// Holder only here to get autoformatter from removing the import
-type Holder struct {
-	cf.OrgQuota
-}
-
 // UsageReportCmd -
 type UsageReportCmd struct {
 	apiHelper apihelper.CFAPIHelper
@@ -183,20 +178,12 @@ func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]models.Space, error) {
 	return spaces, nil
 }
 
-func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, []models.Service, error) {
-	rawApps, rawServices, err := cmd.apiHelper.GetSpaceAppsAndServices(summaryURL)
+func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]cf.AppSummary, []models.Service, error) {
+	apps, rawServices, err := cmd.apiHelper.GetSpaceAppsAndServices(summaryURL)
 	if nil != err {
 		return nil, nil, err
 	}
-	var apps = []models.App{}
 	var services = []models.Service{}
-	for _, a := range rawApps {
-		apps = append(apps, models.App{
-			Actual: int(a.RunningInstances),
-			Desire: int(a.Instances),
-			RAM:    int(a.Memory),
-		})
-	}
 	for _, s := range rawServices {
 		services = append(services, models.Service{
 			Label:       string(s.Label),

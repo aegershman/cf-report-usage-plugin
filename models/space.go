@@ -4,20 +4,8 @@ import (
 	cf "github.com/cloudfoundry-community/go-cfclient"
 )
 
-// Holder only here to get autoformatter from removing the import
-type Holder struct {
-	cf.OrgQuota
-}
-
-// App -
-type App struct {
-	Actual int
-	Desire int
-	RAM    int
-}
-
 // Apps -
-type Apps []App
+type Apps []cf.AppSummary
 
 // Service -
 type Service struct {
@@ -43,7 +31,7 @@ type Spaces []Space
 func (space *Space) ConsumedMemory() int {
 	count := 0
 	for _, app := range space.Apps {
-		count += int(app.Actual * app.RAM)
+		count += int(app.RunningInstances * app.Memory)
 	}
 	return count
 }
@@ -76,7 +64,7 @@ func (space *Space) AppsCount() int {
 func (space *Space) RunningAppsCount() int {
 	count := 0
 	for _, app := range space.Apps {
-		if app.Actual > 0 {
+		if app.RunningInstances > 0 {
 			count++
 		}
 	}
@@ -96,7 +84,7 @@ func (space *Space) RunningAppsCount() int {
 func (space *Space) AppInstancesCount() int {
 	count := 0
 	for _, app := range space.Apps {
-		count += int(app.Desire)
+		count += int(app.Instances)
 	}
 	return count
 }
@@ -114,7 +102,7 @@ func (space *Space) AppInstancesCount() int {
 func (space *Space) RunningAppInstancesCount() int {
 	count := 0
 	for _, app := range space.Apps {
-		count += int(app.Actual)
+		count += int(app.RunningInstances)
 	}
 	return count
 }

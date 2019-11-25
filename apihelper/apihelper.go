@@ -30,14 +30,6 @@ type Space struct {
 	SummaryURL string
 }
 
-// App -
-// Going to try and replace this
-type App struct {
-	Actual float64
-	Desire float64
-	RAM    float64
-}
-
 // Service -
 type Service struct {
 	Label       string
