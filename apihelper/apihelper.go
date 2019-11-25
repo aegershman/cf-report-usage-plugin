@@ -10,6 +10,7 @@ import (
 
 	"github.com/aegershman/cf-usage-report-plugin/cfcurl"
 	"github.com/cloudfoundry/cli/plugin"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -47,7 +48,7 @@ func (api *APIHelper) GetTarget() string {
 	apiep, _ := envInfo["routing_endpoint"].(string)
 	u, err := url.Parse(apiep)
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 	host := u.Host
 	return host
@@ -163,57 +164,64 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) (models.Spaces, error) {
 	return spaces, nil
 }
 
-// GetSpaceAppsAndServices returns the apps and the services in a space
-//
-// In reality though, it's just getting the SpaceSummary, right?
-//
-// This function is problematic because the services it returns are a limited subset
-// of the actual services found within a space. We don't want to make those decisions
-// here, we'll want to store off the data and make decisions on _how_ and _what_ to render
-// somewhere else
-//
-// Granted, on the other hand, this isn't the "cf go library" so if it makes opinionated
-// decisions about what to return it's not the end of the world. But even still, we probably
-// don't want to make those decisions here. We'll want to make them in a specific view.
+// GetSpaceAppsAndServices returns the apps and the services from a space's /summary endpoint
 func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (models.Apps, models.Services, error) {
-	apps := models.Apps{}
-	services := models.Services{}
 	summaryJSON, err := cfcurl.Curl(api.cli, summaryURL)
 	if nil != err {
 		return nil, nil, err
 	}
+
+	apps := models.Apps{}
+	services := models.Services{}
+
 	if _, ok := summaryJSON["apps"]; ok {
 		for _, a := range summaryJSON["apps"].([]interface{}) {
 			theApp := a.(map[string]interface{})
 			apps = append(apps,
 				models.App{
+					Name:             theApp["name"].(string),
 					RunningInstances: int(theApp["running_instances"].(float64)),
 					Instances:        int(theApp["instances"].(float64)),
 					Memory:           int(theApp["memory"].(float64)),
 				})
 		}
 	}
+
 	if _, ok := summaryJSON["services"]; ok {
 		for _, s := range summaryJSON["services"].([]interface{}) {
 			theService := s.(map[string]interface{})
-			// TODO I believe us filtering on service plan existing means that
-			// user-provided services won't be included in this
+
+			// these properties should exist whether 'service_plan' exists
+			// should imply it's a user-provided service
+			serviceToAppend := models.Service{
+				Name: theService["name"].(string),
+				Type: theService["type"].(string),
+			}
+
+			// believe this only occurs with "type: managed_service_instance"
+			if _, serviceBrokerNameExists := theService["service_broker_name"]; serviceBrokerNameExists {
+				serviceBrokerName := theService["service_broker_name"].(string)
+				serviceToAppend.ServiceBrokerName = serviceBrokerName
+			}
+
+			// believe this only occurs with "type: managed_service_instance"
 			if _, servicePlanExist := theService["service_plan"]; servicePlanExist {
 				servicePlan := theService["service_plan"].(map[string]interface{})
 				if _, serviceExist := servicePlan["service"]; serviceExist {
-
 					service := servicePlan["service"].(map[string]interface{})
 					label := service["label"].(string)
+					servicePlanName := servicePlan["name"].(string)
 
-					services = append(services,
-						models.Service{
-							ServicePlanLabel: label,
-							ServicePlanName:  servicePlan["name"].(string),
-						})
-
+					serviceToAppend.ServicePlanLabel = label
+					serviceToAppend.ServicePlanName = servicePlanName
 				}
 			}
+
+			services = append(services, serviceToAppend)
+
 		}
 	}
+
 	return apps, services, nil
+
 }
