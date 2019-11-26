@@ -35,10 +35,10 @@ func (p *Presenter) asTable() {
 	table.SetFooter([]string{
 		"-",
 		"Total",
-		strconv.Itoa(p.Report.AggregateOrgDecorator.BillableAppInstancesCount),
-		strconv.Itoa(p.Report.AggregateOrgDecorator.AppInstancesCount),
-		strconv.Itoa(p.Report.AggregateOrgDecorator.StoppedAppInstancesCount),
-		strconv.Itoa(p.Report.AggregateOrgDecorator.SpringCloudServicesCount),
+		strconv.Itoa(p.Report.AggregateOrgReport.BillableAppInstancesCount),
+		strconv.Itoa(p.Report.AggregateOrgReport.AppInstancesCount),
+		strconv.Itoa(p.Report.AggregateOrgReport.StoppedAppInstancesCount),
+		strconv.Itoa(p.Report.AggregateOrgReport.SpringCloudServicesCount),
 	})
 
 	table.Render()
