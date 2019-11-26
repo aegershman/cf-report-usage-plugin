@@ -17,16 +17,16 @@ func (p *Presenter) asString() {
 		reportSummaryMsg             = "across %d org(s), you have %d billable AIs, %d are canonical AIs (%d running, %d stopped), %d are SCS instances\n"
 	)
 
-	for _, orgDecorator := range p.Report.OrgDecorators {
-		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgDecorator.Name, orgDecorator.MemoryUsage, orgDecorator.MemoryQuota))
-		for _, spaceDecorator := range orgDecorator.SpaceDecorator {
-			if orgDecorator.MemoryQuota > 0 {
-				spaceMemoryConsumedPercentage := (100 * spaceDecorator.ConsumedMemory / orgDecorator.MemoryQuota)
-				response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceDecorator.Name, spaceDecorator.ConsumedMemory, spaceMemoryConsumedPercentage))
+	for _, orgReport := range p.Report.OrgReports {
+		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgReport.Name, orgReport.MemoryUsage, orgReport.MemoryQuota))
+		for _, spaceReport := range orgReport.SpaceReport {
+			if orgReport.MemoryQuota > 0 {
+				spaceMemoryConsumedPercentage := (100 * spaceReport.ConsumedMemory / orgReport.MemoryQuota)
+				response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceReport.Name, spaceReport.ConsumedMemory, spaceMemoryConsumedPercentage))
 			}
-			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, spaceDecorator.BillableAppInstancesCount()))
-			response.WriteString(fmt.Sprintf(spaceAppInstancesMsg, spaceDecorator.AppInstancesCount, spaceDecorator.RunningAppInstancesCount, spaceDecorator.StoppedAppInstancesCount))
-			response.WriteString(fmt.Sprintf(spaceSCSMsg, spaceDecorator.SpringCloudServicesCount()))
+			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, spaceReport.BillableAppInstancesCount()))
+			response.WriteString(fmt.Sprintf(spaceAppInstancesMsg, spaceReport.AppInstancesCount, spaceReport.RunningAppInstancesCount, spaceReport.StoppedAppInstancesCount))
+			response.WriteString(fmt.Sprintf(spaceSCSMsg, spaceReport.SpringCloudServicesCount()))
 		}
 	}
 
@@ -34,11 +34,11 @@ func (p *Presenter) asString() {
 		fmt.Sprintf(
 			reportSummaryMsg,
 			len(p.Report.Orgs),
-			p.Report.AggregateOrgDecorator.BillableAppInstancesCount,
-			p.Report.AggregateOrgDecorator.AppInstancesCount,
-			p.Report.AggregateOrgDecorator.RunningAppInstancesCount,
-			p.Report.AggregateOrgDecorator.StoppedAppInstancesCount,
-			p.Report.AggregateOrgDecorator.SpringCloudServicesCount,
+			p.Report.AggregateOrgReport.BillableAppInstancesCount,
+			p.Report.AggregateOrgReport.AppInstancesCount,
+			p.Report.AggregateOrgReport.RunningAppInstancesCount,
+			p.Report.AggregateOrgReport.StoppedAppInstancesCount,
+			p.Report.AggregateOrgReport.SpringCloudServicesCount,
 		),
 	)
 

@@ -18,9 +18,9 @@ import (
 // 	ServicesSuiteForPivotalPlatformCount() int
 // }
 
-// AggregateOrgDecorator describes an aggregated view
-// of multiple OrgDecorator after a Report Execution run
-type AggregateOrgDecorator struct {
+// AggregateOrgReport describes an aggregated view
+// of multiple OrgReport after a Report Execution run
+type AggregateOrgReport struct {
 	AppInstancesCount         int
 	RunningAppInstancesCount  int
 	StoppedAppInstancesCount  int
@@ -34,9 +34,9 @@ type AggregateOrgDecorator struct {
 // e.g. "reportPlan" and "report"? Possibly makes it clearer that you're
 // supposed to "execute" the reportPlan to get it to generate the data?
 type Report struct {
-	Orgs                  []Org
-	OrgDecorators         []OrgDecorator
-	AggregateOrgDecorator AggregateOrgDecorator
+	Orgs               []Org
+	OrgReports         []OrgReport
+	AggregateOrgReport AggregateOrgReport
 }
 
 // NewReport -
@@ -49,7 +49,7 @@ func NewReport(orgs []Org) Report {
 // Execute -
 func (r *Report) Execute() {
 
-	var aggregateOrgDecorator []OrgDecorator
+	var aggregateOrgReport []OrgReport
 
 	aggregateBillableAppInstancesCount := 0
 	aggregateAppInstancesCount := 0
@@ -58,40 +58,40 @@ func (r *Report) Execute() {
 	aggregateSpringCloudServicesCount := 0
 	aggregateBillableServicesCount := 0
 
-	chOrgDecorators := make(chan OrgDecorator, len(r.Orgs))
-	go PopulateOrgDecorators(r.Orgs, chOrgDecorators)
-	for orgDecorator := range chOrgDecorators {
+	chOrgReports := make(chan OrgReport, len(r.Orgs))
+	go PopulateOrgReports(r.Orgs, chOrgReports)
+	for orgReport := range chOrgReports {
 
 		log.WithFields(log.Fields{
-			"org": orgDecorator.Name,
+			"org": orgReport.Name,
 		}).Traceln("processing")
 
-		chSpaceDecorators := make(chan SpaceDecorator, len(orgDecorator.Spaces))
-		go PopulateSpaceDecorators(orgDecorator.Spaces, chSpaceDecorators)
-		for spaceDecorator := range chSpaceDecorators {
+		chSpaceReports := make(chan SpaceReport, len(orgReport.Spaces))
+		go PopulateSpaceReports(orgReport.Spaces, chSpaceReports)
+		for spaceReport := range chSpaceReports {
 
 			log.WithFields(log.Fields{
-				"org":   orgDecorator.Name,
-				"space": spaceDecorator.Name,
+				"org":   orgReport.Name,
+				"space": spaceReport.Name,
 			}).Traceln("processing")
 
-			orgDecorator.SpaceDecorator = append(orgDecorator.SpaceDecorator, spaceDecorator)
+			orgReport.SpaceReport = append(orgReport.SpaceReport, spaceReport)
 
 		}
 
-		aggregateBillableAppInstancesCount += orgDecorator.BillableAppInstancesCount()
-		aggregateAppInstancesCount += orgDecorator.AppInstancesCount
-		aggregateRunningAppInstancesCount += orgDecorator.RunningAppInstancesCount
-		aggregateStoppedAppInstancesCount += orgDecorator.StoppedAppInstancesCount
-		aggregateSpringCloudServicesCount += orgDecorator.SpringCloudServicesCount()
-		aggregateBillableServicesCount += orgDecorator.BillableServicesCount()
+		aggregateBillableAppInstancesCount += orgReport.BillableAppInstancesCount()
+		aggregateAppInstancesCount += orgReport.AppInstancesCount
+		aggregateRunningAppInstancesCount += orgReport.RunningAppInstancesCount
+		aggregateStoppedAppInstancesCount += orgReport.StoppedAppInstancesCount
+		aggregateSpringCloudServicesCount += orgReport.SpringCloudServicesCount()
+		aggregateBillableServicesCount += orgReport.BillableServicesCount()
 
-		aggregateOrgDecorator = append(aggregateOrgDecorator, orgDecorator)
+		aggregateOrgReport = append(aggregateOrgReport, orgReport)
 
 	}
 
-	r.OrgDecorators = aggregateOrgDecorator
-	r.AggregateOrgDecorator = AggregateOrgDecorator{
+	r.OrgReports = aggregateOrgReport
+	r.AggregateOrgReport = AggregateOrgReport{
 		BillableAppInstancesCount: aggregateBillableAppInstancesCount,
 		BillableServicesCount:     aggregateBillableServicesCount,
 		AppInstancesCount:         aggregateAppInstancesCount,
