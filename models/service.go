@@ -9,6 +9,3 @@ type Service struct {
 	ServicePlanName   string
 	ServicePlanLabel  string
 }
-
-// Services -
-type Services []Service

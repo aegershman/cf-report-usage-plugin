@@ -4,7 +4,7 @@ package models
 type Space struct {
 	Name       string
 	Apps       []App
-	Services   Services
+	Services   []Service
 	SummaryURL string
 }
 
