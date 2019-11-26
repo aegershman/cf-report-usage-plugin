@@ -6,7 +6,7 @@ type OrgStats struct {
 	Name                                 string
 	MemoryQuota                          int
 	MemoryUsage                          int
-	Spaces                               Spaces
+	Spaces                               []Space
 	SpaceStats                           []SpaceStats
 	AppsCount                            int
 	RunningAppsCount                     int

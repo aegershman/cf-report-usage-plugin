@@ -25,7 +25,7 @@ type CFAPIHelper interface {
 	GetOrg(string) (models.Org, error)
 	GetQuotaMemoryLimit(string) (float64, error)
 	GetOrgMemoryUsage(models.Org) (float64, error)
-	GetOrgSpaces(string) (models.Spaces, error)
+	GetOrgSpaces(string) ([]models.Space, error)
 	GetSpaceAppsAndServices(string) (models.Apps, models.Services, error)
 }
 
@@ -137,9 +137,9 @@ func (api *APIHelper) GetOrgMemoryUsage(org models.Org) (float64, error) {
 }
 
 // GetOrgSpaces returns the spaces in an org
-func (api *APIHelper) GetOrgSpaces(spacesURL string) (models.Spaces, error) {
+func (api *APIHelper) GetOrgSpaces(spacesURL string) ([]models.Space, error) {
 	nextURL := spacesURL
-	spaces := models.Spaces{}
+	spaces := []models.Space{}
 	for nextURL != "" {
 		spacesJSON, err := cfcurl.Curl(api.cli, nextURL)
 		if nil != err {
