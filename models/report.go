@@ -66,16 +66,16 @@ func (r *Report) Execute() {
 			"org": orgDecorator.Name,
 		}).Traceln("processing")
 
-		chSpaceDecorators := make(chan SpaceDecorator, len(orgDecorator.Spaces))
-		go PopulateSpaceDecorators(orgDecorator.Spaces, chSpaceDecorators)
-		for spaceDecorator := range chSpaceDecorators {
+		chSpaceReports := make(chan SpaceReport, len(orgDecorator.Spaces))
+		go PopulateSpaceReports(orgDecorator.Spaces, chSpaceReports)
+		for spaceReport := range chSpaceReports {
 
 			log.WithFields(log.Fields{
 				"org":   orgDecorator.Name,
-				"space": spaceDecorator.Name,
+				"space": spaceReport.Name,
 			}).Traceln("processing")
 
-			orgDecorator.SpaceDecorator = append(orgDecorator.SpaceDecorator, spaceDecorator)
+			orgDecorator.SpaceReport = append(orgDecorator.SpaceReport, spaceReport)
 
 		}
 
