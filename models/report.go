@@ -33,11 +33,6 @@ func NewReport(orgs []Org) Report {
 }
 
 // Execute -
-//
-// Since "[]SpaceStats" are a property of every individual "OrgDecorator"
-// within "[]OrgDecorator" (whew), we make sure that "aggregateSpaceStats"
-// below only exists within the context of a given "OrgDecorator".
-// Then we aggregate together all the "OrgDecorator" for the Report
 func (r *Report) Execute() {
 
 	var aggregateOrgDecorator []OrgDecorator
@@ -57,8 +52,8 @@ func (r *Report) Execute() {
 			"org": orgStat.Name,
 		}).Traceln("processing")
 
-		chSpaceStats := make(chan SpaceStats, len(orgStat.Spaces))
-		go NewSpacesStats(orgStat.Spaces, chSpaceStats)
+		chSpaceStats := make(chan SpaceDecorator, len(orgStat.Spaces))
+		go NewSpacesDecorator(orgStat.Spaces, chSpaceStats)
 		for spaceStat := range chSpaceStats {
 
 			log.WithFields(log.Fields{
@@ -66,7 +61,7 @@ func (r *Report) Execute() {
 				"space": spaceStat.Name,
 			}).Traceln("processing")
 
-			orgStat.SpaceStats = append(orgStat.SpaceStats, spaceStat)
+			orgStat.SpaceDecorator = append(orgStat.SpaceDecorator, spaceStat)
 
 		}
 

@@ -7,7 +7,7 @@ type OrgDecorator struct {
 	MemoryQuota                          int
 	MemoryUsage                          int
 	Spaces                               []Space
-	SpaceStats                           []SpaceStats
+	SpaceDecorator                       []SpaceDecorator
 	AppsCount                            int
 	RunningAppsCount                     int
 	StoppedAppsCount                     int
@@ -48,7 +48,7 @@ func NewOrgDecorator(org Org) OrgDecorator {
 // SpringCloudServicesCount returns total count of SCS services across all spaces of the org
 func (os *OrgDecorator) SpringCloudServicesCount() int {
 	count := 0
-	for _, ss := range os.SpaceStats {
+	for _, ss := range os.SpaceDecorator {
 		count += ss.SpringCloudServicesCount()
 	}
 	return count
@@ -60,7 +60,7 @@ func (os *OrgDecorator) SpringCloudServicesCount() int {
 // considers it a service; e.g., SCS instances (config server, service registry, etc.)
 func (os *OrgDecorator) BillableAppInstancesCount() int {
 	count := 0
-	for _, ss := range os.SpaceStats {
+	for _, ss := range os.SpaceDecorator {
 		count += ss.BillableAppInstancesCount()
 	}
 	return count
@@ -72,7 +72,7 @@ func (os *OrgDecorator) BillableAppInstancesCount() int {
 // subtracting certain services (like SCS) from the count of `cf services`
 func (os *OrgDecorator) BillableServicesCount() int {
 	count := 0
-	for _, ss := range os.SpaceStats {
+	for _, ss := range os.SpaceDecorator {
 		count += ss.BillableServicesCount()
 	}
 	return count
