@@ -24,9 +24,9 @@ func (p *Presenter) asTable() {
 			table.Append([]string{
 				orgStat.Name,
 				spaceStat.Name,
+				strconv.Itoa(spaceStat.BillableAppInstancesCount()),
 				strconv.Itoa(spaceStat.AppInstancesCount),
 				strconv.Itoa(spaceStat.StoppedAppInstancesCount),
-				strconv.Itoa(spaceStat.BillableAppInstancesCount()),
 				strconv.Itoa(spaceStat.SpringCloudServicesCount()),
 			})
 		}
@@ -35,9 +35,9 @@ func (p *Presenter) asTable() {
 	table.SetFooter([]string{
 		"-",
 		"Total",
+		strconv.Itoa(p.Report.AggregateOrgStats.BillableAppInstancesCount),
 		strconv.Itoa(p.Report.AggregateOrgStats.AppInstancesCount),
 		strconv.Itoa(p.Report.AggregateOrgStats.StoppedAppInstancesCount),
-		strconv.Itoa(p.Report.AggregateOrgStats.BillableAppInstancesCount),
 		strconv.Itoa(p.Report.AggregateOrgStats.SpringCloudServicesCount),
 	})
 
