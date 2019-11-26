@@ -17,9 +17,9 @@ func (p *Presenter) asString() {
 		reportSummaryMsg             = "across %d org(s), you have %d billable AIs, %d are canonical AIs (%d running, %d stopped), %d are SCS instances\n"
 	)
 
-	for _, orgStat := range p.Report.OrgStats {
+	for _, orgStat := range p.Report.OrgDecorators {
 		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgStat.Name, orgStat.MemoryUsage, orgStat.MemoryQuota))
-		for _, spaceStat := range orgStat.SpaceStats {
+		for _, spaceStat := range orgStat.SpaceDecorator {
 			if orgStat.MemoryQuota > 0 {
 				spaceMemoryConsumedPercentage := (100 * spaceStat.ConsumedMemory / orgStat.MemoryQuota)
 				response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceStat.Name, spaceStat.ConsumedMemory, spaceMemoryConsumedPercentage))
@@ -34,11 +34,11 @@ func (p *Presenter) asString() {
 		fmt.Sprintf(
 			reportSummaryMsg,
 			len(p.Report.Orgs),
-			p.Report.AggregateOrgStats.BillableAppInstancesCount,
-			p.Report.AggregateOrgStats.AppInstancesCount,
-			p.Report.AggregateOrgStats.RunningAppInstancesCount,
-			p.Report.AggregateOrgStats.StoppedAppInstancesCount,
-			p.Report.AggregateOrgStats.SpringCloudServicesCount,
+			p.Report.AggregateOrgDecorator.BillableAppInstancesCount,
+			p.Report.AggregateOrgDecorator.AppInstancesCount,
+			p.Report.AggregateOrgDecorator.RunningAppInstancesCount,
+			p.Report.AggregateOrgDecorator.StoppedAppInstancesCount,
+			p.Report.AggregateOrgDecorator.SpringCloudServicesCount,
 		),
 	)
 
