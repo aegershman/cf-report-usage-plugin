@@ -18,15 +18,6 @@ type SpaceReport struct {
 	ConsumedMemory           int
 }
 
-// PopulateSpaceReports -
-func PopulateSpaceReports(spaces []Space, c chan SpaceReport) {
-	for _, space := range spaces {
-		sr := NewSpaceReport(space)
-		c <- sr
-	}
-	close(c)
-}
-
 // NewSpaceReport -
 func NewSpaceReport(space Space) SpaceReport {
 	return SpaceReport{

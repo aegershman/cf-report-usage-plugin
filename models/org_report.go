@@ -18,23 +18,20 @@ type OrgReport struct {
 	ServicesSuiteForPivotalPlatformCount int
 }
 
-// PopulateOrgReports -
-func PopulateOrgReports(orgs []Org, c chan OrgReport) {
-	for _, org := range orgs {
-		OrgReport := NewOrgReport(org)
-		c <- OrgReport
-	}
-	close(c)
-}
-
 // NewOrgReport -
 func NewOrgReport(org Org) OrgReport {
+	var spaceReports []SpaceReport
+	for _, space := range org.Spaces {
+		spaceReports = append(spaceReports, NewSpaceReport(space))
+	}
+
 	return OrgReport{
 		org:                      org,
 		Name:                     org.Name,
 		MemoryQuota:              org.MemoryQuota,
 		MemoryUsage:              org.MemoryUsage,
 		Spaces:                   org.Spaces,
+		SpaceReport:              spaceReports,
 		AppsCount:                org.AppsCount(),
 		RunningAppsCount:         org.RunningAppsCount(),
 		StoppedAppsCount:         org.AppsCount() - org.RunningAppsCount(),

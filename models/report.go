@@ -4,20 +4,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// type Reportable interface {
-// 	Name() string
-// 	MemoryQuota() int
-// 	MemoryUsage() int
-// 	AppsCount() int
-// 	RunningAppsCount() int
-// 	StoppedAppsCount() int
-// 	AppInstancesCount() int
-// 	RunningAppInstancesCount() int
-// 	StoppedAppInstancesCount() int
-// 	ServicesCount() int
-// 	ServicesSuiteForPivotalPlatformCount() int
-// }
-
 // Report -
 type Report struct {
 	Orgs               []Org
@@ -27,8 +13,14 @@ type Report struct {
 
 // NewReport -
 func NewReport(orgs []Org) Report {
+	var orgReports []OrgReport
+	for _, org := range orgs {
+		orgReports = append(orgReports, NewOrgReport(org))
+	}
+
 	return Report{
-		Orgs: orgs,
+		Orgs:       orgs,
+		OrgReports: orgReports,
 	}
 }
 
@@ -44,17 +36,13 @@ func (r *Report) Execute() {
 	aggregateSpringCloudServicesCount := 0
 	aggregateBillableServicesCount := 0
 
-	chOrgReports := make(chan OrgReport, len(r.Orgs))
-	go PopulateOrgReports(r.Orgs, chOrgReports)
-	for orgReport := range chOrgReports {
+	for _, orgReport := range r.OrgReports {
 
 		log.WithFields(log.Fields{
 			"org": orgReport.Name,
 		}).Traceln("processing")
 
-		chSpaceReports := make(chan SpaceReport, len(orgReport.Spaces))
-		go PopulateSpaceReports(orgReport.Spaces, chSpaceReports)
-		for spaceReport := range chSpaceReports {
+		for _, spaceReport := range orgReport.SpaceReport {
 
 			log.WithFields(log.Fields{
 				"org":   orgReport.Name,
