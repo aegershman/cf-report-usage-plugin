@@ -19,14 +19,14 @@ func (p *Presenter) asString() {
 
 	for _, orgDecorator := range p.Report.OrgDecorators {
 		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgDecorator.Name, orgDecorator.MemoryUsage, orgDecorator.MemoryQuota))
-		for _, spaceDecorator := range orgDecorator.SpaceDecorator {
+		for _, SpaceReport := range orgDecorator.SpaceReport {
 			if orgDecorator.MemoryQuota > 0 {
-				spaceMemoryConsumedPercentage := (100 * spaceDecorator.ConsumedMemory / orgDecorator.MemoryQuota)
-				response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceDecorator.Name, spaceDecorator.ConsumedMemory, spaceMemoryConsumedPercentage))
+				spaceMemoryConsumedPercentage := (100 * SpaceReport.ConsumedMemory / orgDecorator.MemoryQuota)
+				response.WriteString(fmt.Sprintf(spaceOverviewMsg, SpaceReport.Name, SpaceReport.ConsumedMemory, spaceMemoryConsumedPercentage))
 			}
-			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, spaceDecorator.BillableAppInstancesCount()))
-			response.WriteString(fmt.Sprintf(spaceAppInstancesMsg, spaceDecorator.AppInstancesCount, spaceDecorator.RunningAppInstancesCount, spaceDecorator.StoppedAppInstancesCount))
-			response.WriteString(fmt.Sprintf(spaceSCSMsg, spaceDecorator.SpringCloudServicesCount()))
+			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, SpaceReport.BillableAppInstancesCount()))
+			response.WriteString(fmt.Sprintf(spaceAppInstancesMsg, SpaceReport.AppInstancesCount, SpaceReport.RunningAppInstancesCount, SpaceReport.StoppedAppInstancesCount))
+			response.WriteString(fmt.Sprintf(spaceSCSMsg, SpaceReport.SpringCloudServicesCount()))
 		}
 	}
 
