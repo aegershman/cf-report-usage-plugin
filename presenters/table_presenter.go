@@ -13,9 +13,9 @@ func (p *Presenter) asTable() {
 	table.SetHeader([]string{
 		"Org",
 		"Space",
+		"Billable AIs",
 		"AIs",
 		"Stopped AIs",
-		"Billable AIs",
 		"SCS",
 	})
 
