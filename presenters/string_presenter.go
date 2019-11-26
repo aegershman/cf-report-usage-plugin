@@ -17,16 +17,16 @@ func (p *Presenter) asString() {
 		reportSummaryMsg             = "across %d org(s), you have %d billable AIs, %d are canonical AIs (%d running, %d stopped), %d are SCS instances\n"
 	)
 
-	for _, OrgReport := range p.Report.OrgReports {
-		response.WriteString(fmt.Sprintf(orgOverviewMsg, OrgReport.Name, OrgReport.MemoryUsage, OrgReport.MemoryQuota))
-		for _, SpaceReport := range OrgReport.SpaceReport {
-			if OrgReport.MemoryQuota > 0 {
-				spaceMemoryConsumedPercentage := (100 * SpaceReport.ConsumedMemory / OrgReport.MemoryQuota)
-				response.WriteString(fmt.Sprintf(spaceOverviewMsg, SpaceReport.Name, SpaceReport.ConsumedMemory, spaceMemoryConsumedPercentage))
+	for _, orgReport := range p.Report.OrgReports {
+		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgReport.Name, orgReport.MemoryUsage, orgReport.MemoryQuota))
+		for _, spaceReport := range orgReport.SpaceReport {
+			if orgReport.MemoryQuota > 0 {
+				spaceMemoryConsumedPercentage := (100 * spaceReport.ConsumedMemory / orgReport.MemoryQuota)
+				response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceReport.Name, spaceReport.ConsumedMemory, spaceMemoryConsumedPercentage))
 			}
-			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, SpaceReport.BillableAppInstancesCount()))
-			response.WriteString(fmt.Sprintf(spaceAppInstancesMsg, SpaceReport.AppInstancesCount, SpaceReport.RunningAppInstancesCount, SpaceReport.StoppedAppInstancesCount))
-			response.WriteString(fmt.Sprintf(spaceSCSMsg, SpaceReport.SpringCloudServicesCount()))
+			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, spaceReport.BillableAppInstancesCount()))
+			response.WriteString(fmt.Sprintf(spaceAppInstancesMsg, spaceReport.AppInstancesCount, spaceReport.RunningAppInstancesCount, spaceReport.StoppedAppInstancesCount))
+			response.WriteString(fmt.Sprintf(spaceSCSMsg, spaceReport.SpringCloudServicesCount()))
 		}
 	}
 
