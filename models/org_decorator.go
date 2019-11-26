@@ -18,8 +18,8 @@ type OrgDecorator struct {
 	ServicesSuiteForPivotalPlatformCount int
 }
 
-// NewOrgsStats -
-func NewOrgsStats(orgs []Org, c chan OrgDecorator) {
+// PopulateOrgDecorators -
+func PopulateOrgDecorators(orgs []Org, c chan OrgDecorator) {
 	for _, org := range orgs {
 		OrgDecorator := NewOrgDecorator(org)
 		c <- OrgDecorator

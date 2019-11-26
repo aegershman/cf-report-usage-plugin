@@ -18,11 +18,11 @@ type SpaceDecorator struct {
 	ConsumedMemory           int
 }
 
-// NewSpacesDecorator -
-func NewSpacesDecorator(spaces []Space, c chan SpaceDecorator) {
+// PopulateSpaceDecorators -
+func PopulateSpaceDecorators(spaces []Space, c chan SpaceDecorator) {
 	for _, space := range spaces {
-		spaceStats := NewSpaceDecorator(space)
-		c <- spaceStats
+		spaceDecorators := NewSpaceDecorator(space)
+		c <- spaceDecorators
 	}
 	close(c)
 }
