@@ -17,11 +17,11 @@ func (p *Presenter) asString() {
 		reportSummaryMsg             = "across %d org(s), you have %d billable AIs, %d are canonical AIs (%d running, %d stopped), %d are SCS instances\n"
 	)
 
-	for _, orgDecorator := range p.Report.OrgDecorators {
-		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgDecorator.Name, orgDecorator.MemoryUsage, orgDecorator.MemoryQuota))
-		for _, SpaceReport := range orgDecorator.SpaceReport {
-			if orgDecorator.MemoryQuota > 0 {
-				spaceMemoryConsumedPercentage := (100 * SpaceReport.ConsumedMemory / orgDecorator.MemoryQuota)
+	for _, OrgReport := range p.Report.OrgReports {
+		response.WriteString(fmt.Sprintf(orgOverviewMsg, OrgReport.Name, OrgReport.MemoryUsage, OrgReport.MemoryQuota))
+		for _, SpaceReport := range OrgReport.SpaceReport {
+			if OrgReport.MemoryQuota > 0 {
+				spaceMemoryConsumedPercentage := (100 * SpaceReport.ConsumedMemory / OrgReport.MemoryQuota)
 				response.WriteString(fmt.Sprintf(spaceOverviewMsg, SpaceReport.Name, SpaceReport.ConsumedMemory, spaceMemoryConsumedPercentage))
 			}
 			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, SpaceReport.BillableAppInstancesCount()))

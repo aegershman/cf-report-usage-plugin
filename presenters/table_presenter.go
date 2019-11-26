@@ -19,10 +19,10 @@ func (p *Presenter) asTable() {
 		"SCS",
 	})
 
-	for _, orgDecorator := range p.Report.OrgDecorators {
-		for _, SpaceReport := range orgDecorator.SpaceReport {
+	for _, OrgReport := range p.Report.OrgReports {
+		for _, SpaceReport := range OrgReport.SpaceReport {
 			table.Append([]string{
-				orgDecorator.Name,
+				OrgReport.Name,
 				SpaceReport.Name,
 				strconv.Itoa(SpaceReport.BillableAppInstancesCount()),
 				strconv.Itoa(SpaceReport.AppInstancesCount),

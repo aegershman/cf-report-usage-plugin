@@ -19,7 +19,7 @@ import (
 // }
 
 // AggregateOrgDecorator describes an aggregated view
-// of multiple OrgDecorator after a Report Execution run
+// of multiple OrgReport after a Report Execution run
 type AggregateOrgDecorator struct {
 	AppInstancesCount         int
 	RunningAppInstancesCount  int
@@ -35,7 +35,7 @@ type AggregateOrgDecorator struct {
 // supposed to "execute" the reportPlan to get it to generate the data?
 type Report struct {
 	Orgs                  []Org
-	OrgDecorators         []OrgDecorator
+	OrgReports            []OrgReport
 	AggregateOrgDecorator AggregateOrgDecorator
 }
 
@@ -49,7 +49,7 @@ func NewReport(orgs []Org) Report {
 // Execute -
 func (r *Report) Execute() {
 
-	var aggregateOrgDecorator []OrgDecorator
+	var aggregateOrgDecorator []OrgReport
 
 	aggregateBillableAppInstancesCount := 0
 	aggregateAppInstancesCount := 0
@@ -58,39 +58,39 @@ func (r *Report) Execute() {
 	aggregateSpringCloudServicesCount := 0
 	aggregateBillableServicesCount := 0
 
-	chOrgDecorators := make(chan OrgDecorator, len(r.Orgs))
-	go PopulateOrgDecorators(r.Orgs, chOrgDecorators)
-	for orgDecorator := range chOrgDecorators {
+	chOrgReports := make(chan OrgReport, len(r.Orgs))
+	go PopulateOrgReports(r.Orgs, chOrgReports)
+	for OrgReport := range chOrgReports {
 
 		log.WithFields(log.Fields{
-			"org": orgDecorator.Name,
+			"org": OrgReport.Name,
 		}).Traceln("processing")
 
-		chSpaceReports := make(chan SpaceReport, len(orgDecorator.Spaces))
-		go PopulateSpaceReports(orgDecorator.Spaces, chSpaceReports)
+		chSpaceReports := make(chan SpaceReport, len(OrgReport.Spaces))
+		go PopulateSpaceReports(OrgReport.Spaces, chSpaceReports)
 		for spaceReport := range chSpaceReports {
 
 			log.WithFields(log.Fields{
-				"org":   orgDecorator.Name,
+				"org":   OrgReport.Name,
 				"space": spaceReport.Name,
 			}).Traceln("processing")
 
-			orgDecorator.SpaceReport = append(orgDecorator.SpaceReport, spaceReport)
+			OrgReport.SpaceReport = append(OrgReport.SpaceReport, spaceReport)
 
 		}
 
-		aggregateBillableAppInstancesCount += orgDecorator.BillableAppInstancesCount()
-		aggregateAppInstancesCount += orgDecorator.AppInstancesCount
-		aggregateRunningAppInstancesCount += orgDecorator.RunningAppInstancesCount
-		aggregateStoppedAppInstancesCount += orgDecorator.StoppedAppInstancesCount
-		aggregateSpringCloudServicesCount += orgDecorator.SpringCloudServicesCount()
-		aggregateBillableServicesCount += orgDecorator.BillableServicesCount()
+		aggregateBillableAppInstancesCount += OrgReport.BillableAppInstancesCount()
+		aggregateAppInstancesCount += OrgReport.AppInstancesCount
+		aggregateRunningAppInstancesCount += OrgReport.RunningAppInstancesCount
+		aggregateStoppedAppInstancesCount += OrgReport.StoppedAppInstancesCount
+		aggregateSpringCloudServicesCount += OrgReport.SpringCloudServicesCount()
+		aggregateBillableServicesCount += OrgReport.BillableServicesCount()
 
-		aggregateOrgDecorator = append(aggregateOrgDecorator, orgDecorator)
+		aggregateOrgDecorator = append(aggregateOrgDecorator, OrgReport)
 
 	}
 
-	r.OrgDecorators = aggregateOrgDecorator
+	r.OrgReports = aggregateOrgDecorator
 	r.AggregateOrgDecorator = AggregateOrgDecorator{
 		BillableAppInstancesCount: aggregateBillableAppInstancesCount,
 		BillableServicesCount:     aggregateBillableServicesCount,
