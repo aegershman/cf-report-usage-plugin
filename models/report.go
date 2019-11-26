@@ -42,17 +42,6 @@ func (r *Report) Execute() {
 			"org": orgReport.Name,
 		}).Traceln("processing")
 
-		for _, spaceReport := range orgReport.SpaceReport {
-
-			log.WithFields(log.Fields{
-				"org":   orgReport.Name,
-				"space": spaceReport.Name,
-			}).Traceln("processing")
-
-			orgReport.SpaceReport = append(orgReport.SpaceReport, spaceReport)
-
-		}
-
 		aggregateBillableAppInstancesCount += orgReport.BillableAppInstancesCount()
 		aggregateAppInstancesCount += orgReport.AppInstancesCount
 		aggregateRunningAppInstancesCount += orgReport.RunningAppInstancesCount
