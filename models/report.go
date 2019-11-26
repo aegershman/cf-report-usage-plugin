@@ -18,21 +18,7 @@ import (
 // 	ServicesSuiteForPivotalPlatformCount() int
 // }
 
-// AggregateOrgReport describes an aggregated view
-// of multiple OrgReport after a Report Execution run
-type AggregateOrgReport struct {
-	AppInstancesCount         int
-	RunningAppInstancesCount  int
-	StoppedAppInstancesCount  int
-	BillableAppInstancesCount int
-	SpringCloudServicesCount  int
-	BillableServicesCount     int
-}
-
 // Report -
-// TODO consider breaking into "pre-init" and "post-init" structs,
-// e.g. "reportPlan" and "report"? Possibly makes it clearer that you're
-// supposed to "execute" the reportPlan to get it to generate the data?
 type Report struct {
 	Orgs               []Org
 	OrgReports         []OrgReport
