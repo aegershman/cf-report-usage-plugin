@@ -4,9 +4,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// AggregateOrgStats describes an aggregated view
-// of multiple OrgStats after a Report Execution run
-type AggregateOrgStats struct {
+// AggregateOrgDecorators describes an aggregated view
+// of multiple OrgDecorator after a Report Execution run
+type AggregateOrgDecorators struct {
 	AppInstancesCount         int
 	RunningAppInstancesCount  int
 	StoppedAppInstancesCount  int
@@ -20,9 +20,9 @@ type AggregateOrgStats struct {
 // e.g. "reportPlan" and "report"? Possibly makes it clearer that you're
 // supposed to "execute" the reportPlan to get it to generate the data?
 type Report struct {
-	Orgs              []Org
-	OrgStats          []OrgStats
-	AggregateOrgStats AggregateOrgStats
+	Orgs                   []Org
+	OrgDecorators          []OrgDecorator
+	AggregateOrgDecorators AggregateOrgDecorators
 }
 
 // NewReport -
@@ -34,13 +34,13 @@ func NewReport(orgs []Org) Report {
 
 // Execute -
 //
-// Since "[]SpaceStats" are a property of every individual "OrgStats"
-// within "[]OrgStats" (whew), we make sure that "aggregateSpaceStats"
-// below only exists within the context of a given "OrgStats".
-// Then we aggregate together all the "OrgStats" for the Report
+// Since "[]SpaceStats" are a property of every individual "OrgDecorator"
+// within "[]OrgDecorator" (whew), we make sure that "aggregateSpaceStats"
+// below only exists within the context of a given "OrgDecorator".
+// Then we aggregate together all the "OrgDecorator" for the Report
 func (r *Report) Execute() {
 
-	var aggregateOrgStats []OrgStats
+	var aggregateOrgDecorators []OrgDecorator
 
 	aggregateBillableAppInstancesCount := 0
 	aggregateAppInstancesCount := 0
@@ -49,7 +49,7 @@ func (r *Report) Execute() {
 	aggregateSpringCloudServicesCount := 0
 	aggregateBillableServicesCount := 0
 
-	chOrgStats := make(chan OrgStats, len(r.Orgs))
+	chOrgStats := make(chan OrgDecorator, len(r.Orgs))
 	go NewOrgsStats(r.Orgs, chOrgStats)
 	for orgStat := range chOrgStats {
 
@@ -77,12 +77,12 @@ func (r *Report) Execute() {
 		aggregateSpringCloudServicesCount += orgStat.SpringCloudServicesCount()
 		aggregateBillableServicesCount += orgStat.BillableServicesCount()
 
-		aggregateOrgStats = append(aggregateOrgStats, orgStat)
+		aggregateOrgDecorators = append(aggregateOrgDecorators, orgStat)
 
 	}
 
-	r.OrgStats = aggregateOrgStats
-	r.AggregateOrgStats = AggregateOrgStats{
+	r.OrgDecorators = aggregateOrgDecorators
+	r.AggregateOrgDecorators = AggregateOrgDecorators{
 		BillableAppInstancesCount: aggregateBillableAppInstancesCount,
 		BillableServicesCount:     aggregateBillableServicesCount,
 		AppInstancesCount:         aggregateAppInstancesCount,
