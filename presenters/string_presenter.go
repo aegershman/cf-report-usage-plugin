@@ -34,11 +34,11 @@ func (p *Presenter) asString() {
 		fmt.Sprintf(
 			reportSummaryMsg,
 			len(p.Report.Orgs),
-			p.Report.AggregateOrgDecorators.BillableAppInstancesCount,
-			p.Report.AggregateOrgDecorators.AppInstancesCount,
-			p.Report.AggregateOrgDecorators.RunningAppInstancesCount,
-			p.Report.AggregateOrgDecorators.StoppedAppInstancesCount,
-			p.Report.AggregateOrgDecorators.SpringCloudServicesCount,
+			p.Report.AggregateOrgDecorator.BillableAppInstancesCount,
+			p.Report.AggregateOrgDecorator.AppInstancesCount,
+			p.Report.AggregateOrgDecorator.RunningAppInstancesCount,
+			p.Report.AggregateOrgDecorator.StoppedAppInstancesCount,
+			p.Report.AggregateOrgDecorator.SpringCloudServicesCount,
 		),
 	)
 

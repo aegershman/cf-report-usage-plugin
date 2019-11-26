@@ -4,9 +4,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// AggregateOrgDecorators describes an aggregated view
+// AggregateOrgDecorator describes an aggregated view
 // of multiple OrgDecorator after a Report Execution run
-type AggregateOrgDecorators struct {
+type AggregateOrgDecorator struct {
 	AppInstancesCount         int
 	RunningAppInstancesCount  int
 	StoppedAppInstancesCount  int
@@ -20,9 +20,9 @@ type AggregateOrgDecorators struct {
 // e.g. "reportPlan" and "report"? Possibly makes it clearer that you're
 // supposed to "execute" the reportPlan to get it to generate the data?
 type Report struct {
-	Orgs                   []Org
-	OrgDecorators          []OrgDecorator
-	AggregateOrgDecorators AggregateOrgDecorators
+	Orgs                  []Org
+	OrgDecorators         []OrgDecorator
+	AggregateOrgDecorator AggregateOrgDecorator
 }
 
 // NewReport -
@@ -40,7 +40,7 @@ func NewReport(orgs []Org) Report {
 // Then we aggregate together all the "OrgDecorator" for the Report
 func (r *Report) Execute() {
 
-	var aggregateOrgDecorators []OrgDecorator
+	var aggregateOrgDecorator []OrgDecorator
 
 	aggregateBillableAppInstancesCount := 0
 	aggregateAppInstancesCount := 0
@@ -77,12 +77,12 @@ func (r *Report) Execute() {
 		aggregateSpringCloudServicesCount += orgStat.SpringCloudServicesCount()
 		aggregateBillableServicesCount += orgStat.BillableServicesCount()
 
-		aggregateOrgDecorators = append(aggregateOrgDecorators, orgStat)
+		aggregateOrgDecorator = append(aggregateOrgDecorator, orgStat)
 
 	}
 
-	r.OrgDecorators = aggregateOrgDecorators
-	r.AggregateOrgDecorators = AggregateOrgDecorators{
+	r.OrgDecorators = aggregateOrgDecorator
+	r.AggregateOrgDecorator = AggregateOrgDecorator{
 		BillableAppInstancesCount: aggregateBillableAppInstancesCount,
 		BillableServicesCount:     aggregateBillableServicesCount,
 		AppInstancesCount:         aggregateAppInstancesCount,
