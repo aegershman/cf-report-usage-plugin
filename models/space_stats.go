@@ -18,8 +18,8 @@ type SpaceStats struct {
 	ConsumedMemory           int
 }
 
-// Stats -
-func (spaces Spaces) Stats(c chan SpaceStats) {
+// NewSpacesStats -
+func NewSpacesStats(spaces []Space, c chan SpaceStats) {
 	for _, space := range spaces {
 		spaceStats := NewSpaceStats(space)
 		c <- spaceStats

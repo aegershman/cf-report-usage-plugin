@@ -18,8 +18,8 @@ type OrgStats struct {
 	ServicesSuiteForPivotalPlatformCount int
 }
 
-// Stats -
-func (orgs Orgs) Stats(c chan OrgStats) {
+// NewOrgsStats -
+func NewOrgsStats(orgs []Org, c chan OrgStats) {
 	for _, org := range orgs {
 		orgStats := NewOrgStats(org)
 		c <- orgStats

@@ -50,7 +50,7 @@ func (r *Report) Execute() {
 	aggregateBillableServicesCount := 0
 
 	chOrgStats := make(chan OrgStats, len(r.Orgs))
-	go r.Orgs.Stats(chOrgStats)
+	go NewOrgsStats(r.Orgs, chOrgStats)
 	for orgStat := range chOrgStats {
 
 		log.WithFields(log.Fields{
@@ -58,7 +58,7 @@ func (r *Report) Execute() {
 		}).Traceln("processing")
 
 		chSpaceStats := make(chan SpaceStats, len(orgStat.Spaces))
-		go orgStat.Spaces.Stats(chSpaceStats)
+		go NewSpacesStats(orgStat.Spaces, chSpaceStats)
 		for spaceStat := range chSpaceStats {
 
 			log.WithFields(log.Fields{
