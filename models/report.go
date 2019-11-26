@@ -20,13 +20,13 @@ type AggregateOrgStats struct {
 // e.g. "reportPlan" and "report"? Possibly makes it clearer that you're
 // supposed to "execute" the reportPlan to get it to generate the data?
 type Report struct {
-	Orgs              Orgs
+	Orgs              []Org
 	OrgStats          []OrgStats
 	AggregateOrgStats AggregateOrgStats
 }
 
 // NewReport -
-func NewReport(orgs Orgs) Report {
+func NewReport(orgs []Org) Report {
 	return Report{
 		Orgs: orgs,
 	}
@@ -50,7 +50,7 @@ func (r *Report) Execute() {
 	aggregateBillableServicesCount := 0
 
 	chOrgStats := make(chan OrgStats, len(r.Orgs))
-	go r.Orgs.Stats(chOrgStats)
+	go NewOrgsStats(r.Orgs, chOrgStats)
 	for orgStat := range chOrgStats {
 
 		log.WithFields(log.Fields{
@@ -58,7 +58,7 @@ func (r *Report) Execute() {
 		}).Traceln("processing")
 
 		chSpaceStats := make(chan SpaceStats, len(orgStat.Spaces))
-		go orgStat.Spaces.Stats(chSpaceStats)
+		go NewSpacesStats(orgStat.Spaces, chSpaceStats)
 		for spaceStat := range chSpaceStats {
 
 			log.WithFields(log.Fields{

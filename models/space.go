@@ -3,13 +3,10 @@ package models
 // Space -
 type Space struct {
 	Name       string
-	Apps       Apps
-	Services   Services
+	Apps       []App
+	Services   []Service
 	SummaryURL string
 }
-
-// Spaces -
-type Spaces []Space
 
 // ConsumedMemory returns the amount of memory consumed by all
 // running canonical application instances within a space

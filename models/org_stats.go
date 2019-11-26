@@ -6,7 +6,7 @@ type OrgStats struct {
 	Name                                 string
 	MemoryQuota                          int
 	MemoryUsage                          int
-	Spaces                               Spaces
+	Spaces                               []Space
 	SpaceStats                           []SpaceStats
 	AppsCount                            int
 	RunningAppsCount                     int
@@ -18,8 +18,8 @@ type OrgStats struct {
 	ServicesSuiteForPivotalPlatformCount int
 }
 
-// Stats -
-func (orgs Orgs) Stats(c chan OrgStats) {
+// NewOrgsStats -
+func NewOrgsStats(orgs []Org, c chan OrgStats) {
 	for _, org := range orgs {
 		orgStats := NewOrgStats(org)
 		c <- orgStats

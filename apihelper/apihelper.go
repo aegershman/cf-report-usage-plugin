@@ -21,12 +21,12 @@ var (
 // CFAPIHelper wraps cf curl results
 type CFAPIHelper interface {
 	GetTarget() string
-	GetOrgs() (models.Orgs, error)
+	GetOrgs() ([]models.Org, error)
 	GetOrg(string) (models.Org, error)
 	GetQuotaMemoryLimit(string) (float64, error)
 	GetOrgMemoryUsage(models.Org) (float64, error)
-	GetOrgSpaces(string) (models.Spaces, error)
-	GetSpaceAppsAndServices(string) (models.Apps, models.Services, error)
+	GetOrgSpaces(string) ([]models.Space, error)
+	GetSpaceAppsAndServices(string) ([]models.App, []models.Service, error)
 }
 
 // APIHelper -
@@ -55,13 +55,13 @@ func (api *APIHelper) GetTarget() string {
 }
 
 // GetOrgs -
-func (api *APIHelper) GetOrgs() (models.Orgs, error) {
+func (api *APIHelper) GetOrgs() ([]models.Org, error) {
 	orgsJSON, err := cfcurl.Curl(api.cli, "/v2/organizations")
 	if nil != err {
 		return nil, err
 	}
 	pages := int(orgsJSON["total_pages"].(float64))
-	orgs := models.Orgs{}
+	orgs := []models.Org{}
 	for i := 1; i <= pages; i++ {
 		if 1 != i {
 			orgsJSON, err = cfcurl.Curl(api.cli, "/v2/organizations?page="+strconv.Itoa(i))
@@ -137,9 +137,9 @@ func (api *APIHelper) GetOrgMemoryUsage(org models.Org) (float64, error) {
 }
 
 // GetOrgSpaces returns the spaces in an org
-func (api *APIHelper) GetOrgSpaces(spacesURL string) (models.Spaces, error) {
+func (api *APIHelper) GetOrgSpaces(spacesURL string) ([]models.Space, error) {
 	nextURL := spacesURL
-	spaces := models.Spaces{}
+	spaces := []models.Space{}
 	for nextURL != "" {
 		spacesJSON, err := cfcurl.Curl(api.cli, nextURL)
 		if nil != err {
@@ -165,14 +165,14 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) (models.Spaces, error) {
 }
 
 // GetSpaceAppsAndServices returns the apps and the services from a space's /summary endpoint
-func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (models.Apps, models.Services, error) {
+func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) ([]models.App, []models.Service, error) {
 	summaryJSON, err := cfcurl.Curl(api.cli, summaryURL)
 	if nil != err {
 		return nil, nil, err
 	}
 
-	apps := models.Apps{}
-	services := models.Services{}
+	apps := []models.App{}
+	services := []models.Service{}
 
 	if _, ok := summaryJSON["apps"]; ok {
 		for _, a := range summaryJSON["apps"].([]interface{}) {
