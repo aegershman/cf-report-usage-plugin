@@ -7,6 +7,3 @@ type App struct {
 	Memory           int
 	Instances        int
 }
-
-// Apps -
-type Apps []App

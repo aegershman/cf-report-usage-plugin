@@ -3,7 +3,7 @@ package models
 // Space -
 type Space struct {
 	Name       string
-	Apps       Apps
+	Apps       []App
 	Services   Services
 	SummaryURL string
 }

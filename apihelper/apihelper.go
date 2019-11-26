@@ -26,7 +26,7 @@ type CFAPIHelper interface {
 	GetQuotaMemoryLimit(string) (float64, error)
 	GetOrgMemoryUsage(models.Org) (float64, error)
 	GetOrgSpaces(string) ([]models.Space, error)
-	GetSpaceAppsAndServices(string) (models.Apps, models.Services, error)
+	GetSpaceAppsAndServices(string) ([]models.App, models.Services, error)
 }
 
 // APIHelper -
@@ -165,13 +165,13 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) ([]models.Space, error) {
 }
 
 // GetSpaceAppsAndServices returns the apps and the services from a space's /summary endpoint
-func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) (models.Apps, models.Services, error) {
+func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) ([]models.App, models.Services, error) {
 	summaryJSON, err := cfcurl.Curl(api.cli, summaryURL)
 	if nil != err {
 		return nil, nil, err
 	}
 
-	apps := models.Apps{}
+	apps := []models.App{}
 	services := models.Services{}
 
 	if _, ok := summaryJSON["apps"]; ok {
