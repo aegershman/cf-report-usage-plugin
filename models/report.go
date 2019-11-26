@@ -4,6 +4,20 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// type Reportable interface {
+// 	Name() string
+// 	MemoryQuota() int
+// 	MemoryUsage() int
+// 	AppsCount() int
+// 	RunningAppsCount() int
+// 	StoppedAppsCount() int
+// 	AppInstancesCount() int
+// 	RunningAppInstancesCount() int
+// 	StoppedAppInstancesCount() int
+// 	ServicesCount() int
+// 	ServicesSuiteForPivotalPlatformCount() int
+// }
+
 // AggregateOrgDecorator describes an aggregated view
 // of multiple OrgDecorator after a Report Execution run
 type AggregateOrgDecorator struct {

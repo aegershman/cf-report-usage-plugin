@@ -2,7 +2,7 @@ package models
 
 // OrgDecorator -
 type OrgDecorator struct {
-	Org                                  Org
+	org                                  Org
 	Name                                 string
 	MemoryQuota                          int
 	MemoryUsage                          int
@@ -30,7 +30,7 @@ func PopulateOrgDecorators(orgs []Org, c chan OrgDecorator) {
 // NewOrgDecorator -
 func NewOrgDecorator(org Org) OrgDecorator {
 	return OrgDecorator{
-		Org:                      org,
+		org:                      org,
 		Name:                     org.Name,
 		MemoryQuota:              org.MemoryQuota,
 		MemoryUsage:              org.MemoryUsage,

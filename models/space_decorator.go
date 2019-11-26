@@ -6,7 +6,7 @@ import "strings"
 // of Spaces; we can use it as a way to decorate
 // a Space with extra info like billableAIs, etc.
 type SpaceDecorator struct {
-	Space                    Space
+	space                    Space
 	Name                     string
 	AppsCount                int
 	RunningAppsCount         int
@@ -30,7 +30,7 @@ func PopulateSpaceDecorators(spaces []Space, c chan SpaceDecorator) {
 // NewSpaceDecorator -
 func NewSpaceDecorator(space Space) SpaceDecorator {
 	return SpaceDecorator{
-		Space:                    space,
+		space:                    space,
 		Name:                     space.Name,
 		AppsCount:                space.AppsCount(),
 		RunningAppsCount:         space.RunningAppsCount(),
@@ -50,7 +50,7 @@ func NewSpaceDecorator(space Space) SpaceDecorator {
 // metadata labels; this is the label property of the "service" object
 func (s *SpaceDecorator) ServicesCountByServiceLabel(serviceType string) int {
 	count := 0
-	for _, service := range s.Space.Services {
+	for _, service := range s.space.Services {
 		if strings.Contains(service.ServicePlanLabel, serviceType) {
 			count++
 		}
@@ -105,7 +105,7 @@ func (s *SpaceDecorator) SpringCloudServicesCount() int {
 // This includes anything which Pivotal deems "billable" as an SI; this might mean
 // subtracting certain services (like SCS) from the count of `cf services`
 func (s *SpaceDecorator) BillableServicesCount() int {
-	count := s.Space.ServicesCount()
+	count := s.space.ServicesCount()
 	count -= s.SpringCloudServicesCount()
 	return count
 }
@@ -116,7 +116,7 @@ func (s *SpaceDecorator) BillableServicesCount() int {
 // considers it a service; e.g., SCS instances (config server, service registry, etc.)
 func (s *SpaceDecorator) BillableAppInstancesCount() int {
 	count := 0
-	count += s.Space.AppInstancesCount()
+	count += s.space.AppInstancesCount()
 	count += s.SpringCloudServicesCount()
 	return count
 }
