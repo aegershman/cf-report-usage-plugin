@@ -18,9 +18,9 @@ import (
 // 	ServicesSuiteForPivotalPlatformCount() int
 // }
 
-// AggregateOrgDecorator describes an aggregated view
+// AggregateOrgReport describes an aggregated view
 // of multiple OrgReport after a Report Execution run
-type AggregateOrgDecorator struct {
+type AggregateOrgReport struct {
 	AppInstancesCount         int
 	RunningAppInstancesCount  int
 	StoppedAppInstancesCount  int
@@ -34,9 +34,9 @@ type AggregateOrgDecorator struct {
 // e.g. "reportPlan" and "report"? Possibly makes it clearer that you're
 // supposed to "execute" the reportPlan to get it to generate the data?
 type Report struct {
-	Orgs                  []Org
-	OrgReports            []OrgReport
-	AggregateOrgDecorator AggregateOrgDecorator
+	Orgs               []Org
+	OrgReports         []OrgReport
+	AggregateOrgReport AggregateOrgReport
 }
 
 // NewReport -
@@ -49,7 +49,7 @@ func NewReport(orgs []Org) Report {
 // Execute -
 func (r *Report) Execute() {
 
-	var aggregateOrgDecorator []OrgReport
+	var aggregateOrgReport []OrgReport
 
 	aggregateBillableAppInstancesCount := 0
 	aggregateAppInstancesCount := 0
@@ -86,12 +86,12 @@ func (r *Report) Execute() {
 		aggregateSpringCloudServicesCount += OrgReport.SpringCloudServicesCount()
 		aggregateBillableServicesCount += OrgReport.BillableServicesCount()
 
-		aggregateOrgDecorator = append(aggregateOrgDecorator, OrgReport)
+		aggregateOrgReport = append(aggregateOrgReport, OrgReport)
 
 	}
 
-	r.OrgReports = aggregateOrgDecorator
-	r.AggregateOrgDecorator = AggregateOrgDecorator{
+	r.OrgReports = aggregateOrgReport
+	r.AggregateOrgReport = AggregateOrgReport{
 		BillableAppInstancesCount: aggregateBillableAppInstancesCount,
 		BillableServicesCount:     aggregateBillableServicesCount,
 		AppInstancesCount:         aggregateAppInstancesCount,
