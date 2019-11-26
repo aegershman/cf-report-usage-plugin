@@ -60,33 +60,33 @@ func (r *Report) Execute() {
 
 	chOrgReports := make(chan OrgReport, len(r.Orgs))
 	go PopulateOrgReports(r.Orgs, chOrgReports)
-	for OrgReport := range chOrgReports {
+	for orgReport := range chOrgReports {
 
 		log.WithFields(log.Fields{
-			"org": OrgReport.Name,
+			"org": orgReport.Name,
 		}).Traceln("processing")
 
-		chSpaceReports := make(chan SpaceReport, len(OrgReport.Spaces))
-		go PopulateSpaceReports(OrgReport.Spaces, chSpaceReports)
+		chSpaceReports := make(chan SpaceReport, len(orgReport.Spaces))
+		go PopulateSpaceReports(orgReport.Spaces, chSpaceReports)
 		for spaceReport := range chSpaceReports {
 
 			log.WithFields(log.Fields{
-				"org":   OrgReport.Name,
+				"org":   orgReport.Name,
 				"space": spaceReport.Name,
 			}).Traceln("processing")
 
-			OrgReport.SpaceReport = append(OrgReport.SpaceReport, spaceReport)
+			orgReport.SpaceReport = append(orgReport.SpaceReport, spaceReport)
 
 		}
 
-		aggregateBillableAppInstancesCount += OrgReport.BillableAppInstancesCount()
-		aggregateAppInstancesCount += OrgReport.AppInstancesCount
-		aggregateRunningAppInstancesCount += OrgReport.RunningAppInstancesCount
-		aggregateStoppedAppInstancesCount += OrgReport.StoppedAppInstancesCount
-		aggregateSpringCloudServicesCount += OrgReport.SpringCloudServicesCount()
-		aggregateBillableServicesCount += OrgReport.BillableServicesCount()
+		aggregateBillableAppInstancesCount += orgReport.BillableAppInstancesCount()
+		aggregateAppInstancesCount += orgReport.AppInstancesCount
+		aggregateRunningAppInstancesCount += orgReport.RunningAppInstancesCount
+		aggregateStoppedAppInstancesCount += orgReport.StoppedAppInstancesCount
+		aggregateSpringCloudServicesCount += orgReport.SpringCloudServicesCount()
+		aggregateBillableServicesCount += orgReport.BillableServicesCount()
 
-		aggregateOrgReport = append(aggregateOrgReport, OrgReport)
+		aggregateOrgReport = append(aggregateOrgReport, orgReport)
 
 	}
 
