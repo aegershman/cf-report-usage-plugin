@@ -20,7 +20,7 @@ func (p *Presenter) asTable() {
 	})
 
 	for _, orgReport := range p.Report.OrgReports {
-		for _, spaceReport := range orgReport.SpaceReport {
+		for _, spaceReport := range orgReport.SpaceReports {
 			table.Append([]string{
 				orgReport.Name,
 				spaceReport.Name,

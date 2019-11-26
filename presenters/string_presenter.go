@@ -19,7 +19,7 @@ func (p *Presenter) asString() {
 
 	for _, orgReport := range p.Report.OrgReports {
 		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgReport.Name, orgReport.MemoryUsage, orgReport.MemoryQuota))
-		for _, spaceReport := range orgReport.SpaceReport {
+		for _, spaceReport := range orgReport.SpaceReports {
 			if orgReport.MemoryQuota > 0 {
 				spaceMemoryConsumedPercentage := (100 * spaceReport.ConsumedMemory / orgReport.MemoryQuota)
 				response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceReport.Name, spaceReport.ConsumedMemory, spaceMemoryConsumedPercentage))

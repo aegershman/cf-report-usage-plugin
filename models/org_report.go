@@ -7,7 +7,7 @@ type OrgReport struct {
 	MemoryQuota                          int
 	MemoryUsage                          int
 	Spaces                               []Space
-	SpaceReport                          []SpaceReport
+	SpaceReports                         []SpaceReport
 	AppsCount                            int
 	RunningAppsCount                     int
 	StoppedAppsCount                     int
@@ -31,7 +31,7 @@ func NewOrgReport(org Org) OrgReport {
 		MemoryQuota:              org.MemoryQuota,
 		MemoryUsage:              org.MemoryUsage,
 		Spaces:                   org.Spaces,
-		SpaceReport:              spaceReports,
+		SpaceReports:             spaceReports,
 		AppsCount:                org.AppsCount(),
 		RunningAppsCount:         org.RunningAppsCount(),
 		StoppedAppsCount:         org.AppsCount() - org.RunningAppsCount(),
@@ -45,7 +45,7 @@ func NewOrgReport(org Org) OrgReport {
 // SpringCloudServicesCount returns total count of SCS services across all spaces of the org
 func (o *OrgReport) SpringCloudServicesCount() int {
 	count := 0
-	for _, s := range o.SpaceReport {
+	for _, s := range o.SpaceReports {
 		count += s.SpringCloudServicesCount()
 	}
 	return count
@@ -57,7 +57,7 @@ func (o *OrgReport) SpringCloudServicesCount() int {
 // considers it a service; e.g., SCS instances (config server, service registry, etc.)
 func (o *OrgReport) BillableAppInstancesCount() int {
 	count := 0
-	for _, s := range o.SpaceReport {
+	for _, s := range o.SpaceReports {
 		count += s.BillableAppInstancesCount()
 	}
 	return count
@@ -69,7 +69,7 @@ func (o *OrgReport) BillableAppInstancesCount() int {
 // subtracting certain services (like SCS) from the count of `cf services`
 func (o *OrgReport) BillableServicesCount() int {
 	count := 0
-	for _, s := range o.SpaceReport {
+	for _, s := range o.SpaceReports {
 		count += s.BillableServicesCount()
 	}
 	return count
