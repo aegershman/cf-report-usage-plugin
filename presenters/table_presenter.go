@@ -14,7 +14,9 @@ func (p *Presenter) asTable() {
 		"Org",
 		"Space",
 		"Billable AIs",
-		"Billable SIs",
+		"AIs",
+		"Stopped AIs",
+		"SCS",
 	})
 
 	for _, orgStat := range p.Report.OrgStats {
@@ -23,7 +25,9 @@ func (p *Presenter) asTable() {
 				orgStat.Name,
 				spaceStat.Name,
 				strconv.Itoa(spaceStat.BillableAppInstancesCount()),
-				strconv.Itoa(spaceStat.BillableServicesCount()),
+				strconv.Itoa(spaceStat.AppInstancesCount),
+				strconv.Itoa(spaceStat.StoppedAppInstancesCount),
+				strconv.Itoa(spaceStat.SpringCloudServicesCount()),
 			})
 		}
 	}
@@ -32,7 +36,9 @@ func (p *Presenter) asTable() {
 		"-",
 		"Total",
 		strconv.Itoa(p.Report.AggregateOrgStats.BillableAppInstancesCount),
-		strconv.Itoa(p.Report.AggregateOrgStats.BillableServicesCount),
+		strconv.Itoa(p.Report.AggregateOrgStats.AppInstancesCount),
+		strconv.Itoa(p.Report.AggregateOrgStats.StoppedAppInstancesCount),
+		strconv.Itoa(p.Report.AggregateOrgStats.SpringCloudServicesCount),
 	})
 
 	table.Render()
