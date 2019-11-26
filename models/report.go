@@ -44,35 +44,35 @@ func (r *Report) Execute() {
 	aggregateSpringCloudServicesCount := 0
 	aggregateBillableServicesCount := 0
 
-	chOrgStats := make(chan OrgDecorator, len(r.Orgs))
-	go PopulateOrgDecorators(r.Orgs, chOrgStats)
-	for orgStat := range chOrgStats {
+	chOrgDecorators := make(chan OrgDecorator, len(r.Orgs))
+	go PopulateOrgDecorators(r.Orgs, chOrgDecorators)
+	for orgDecorator := range chOrgDecorators {
 
 		log.WithFields(log.Fields{
-			"org": orgStat.Name,
+			"org": orgDecorator.Name,
 		}).Traceln("processing")
 
-		chSpaceStats := make(chan SpaceDecorator, len(orgStat.Spaces))
-		go PopulateSpaceDecorators(orgStat.Spaces, chSpaceStats)
-		for spaceStat := range chSpaceStats {
+		chSpaceDecorators := make(chan SpaceDecorator, len(orgDecorator.Spaces))
+		go PopulateSpaceDecorators(orgDecorator.Spaces, chSpaceDecorators)
+		for spaceDecorator := range chSpaceDecorators {
 
 			log.WithFields(log.Fields{
-				"org":   orgStat.Name,
-				"space": spaceStat.Name,
+				"org":   orgDecorator.Name,
+				"space": spaceDecorator.Name,
 			}).Traceln("processing")
 
-			orgStat.SpaceDecorator = append(orgStat.SpaceDecorator, spaceStat)
+			orgDecorator.SpaceDecorator = append(orgDecorator.SpaceDecorator, spaceDecorator)
 
 		}
 
-		aggregateBillableAppInstancesCount += orgStat.BillableAppInstancesCount()
-		aggregateAppInstancesCount += orgStat.AppInstancesCount
-		aggregateRunningAppInstancesCount += orgStat.RunningAppInstancesCount
-		aggregateStoppedAppInstancesCount += orgStat.StoppedAppInstancesCount
-		aggregateSpringCloudServicesCount += orgStat.SpringCloudServicesCount()
-		aggregateBillableServicesCount += orgStat.BillableServicesCount()
+		aggregateBillableAppInstancesCount += orgDecorator.BillableAppInstancesCount()
+		aggregateAppInstancesCount += orgDecorator.AppInstancesCount
+		aggregateRunningAppInstancesCount += orgDecorator.RunningAppInstancesCount
+		aggregateStoppedAppInstancesCount += orgDecorator.StoppedAppInstancesCount
+		aggregateSpringCloudServicesCount += orgDecorator.SpringCloudServicesCount()
+		aggregateBillableServicesCount += orgDecorator.BillableServicesCount()
 
-		aggregateOrgDecorator = append(aggregateOrgDecorator, orgStat)
+		aggregateOrgDecorator = append(aggregateOrgDecorator, orgDecorator)
 
 	}
 
