@@ -9,87 +9,56 @@ cf-cli plugin showing memory consumption, application instances (AIs), and servi
 cf usage-report
 
 # report specific orgs
-cf usage-report -o myorg
-cf usage-report -o firstorg -o secondorg [-o orgName...]
+cf usage-report -o voyager
+cf usage-report -o voyager -o tenzing [-o orgName...]
 
 # report using different formats
-cf usage-report -o firstorg -o secondorg --format string
-cf usage-report -o firstorg -o secondorg --format table
+cf usage-report -o voyager -o tenzing --format string
+cf usage-report -o voyager -o tenzing --format table
 ```
 
 `--format table`:
 
 ```txt
-+-------------+-----------------+--------------+--------------+
-|     ORG     |      SPACE      | BILLABLE AIS | BILLABLE SIS |
-+-------------+-----------------+--------------+--------------+
-| firstorg    | docs            | 4            | 0            |
-| firstorg    | probots         | 4            | 0            |
-| firstorg    | route53-sync    | 0            | 0            |
-| firstorg    | scratchpad      | 15           | 12           |
-| firstorg    | splunk-firehose | 2            | 0            |
-| firstorg    | sso             | 0            | 1            |
-| secondorg   | dev             | 31           | 2            |
-+-------------+-----------------+--------------+--------------+
-|      -      |      TOTAL      |      56      |      15      |
-+-------------+-----------------+--------------+--------------+
++---------+-------------+--------------+-----+-------------+-----+
+|   ORG   |    SPACE    | BILLABLE AIS | AIS | STOPPED AIS | SCS |
++---------+-------------+--------------+-----+-------------+-----+
+| voyager | dev         | 20           | 18  | 5           | 2   |
+| voyager | test        | 20           | 19  | 2           | 1   |
+| tenzing | dev         | 2            | 0   | 0           | 2   |
+| tenzing | test        | 2            | 0   | 0           | 2   |
+| tenzing | integration | 1            | 0   | 0           | 1   |
++---------+-------------+--------------+-----+-------------+-----+
+|    -    |    TOTAL    |      45      | 37  |      7      |  8  |
++---------+-------------+--------------+-----+-------------+-----+
 ```
 
 `--format string`:
 
 ```txt
-Org firstorg is consuming 12864 MB of 20480 MB.
-        Space docs is consuming 0 MB memory (0%) of org quota.
-                0 app instances: 0 running 0 stopped
-                4 billable app instances (includes AIs and billable SIs, like SCS)
-                0 unique app_guids: 0 running 0 stopped
-                4 service instances total
-                4 service instances of type SCS (config-server, eureka, etc.)
-                0 service instances of type Service Suite (mysql, redis, rmq)
-        Space probots is consuming 6144 MB memory (30%) of org quota.
-                4 app instances: 4 running 0 stopped
-                4 billable app instances (includes AIs and billable SIs, like SCS)
-                3 unique app_guids: 3 running 0 stopped
-                0 service instances total
-                0 service instances of type SCS (config-server, eureka, etc.)
-                0 service instances of type Service Suite (mysql, redis, rmq)
-        Space route53-sync is consuming 0 MB memory (0%) of org quota.
-                0 app instances: 0 running 0 stopped
-                0 billable app instances (includes AIs and billable SIs, like SCS)
-                0 unique app_guids: 0 running 0 stopped
-                0 service instances total
-                0 service instances of type SCS (config-server, eureka, etc.)
-                0 service instances of type Service Suite (mysql, redis, rmq)
-        Space scratchpad is consuming 5696 MB memory (27%) of org quota.
-                10 app instances: 8 running 2 stopped
-                15 billable app instances (includes AIs and billable SIs, like SCS)
-                8 unique app_guids: 6 running 2 stopped
-                17 service instances total
-                5 service instances of type SCS (config-server, eureka, etc.)
-                4 service instances of type Service Suite (mysql, redis, rmq)
-        Space splunk-firehose is consuming 1024 MB memory (5%) of org quota.
-                2 app instances: 2 running 0 stopped
-                2 billable app instances (includes AIs and billable SIs, like SCS)
-                1 unique app_guids: 1 running 0 stopped
-                0 service instances total
-                0 service instances of type SCS (config-server, eureka, etc.)
-                0 service instances of type Service Suite (mysql, redis, rmq)
-        Space sso is consuming 0 MB memory (0%) of org quota.
-                0 app instances: 0 running 0 stopped
-                0 billable app instances (includes AIs and billable SIs, like SCS)
-                0 unique app_guids: 0 running 0 stopped
-                1 service instances total
-                0 service instances of type SCS (config-server, eureka, etc.)
-                0 service instances of type Service Suite (mysql, redis, rmq)
-Org secondorg is consuming 30720 MB of 65536 MB.
-        Space dev is consuming 30720 MB memory (46%) of org quota.
-                30 app instances: 30 running 0 stopped
-                31 billable app instances (includes AIs and billable SIs, like SCS)
-                30 unique app_guids: 30 running 0 stopped
-                3 service instances total
-                1 service instances of type SCS (config-server, eureka, etc.)
-                2 service instances of type Service Suite (mysql, redis, rmq)
-Across 2 org(s), you have 56 billable AIs, 46 are canonical AIs (44 running, 2 stopped), 10 are SCS instances
+org voyager is consuming 60416 MB of 83968 MB
+        space dev is consuming 25600 MB memory (30%) of org quota
+                AIs billable: 20
+                AIs canonical: 18 (13 running, 5 stopped)
+                SCS instances: 2
+        space test is consuming 34816 MB memory (41%) of org quota
+                AIs billable: 20
+                AIs canonical: 19 (17 running, 2 stopped)
+                SCS instances: 1
+org tenzing is consuming 0 MB of 83968 MB
+        space dev is consuming 0 MB memory (0%) of org quota
+                AIs billable: 2
+                AIs canonical: 0 (0 running, 0 stopped)
+                SCS instances: 2
+        space test is consuming 0 MB memory (0%) of org quota
+                AIs billable: 2
+                AIs canonical: 0 (0 running, 0 stopped)
+                SCS instances: 2
+        space integration is consuming 0 MB memory (0%) of org quota
+                AIs billable: 1
+                AIs canonical: 0 (0 running, 0 stopped)
+                SCS instances: 1
+across 2 org(s), you have 45 billable AIs, 37 are canonical AIs (30 running, 7 stopped), 8 are SCS instances
 ```
 
 ## use in pivotal licensing

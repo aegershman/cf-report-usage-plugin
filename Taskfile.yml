@@ -1,6 +1,12 @@
 version: "2"
 
 tasks:
+  build:
+    cmds:
+      - go mod tidy
+      - go generate ./...
+      - goreleaser --snapshot --skip-publish --rm-dist
+
   install:
     cmds:
       - task: build
@@ -10,8 +16,7 @@ tasks:
     cmds:
       - cf uninstall-plugin cf-usage-report-plugin
 
-  build:
+  test:
     cmds:
-      - go mod tidy
-      - go generate ./...
-      - goreleaser --snapshot --skip-publish --rm-dist
+      - task: install
+      - cf usage-report -o voyager -o tenzing --format table
