@@ -48,9 +48,9 @@ func NewSpaceDecorator(space Space) SpaceDecorator {
 //
 // Keep in mind, when we say "service label", we aren't talking about
 // metadata labels; this is the label property of the "service" object
-func (ss *SpaceDecorator) ServicesCountByServiceLabel(serviceType string) int {
+func (s *SpaceDecorator) ServicesCountByServiceLabel(serviceType string) int {
 	count := 0
-	for _, service := range ss.Space.Services {
+	for _, service := range s.Space.Services {
 		if strings.Contains(service.ServicePlanLabel, serviceType) {
 			count++
 		}
@@ -63,20 +63,20 @@ func (ss *SpaceDecorator) ServicesCountByServiceLabel(serviceType string) int {
 //
 // see: https://network.pivotal.io/products/pcf-services
 // (I know right? It's an intense function name)
-func (ss *SpaceDecorator) ServicesSuiteForPivotalPlatformCount() int {
+func (s *SpaceDecorator) ServicesSuiteForPivotalPlatformCount() int {
 	count := 0
 
-	count += ss.ServicesCountByServiceLabel("p-dataflow-servers") // TODO
+	count += s.ServicesCountByServiceLabel("p-dataflow-servers") // TODO
 
-	count += ss.ServicesCountByServiceLabel("p-mysql")
-	count += ss.ServicesCountByServiceLabel("p.mysql")
-	count += ss.ServicesCountByServiceLabel("pivotal-mysql")
+	count += s.ServicesCountByServiceLabel("p-mysql")
+	count += s.ServicesCountByServiceLabel("p.mysql")
+	count += s.ServicesCountByServiceLabel("pivotal-mysql")
 
-	count += ss.ServicesCountByServiceLabel("p-redis")
-	count += ss.ServicesCountByServiceLabel("p.redis")
+	count += s.ServicesCountByServiceLabel("p-redis")
+	count += s.ServicesCountByServiceLabel("p.redis")
 
-	count += ss.ServicesCountByServiceLabel("p-rabbitmq")
-	count += ss.ServicesCountByServiceLabel("p.rabbitmq")
+	count += s.ServicesCountByServiceLabel("p-rabbitmq")
+	count += s.ServicesCountByServiceLabel("p.rabbitmq")
 
 	return count
 }
@@ -85,17 +85,17 @@ func (ss *SpaceDecorator) ServicesSuiteForPivotalPlatformCount() int {
 // from "spring cloud services" tile, e.g. config-server/service-registry/circuit-breaker/etc.
 //
 // see: https://network.pivotal.io/products/p-spring-cloud-services/
-func (ss *SpaceDecorator) SpringCloudServicesCount() int {
+func (s *SpaceDecorator) SpringCloudServicesCount() int {
 	count := 0
 
 	// scs 2.x
-	count += ss.ServicesCountByServiceLabel("p-config-server")
-	count += ss.ServicesCountByServiceLabel("p-service-registry")
-	count += ss.ServicesCountByServiceLabel("p-circuit-breaker")
+	count += s.ServicesCountByServiceLabel("p-config-server")
+	count += s.ServicesCountByServiceLabel("p-service-registry")
+	count += s.ServicesCountByServiceLabel("p-circuit-breaker")
 
 	// scs 3.x
-	count += ss.ServicesCountByServiceLabel("p.config-server")
-	count += ss.ServicesCountByServiceLabel("p.service-registry")
+	count += s.ServicesCountByServiceLabel("p.config-server")
+	count += s.ServicesCountByServiceLabel("p.service-registry")
 
 	return count
 }
@@ -104,9 +104,9 @@ func (ss *SpaceDecorator) SpringCloudServicesCount() int {
 //
 // This includes anything which Pivotal deems "billable" as an SI; this might mean
 // subtracting certain services (like SCS) from the count of `cf services`
-func (ss *SpaceDecorator) BillableServicesCount() int {
-	count := ss.Space.ServicesCount()
-	count -= ss.SpringCloudServicesCount()
+func (s *SpaceDecorator) BillableServicesCount() int {
+	count := s.Space.ServicesCount()
+	count -= s.SpringCloudServicesCount()
 	return count
 }
 
@@ -114,9 +114,9 @@ func (ss *SpaceDecorator) BillableServicesCount() int {
 //
 // This includes anything which Pivotal deems "billable" as an AI, even if CF
 // considers it a service; e.g., SCS instances (config server, service registry, etc.)
-func (ss *SpaceDecorator) BillableAppInstancesCount() int {
+func (s *SpaceDecorator) BillableAppInstancesCount() int {
 	count := 0
-	count += ss.Space.AppInstancesCount()
-	count += ss.SpringCloudServicesCount()
+	count += s.Space.AppInstancesCount()
+	count += s.SpringCloudServicesCount()
 	return count
 }

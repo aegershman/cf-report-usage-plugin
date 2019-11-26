@@ -19,15 +19,15 @@ func (p *Presenter) asTable() {
 		"SCS",
 	})
 
-	for _, orgStat := range p.Report.OrgDecorators {
-		for _, spaceStat := range orgStat.SpaceDecorator {
+	for _, orgDecorator := range p.Report.OrgDecorators {
+		for _, spaceDecorator := range orgDecorator.SpaceDecorator {
 			table.Append([]string{
-				orgStat.Name,
-				spaceStat.Name,
-				strconv.Itoa(spaceStat.BillableAppInstancesCount()),
-				strconv.Itoa(spaceStat.AppInstancesCount),
-				strconv.Itoa(spaceStat.StoppedAppInstancesCount),
-				strconv.Itoa(spaceStat.SpringCloudServicesCount()),
+				orgDecorator.Name,
+				spaceDecorator.Name,
+				strconv.Itoa(spaceDecorator.BillableAppInstancesCount()),
+				strconv.Itoa(spaceDecorator.AppInstancesCount),
+				strconv.Itoa(spaceDecorator.StoppedAppInstancesCount),
+				strconv.Itoa(spaceDecorator.SpringCloudServicesCount()),
 			})
 		}
 	}

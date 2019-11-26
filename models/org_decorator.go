@@ -46,10 +46,10 @@ func NewOrgDecorator(org Org) OrgDecorator {
 }
 
 // SpringCloudServicesCount returns total count of SCS services across all spaces of the org
-func (os *OrgDecorator) SpringCloudServicesCount() int {
+func (o *OrgDecorator) SpringCloudServicesCount() int {
 	count := 0
-	for _, ss := range os.SpaceDecorator {
-		count += ss.SpringCloudServicesCount()
+	for _, s := range o.SpaceDecorator {
+		count += s.SpringCloudServicesCount()
 	}
 	return count
 }
@@ -58,10 +58,10 @@ func (os *OrgDecorator) SpringCloudServicesCount() int {
 //
 // This includes anything which Pivotal deems "billable" as an AI, even if CF
 // considers it a service; e.g., SCS instances (config server, service registry, etc.)
-func (os *OrgDecorator) BillableAppInstancesCount() int {
+func (o *OrgDecorator) BillableAppInstancesCount() int {
 	count := 0
-	for _, ss := range os.SpaceDecorator {
-		count += ss.BillableAppInstancesCount()
+	for _, s := range o.SpaceDecorator {
+		count += s.BillableAppInstancesCount()
 	}
 	return count
 }
@@ -70,10 +70,10 @@ func (os *OrgDecorator) BillableAppInstancesCount() int {
 //
 // This includes anything which Pivotal deems "billable" as an SI; this might mean
 // subtracting certain services (like SCS) from the count of `cf services`
-func (os *OrgDecorator) BillableServicesCount() int {
+func (o *OrgDecorator) BillableServicesCount() int {
 	count := 0
-	for _, ss := range os.SpaceDecorator {
-		count += ss.BillableServicesCount()
+	for _, s := range o.SpaceDecorator {
+		count += s.BillableServicesCount()
 	}
 	return count
 }
