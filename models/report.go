@@ -20,13 +20,13 @@ type AggregateOrgStats struct {
 // e.g. "reportPlan" and "report"? Possibly makes it clearer that you're
 // supposed to "execute" the reportPlan to get it to generate the data?
 type Report struct {
-	Orgs              Orgs
+	Orgs              []Org
 	OrgStats          []OrgStats
 	AggregateOrgStats AggregateOrgStats
 }
 
 // NewReport -
-func NewReport(orgs Orgs) Report {
+func NewReport(orgs []Org) Report {
 	return Report{
 		Orgs: orgs,
 	}

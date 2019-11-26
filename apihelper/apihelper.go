@@ -21,7 +21,7 @@ var (
 // CFAPIHelper wraps cf curl results
 type CFAPIHelper interface {
 	GetTarget() string
-	GetOrgs() (models.Orgs, error)
+	GetOrgs() ([]models.Org, error)
 	GetOrg(string) (models.Org, error)
 	GetQuotaMemoryLimit(string) (float64, error)
 	GetOrgMemoryUsage(models.Org) (float64, error)
@@ -55,13 +55,13 @@ func (api *APIHelper) GetTarget() string {
 }
 
 // GetOrgs -
-func (api *APIHelper) GetOrgs() (models.Orgs, error) {
+func (api *APIHelper) GetOrgs() ([]models.Org, error) {
 	orgsJSON, err := cfcurl.Curl(api.cli, "/v2/organizations")
 	if nil != err {
 		return nil, err
 	}
 	pages := int(orgsJSON["total_pages"].(float64))
-	orgs := models.Orgs{}
+	orgs := []models.Org{}
 	for i := 1; i <= pages; i++ {
 		if 1 != i {
 			orgsJSON, err = cfcurl.Curl(api.cli, "/v2/organizations?page="+strconv.Itoa(i))
