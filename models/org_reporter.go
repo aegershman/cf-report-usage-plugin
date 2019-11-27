@@ -1,16 +1,10 @@
 package models
 
-// OrgReporter -
-type OrgReporter interface {
-	SpaceReports() []SpaceReporter
-	Reporter
-}
-
 // OrgReport -
 type OrgReport struct {
 	orgRef          Org
-	spaceReportsRef []SpaceReporter
 	Report          Report
+	spaceReportsRef []SpaceReporter
 }
 
 // NewOrgReport -
