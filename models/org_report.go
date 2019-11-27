@@ -10,7 +10,7 @@ type OrgReporter interface {
 type OrgReport struct {
 	orgRef          Org
 	spaceReportsRef []SpaceReport
-	Spaces          []Space
+	spacesRef       []Space
 }
 
 // NewOrgReport -
@@ -23,7 +23,7 @@ func NewOrgReport(org Org) *OrgReport {
 	return &OrgReport{
 		orgRef:          org,
 		spaceReportsRef: spaceReports,
-		Spaces:          org.Spaces,
+		spacesRef:       org.Spaces,
 	}
 }
 
@@ -34,7 +34,7 @@ func (o *OrgReport) SpaceReports() []SpaceReport {
 // AppInstancesCount -
 func (o *OrgReport) AppInstancesCount() int {
 	count := 0
-	for _, space := range o.Spaces {
+	for _, space := range o.spacesRef {
 		count += space.AppInstancesCount()
 	}
 	return count
