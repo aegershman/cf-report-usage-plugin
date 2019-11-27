@@ -6,16 +6,16 @@ import "strings"
 // of Spaces; we can use it as a way to decorate
 // a Space with extra info like billableAIs, etc.
 type SpaceReport struct {
-	space                    Space
-	Name                     string
-	AppsCount                int
-	RunningAppsCount         int
-	StoppedAppsCount         int
 	AppInstancesCount        int
-	RunningAppInstancesCount int
-	StoppedAppInstancesCount int
-	ServicesCount            int
+	AppsCount                int
 	ConsumedMemory           int
+	Name                     string
+	RunningAppInstancesCount int
+	RunningAppsCount         int
+	ServicesCount            int
+	space                    Space
+	StoppedAppInstancesCount int
+	StoppedAppsCount         int
 }
 
 // NewSpaceReport -
