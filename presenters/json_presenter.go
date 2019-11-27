@@ -2,6 +2,7 @@ package presenters
 
 import (
 	"encoding/json"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -12,5 +13,5 @@ func (p *Presenter) asJSON() {
 		log.Fatalln(err)
 	}
 
-	log.Infoln(string(j))
+	fmt.Println(string(j))
 }
