@@ -2,14 +2,10 @@ package models
 
 import "strings"
 
-// SpaceReporter -
-type SpaceReporter interface {
-	Reporter
-}
-
 // SpaceReport -
 type SpaceReport struct {
 	spaceRef Space
+	Report   Report
 }
 
 // NewSpaceReport -
