@@ -8,12 +8,9 @@ type OrgReporter interface {
 
 // OrgReport -
 type OrgReport struct {
-	org                                  Org
-	ServicesSuiteForPivotalPlatformCount int
-	SpaceReports                         []SpaceReport
-	Spaces                               []Space
-	StoppedAppInstancesCount             int
-	StoppedAppsCount                     int
+	org          Org
+	SpaceReports []SpaceReport
+	Spaces       []Space
 }
 
 // NewOrgReport -
@@ -24,19 +21,9 @@ func NewOrgReport(org Org) OrgReport {
 	}
 
 	return OrgReport{
-		org:                      org,
-		Name:                     org.Name,
-		MemoryQuota:              org.MemoryQuota,
-		MemoryUsage:              org.MemoryUsage,
-		Spaces:                   org.Spaces,
-		SpaceReports:             spaceReports,
-		AppsCount:                org.AppsCount(),
-		RunningAppsCount:         org.RunningAppsCount(),
-		StoppedAppsCount:         org.AppsCount() - org.RunningAppsCount(),
-		AppInstancesCount:        org.AppInstancesCount(),
-		RunningAppInstancesCount: org.RunningAppInstancesCount(),
-		StoppedAppInstancesCount: org.AppInstancesCount() - org.RunningAppInstancesCount(),
-		ServicesCount:            org.ServicesCount(),
+		org:          org,
+		SpaceReports: spaceReports,
+		Spaces:       org.Spaces,
 	}
 }
 
