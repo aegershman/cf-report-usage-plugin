@@ -37,24 +37,24 @@ cf usage-report -o voyager -o tenzing --format table
 
 ```txt
 org voyager is consuming 60416 MB of 83968 MB
-        space dev is consuming 25600 MB memory (30%) of org quota
+        space dev is consuming 25600 MB memory of org quota
                 AIs billable: 20
                 AIs canonical: 18 (13 running, 5 stopped)
                 SCS instances: 2
-        space test is consuming 34816 MB memory (41%) of org quota
+        space test is consuming 34816 MB memory of org quota
                 AIs billable: 20
                 AIs canonical: 19 (17 running, 2 stopped)
                 SCS instances: 1
 org tenzing is consuming 0 MB of 83968 MB
-        space dev is consuming 0 MB memory (0%) of org quota
+        space dev is consuming 0 MB memory of org quota
                 AIs billable: 2
                 AIs canonical: 0 (0 running, 0 stopped)
                 SCS instances: 2
-        space test is consuming 0 MB memory (0%) of org quota
+        space test is consuming 0 MB memory of org quota
                 AIs billable: 2
                 AIs canonical: 0 (0 running, 0 stopped)
                 SCS instances: 2
-        space integration is consuming 0 MB memory (0%) of org quota
+        space integration is consuming 0 MB memory of org quota
                 AIs billable: 1
                 AIs canonical: 0 (0 running, 0 stopped)
                 SCS instances: 1
