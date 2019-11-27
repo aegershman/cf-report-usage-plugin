@@ -12,6 +12,7 @@ type Reporter interface {
 	RunningAppInstancesCount() int
 	RunningAppsCount() int
 	ServicesCount() int
+	ServicesSuiteForPivotalPlatformCount() int
 	SpringCloudServicesCount() int
 	StoppedAppInstancesCount() int
 	StoppedAppsCount() int

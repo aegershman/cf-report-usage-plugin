@@ -34,6 +34,10 @@ func (s *SummaryReport) Name() string {
 	return "nil"
 }
 
+func (s *SummaryReport) ServicesSuiteForPivotalPlatformCount() int {
+	return 0
+}
+
 func (s *SummaryReport) OrgReports() []OrgReport {
 	return s.orgReports
 }

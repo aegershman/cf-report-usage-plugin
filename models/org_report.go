@@ -8,11 +8,7 @@ type OrgReporter interface {
 
 // OrgReport -
 type OrgReport struct {
-	Name                                 string
 	org                                  Org
-	RunningAppInstancesCount             int
-	RunningAppsCount                     int
-	ServicesCount                        int
 	ServicesSuiteForPivotalPlatformCount int
 	SpaceReports                         []SpaceReport
 	Spaces                               []Space
