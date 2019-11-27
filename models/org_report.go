@@ -2,22 +2,22 @@ package models
 
 // OrgReporter -
 type OrgReporter interface {
-	SpaceReports() []SpaceReport
+	SpaceReports() []SpaceReporter
 	Reporter
 }
 
 // OrgReport -
 type OrgReport struct {
 	orgRef          Org
-	spaceReportsRef []SpaceReport
+	spaceReportsRef []SpaceReporter
 	// spacesRef       []Space
 }
 
 // NewOrgReport -
 func NewOrgReport(org Org) *OrgReport {
-	var spaceReports []SpaceReport
+	var spaceReports []SpaceReporter
 	for _, space := range org.Spaces {
-		spaceReports = append(spaceReports, *NewSpaceReport(space))
+		spaceReports = append(spaceReports, NewSpaceReport(space))
 	}
 
 	return &OrgReport{
@@ -27,7 +27,7 @@ func NewOrgReport(org Org) *OrgReport {
 	}
 }
 
-func (o *OrgReport) SpaceReports() []SpaceReport {
+func (o *OrgReport) SpaceReports() []SpaceReporter {
 	return o.spaceReportsRef
 }
 

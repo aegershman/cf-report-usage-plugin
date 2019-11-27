@@ -53,6 +53,10 @@ func (s *SpaceReport) ServicesSuiteForPivotalPlatformCount() int {
 	return count
 }
 
+func (s *SpaceReport) Name() string {
+	return s.spaceRef.Name
+}
+
 // SpringCloudServicesCount -
 func (s *SpaceReport) SpringCloudServicesCount() int {
 	count := 0
@@ -133,4 +137,20 @@ func (s *SpaceReport) RunningAppInstancesCount() int {
 func (s *SpaceReport) ServicesCount() int {
 	count := len(s.spaceRef.Services)
 	return count
+}
+
+func (s *SpaceReport) MemoryQuota() int {
+	return 0
+}
+
+func (s *SpaceReport) MemoryUsage() int {
+	return 0
+}
+
+func (s *SpaceReport) StoppedAppInstancesCount() int {
+	return 0
+}
+
+func (s *SpaceReport) StoppedAppsCount() int {
+	return 0
 }
