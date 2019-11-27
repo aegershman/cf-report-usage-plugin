@@ -16,11 +16,29 @@ func NewSummaryReport(orgs []Org) *SummaryReport {
 		orgReports = append(orgReports, *NewOrgReport(org))
 	}
 
-	return &SummaryReport{
+	self := &SummaryReport{
 		orgsRef:       orgs,
 		orgReportsRef: orgReports,
-		Report:        Report{},
 	}
+
+	self.Report = Report{
+		AppInstancesCount:                    self.appInstancesCount(),
+		AppsCount:                            self.appsCount(),
+		BillableAppInstancesCount:            self.billableAppInstancesCount(),
+		BillableServicesCount:                self.billableServicesCount(),
+		MemoryQuota:                          self.memoryQuota(),
+		MemoryUsage:                          self.memoryUsage(),
+		Name:                                 self.name(),
+		RunningAppInstancesCount:             self.runningAppInstancesCount(),
+		RunningAppsCount:                     self.runningAppsCount(),
+		ServicesCount:                        self.servicesCount(),
+		ServicesSuiteForPivotalPlatformCount: self.servicesSuiteForPivotalPlatformCount(),
+		SpringCloudServicesCount:             self.springCloudServicesCount(),
+		StoppedAppInstancesCount:             self.stoppedAppInstancesCount(),
+		StoppedAppsCount:                     self.stoppedAppsCount(),
+	}
+
+	return self
 }
 
 // OrgReports -
@@ -29,7 +47,7 @@ func (s *SummaryReport) OrgReports() []OrgReport {
 }
 
 // Name -
-func (s *SummaryReport) Name() string {
+func (s *SummaryReport) name() string {
 	var name bytes.Buffer
 	for _, org := range s.orgReportsRef {
 		name.WriteString(org.name())
@@ -42,10 +60,10 @@ func (s *SummaryReport) Name() string {
 //
 // see: https://network.pivotal.io/products/pcf-services
 // (I know right? It's an intense function name)
-func (s *SummaryReport) ServicesSuiteForPivotalPlatformCount() int {
+func (s *SummaryReport) servicesSuiteForPivotalPlatformCount() int {
 	count := 0
 	for _, report := range s.orgReportsRef {
-		count += report.ServicesSuiteForPivotalPlatformCount()
+		count += report.servicesSuiteForPivotalPlatformCount()
 	}
 	return count
 }
@@ -60,10 +78,10 @@ func (s *SummaryReport) ServicesSuiteForPivotalPlatformCount() int {
 // push-test-webhook-switchboard   started           2/2
 //
 // then you'd have "5 app instances"
-func (s *SummaryReport) AppInstancesCount() int {
+func (s *SummaryReport) appInstancesCount() int {
 	count := 0
 	for _, report := range s.orgReportsRef {
-		count += report.AppInstancesCount()
+		count += report.appInstancesCount()
 	}
 	return count
 }
@@ -78,10 +96,10 @@ func (s *SummaryReport) AppInstancesCount() int {
 // push-test-webhook-switchboard   started           2/2
 //
 // then you'd have "3 unique apps"
-func (s *SummaryReport) AppsCount() int {
+func (s *SummaryReport) appsCount() int {
 	count := 0
 	for _, report := range s.orgReportsRef {
-		count += report.AppsCount()
+		count += report.appsCount()
 	}
 	return count
 }
@@ -90,10 +108,10 @@ func (s *SummaryReport) AppsCount() int {
 //
 // This includes anything which Pivotal deems "billable" as an AI, even if CF
 // considers it a service; e.g., SCS instances (config server, service registry, etc.)
-func (s *SummaryReport) BillableAppInstancesCount() int {
+func (s *SummaryReport) billableAppInstancesCount() int {
 	count := 0
 	for _, report := range s.orgReportsRef {
-		count += report.BillableAppInstancesCount()
+		count += report.billableAppInstancesCount()
 	}
 	return count
 }
@@ -102,28 +120,28 @@ func (s *SummaryReport) BillableAppInstancesCount() int {
 //
 // This includes anything which Pivotal deems "billable" as an SI; this might mean
 // subtracting certain services (like SCS) from the count of `cf services`
-func (s *SummaryReport) BillableServicesCount() int {
+func (s *SummaryReport) billableServicesCount() int {
 	count := 0
 	for _, report := range s.orgReportsRef {
-		count += report.BillableServicesCount()
+		count += report.billableServicesCount()
 	}
 	return count
 }
 
 // MemoryQuota -
-func (s *SummaryReport) MemoryQuota() int {
+func (s *SummaryReport) memoryQuota() int {
 	count := 0
 	for _, report := range s.orgReportsRef {
-		count += report.MemoryQuota()
+		count += report.memoryQuota()
 	}
 	return count
 }
 
 // MemoryUsage -
-func (s *SummaryReport) MemoryUsage() int {
+func (s *SummaryReport) memoryUsage() int {
 	count := 0
 	for _, report := range s.orgReportsRef {
-		count += report.MemoryUsage()
+		count += report.memoryUsage()
 	}
 	return count
 }
@@ -138,10 +156,10 @@ func (s *SummaryReport) MemoryUsage() int {
 // push-test-webhook-switchboard   started           2/2
 //
 // then you'd have "4 running app instances"
-func (s *SummaryReport) RunningAppInstancesCount() int {
+func (s *SummaryReport) runningAppInstancesCount() int {
 	count := 0
 	for _, report := range s.orgReportsRef {
-		count += report.RunningAppInstancesCount()
+		count += report.runningAppInstancesCount()
 	}
 	return count
 }
@@ -156,10 +174,10 @@ func (s *SummaryReport) RunningAppInstancesCount() int {
 // push-test-webhook-switchboard   started           2/2
 //
 // then you'd have "2 running apps"
-func (s *SummaryReport) RunningAppsCount() int {
+func (s *SummaryReport) runningAppsCount() int {
 	count := 0
 	for _, report := range s.orgReportsRef {
-		count += report.RunningAppsCount()
+		count += report.runningAppsCount()
 	}
 	return count
 }
@@ -170,10 +188,10 @@ func (s *SummaryReport) RunningAppsCount() int {
 // (or application instances) in a different space (e.g., Spring Cloud Data Flow, etc.)
 // those aren't considered in this result. This only counts services registered which
 // show up in `cf services`
-func (s *SummaryReport) ServicesCount() int {
+func (s *SummaryReport) servicesCount() int {
 	count := 0
 	for _, report := range s.orgReportsRef {
-		count += report.ServicesCount()
+		count += report.servicesCount()
 	}
 	return count
 }
@@ -182,28 +200,28 @@ func (s *SummaryReport) ServicesCount() int {
 // from "spring cloud services" tile, e.g. config-server/service-registry/circuit-breaker/etc.
 //
 // see: https://network.pivotal.io/products/p-spring-cloud-services/
-func (s *SummaryReport) SpringCloudServicesCount() int {
+func (s *SummaryReport) springCloudServicesCount() int {
 	count := 0
 	for _, report := range s.orgReportsRef {
-		count += report.SpringCloudServicesCount()
+		count += report.springCloudServicesCount()
 	}
 	return count
 }
 
 // StoppedAppInstancesCount -
-func (s *SummaryReport) StoppedAppInstancesCount() int {
+func (s *SummaryReport) stoppedAppInstancesCount() int {
 	count := 0
 	for _, report := range s.orgReportsRef {
-		count += report.StoppedAppInstancesCount()
+		count += report.stoppedAppInstancesCount()
 	}
 	return count
 }
 
 // StoppedAppsCount -
-func (s *SummaryReport) StoppedAppsCount() int {
+func (s *SummaryReport) stoppedAppsCount() int {
 	count := 0
 	for _, report := range s.orgReportsRef {
-		count += report.StoppedAppsCount()
+		count += report.stoppedAppsCount()
 	}
 	return count
 
