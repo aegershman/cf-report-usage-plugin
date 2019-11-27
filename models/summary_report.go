@@ -3,6 +3,8 @@ package models
 import "bytes"
 
 // SummaryReport holds an aggregated view of multiple OrgReports
+// It effectively serves as the entrypoint into aggregating the data
+// in preparation for it being presented
 type SummaryReport struct {
 	OrgReports []OrgReport
 	Report
