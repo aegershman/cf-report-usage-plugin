@@ -13,8 +13,9 @@ cf usage-report -o voyager
 cf usage-report -o voyager -o tenzing [-o orgName...]
 
 # report using different formats
-cf usage-report -o voyager -o tenzing --format string
 cf usage-report -o voyager -o tenzing --format table
+cf usage-report -o voyager -o tenzing --format string
+cf usage-report -o voyager -o tenzing --format json
 ```
 
 `--format table`:
@@ -59,6 +60,14 @@ org tenzing is consuming 0 MB of 83968 MB
                 AIs canonical: 0 (0 running, 0 stopped)
                 SCS instances: 1
 across 2 org(s), you have 45 billable AIs, 37 are canonical AIs (30 running, 7 stopped), 8 are SCS instances
+```
+
+`--format json`:
+
+This example is going to be a bit cluttered, so it's recommended using `jq` to parse the output. Then it could be used for parsing and interacting with other systems, like `cf-mgmt`:
+
+```json
+{"SummaryReport":{"OrgReports":[{"AppInstancesCount":37,"AppsCount":28,"BillableAppInstancesCount":40,"BillableServicesCount":13,"MemoryQuota":83968,"MemoryUsage":60416,"Name":"voyager","RunningAppInstancesCount":30,"RunningAppsCount":21,"ServicesCount":16,"ServicesSuiteForPivotalPlatformCount":7,"SpringCloudServicesCount":3,"StoppedAppInstancesCount":7,"StoppedAppsCount":7,"SpaceReports":[{"AppInstancesCount":18,"AppsCount":16,"BillableAppInstancesCount":20,"BillableServicesCount":7,"MemoryQuota":-1,"MemoryUsage":25600,"Name":"dev","RunningAppInstancesCount":13,"RunningAppsCount":11,"ServicesCount":9,"ServicesSuiteForPivotalPlatformCount":4,"SpringCloudServicesCount":2,"StoppedAppInstancesCount":5,"StoppedAppsCount":5},{"AppInstancesCount":19,"AppsCount":12,"BillableAppInstancesCount":20,"BillableServicesCount":6,"MemoryQuota":-1,"MemoryUsage":34816,"Name":"test","RunningAppInstancesCount":17,"RunningAppsCount":10,"ServicesCount":7,"ServicesSuiteForPivotalPlatformCount":3,"SpringCloudServicesCount":1,"StoppedAppInstancesCount":2,"StoppedAppsCount":2}]},{"AppInstancesCount":0,"AppsCount":21,"BillableAppInstancesCount":5,"BillableServicesCount":18,"MemoryQuota":83968,"MemoryUsage":0,"Name":"tenzing","RunningAppInstancesCount":0,"RunningAppsCount":0,"ServicesCount":23,"ServicesSuiteForPivotalPlatformCount":9,"SpringCloudServicesCount":5,"StoppedAppInstancesCount":0,"StoppedAppsCount":21,"SpaceReports":[{"AppInstancesCount":0,"AppsCount":8,"BillableAppInstancesCount":2,"BillableServicesCount":6,"MemoryQuota":-1,"MemoryUsage":0,"Name":"dev","RunningAppInstancesCount":0,"RunningAppsCount":0,"ServicesCount":8,"ServicesSuiteForPivotalPlatformCount":3,"SpringCloudServicesCount":2,"StoppedAppInstancesCount":0,"StoppedAppsCount":8},{"AppInstancesCount":0,"AppsCount":9,"BillableAppInstancesCount":2,"BillableServicesCount":6,"MemoryQuota":-1,"MemoryUsage":0,"Name":"test","RunningAppInstancesCount":0,"RunningAppsCount":0,"ServicesCount":8,"ServicesSuiteForPivotalPlatformCount":3,"SpringCloudServicesCount":2,"StoppedAppInstancesCount":0,"StoppedAppsCount":9},{"AppInstancesCount":0,"AppsCount":4,"BillableAppInstancesCount":1,"BillableServicesCount":6,"MemoryQuota":-1,"MemoryUsage":0,"Name":"integration","RunningAppInstancesCount":0,"RunningAppsCount":0,"ServicesCount":7,"ServicesSuiteForPivotalPlatformCount":3,"SpringCloudServicesCount":1,"StoppedAppInstancesCount":0,"StoppedAppsCount":4}]}],"AppInstancesCount":37,"AppsCount":49,"BillableAppInstancesCount":45,"BillableServicesCount":31,"MemoryQuota":167936,"MemoryUsage":60416,"Name":"voyagertenzing","RunningAppInstancesCount":30,"RunningAppsCount":21,"ServicesCount":39,"ServicesSuiteForPivotalPlatformCount":16,"SpringCloudServicesCount":8,"StoppedAppInstancesCount":7,"StoppedAppsCount":28},"Format":"json"}
 ```
 
 ## use in pivotal licensing

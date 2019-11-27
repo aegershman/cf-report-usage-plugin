@@ -1,9 +1,18 @@
 package presenters
 
 import (
+	"encoding/json"
+	"fmt"
+
 	log "github.com/sirupsen/logrus"
 )
 
 func (p *Presenter) asJSON() {
-	log.Fatalln("uhhh... TODO. You probably shouldn't have used interfaces for the reporters, you should 've used structs. But it made sense at the time.")
+	j, err := json.Marshal(p)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// TODO maybe there's a cleaner way of outputting this than just a println
+	fmt.Println(string(j))
 }
