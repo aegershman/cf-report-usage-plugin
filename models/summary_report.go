@@ -2,16 +2,11 @@ package models
 
 import "bytes"
 
-// SummaryReporter -
-type SummaryReporter interface {
-	OrgReports() []OrgReporter
-	Reporter
-}
-
 // SummaryReport holds an aggregated view of multiple OrgReports
 type SummaryReport struct {
 	orgReportsRef []OrgReporter
 	orgsRef       []Org
+	Report        Report
 }
 
 // NewSummaryReport -
