@@ -34,11 +34,7 @@ func (s *SpaceReport) ServicesCountByServiceLabel(serviceType string) int {
 	return count
 }
 
-// ServicesSuiteForPivotalPlatformCount returns the number of service instances
-// part of the "services suite for pivotal platform", e.g. Pivotal's MySQL/Redis/RMQ
-//
-// see: https://network.pivotal.io/products/pcf-services
-// (I know right? It's an intense function name)
+// ServicesSuiteForPivotalPlatformCount -
 func (s *SpaceReport) ServicesSuiteForPivotalPlatformCount() int {
 	count := 0
 
@@ -57,10 +53,7 @@ func (s *SpaceReport) ServicesSuiteForPivotalPlatformCount() int {
 	return count
 }
 
-// SpringCloudServicesCount returns the number of service instances
-// from "spring cloud services" tile, e.g. config-server/service-registry/circuit-breaker/etc.
-//
-// see: https://network.pivotal.io/products/p-spring-cloud-services/
+// SpringCloudServicesCount -
 func (s *SpaceReport) SpringCloudServicesCount() int {
 	count := 0
 
@@ -76,20 +69,14 @@ func (s *SpaceReport) SpringCloudServicesCount() int {
 	return count
 }
 
-// BillableServicesCount returns the count of "billable" SIs
-//
-// This includes anything which Pivotal deems "billable" as an SI; this might mean
-// subtracting certain services (like SCS) from the count of `cf services`
+// BillableServicesCount -
 func (s *SpaceReport) BillableServicesCount() int {
 	count := s.spaceRef.ServicesCount()
 	count -= s.SpringCloudServicesCount()
 	return count
 }
 
-// BillableAppInstancesCount returns the count of "billable" AIs
-//
-// This includes anything which Pivotal deems "billable" as an AI, even if CF
-// considers it a service; e.g., SCS instances (config server, service registry, etc.)
+// BillableAppInstancesCount -
 func (s *SpaceReport) BillableAppInstancesCount() int {
 	count := 0
 	count += s.spaceRef.AppInstancesCount()
