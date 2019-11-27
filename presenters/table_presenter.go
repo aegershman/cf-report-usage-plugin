@@ -19,14 +19,14 @@ func (p *Presenter) asTable() {
 		"SCS",
 	})
 
-	for _, orgReport := range p.Report.SummaryReport.OrgReports {
-		for _, spaceReport := range orgReport.SpaceReports {
+	for _, orgReport := range p.Report.SummaryReport.OrgReports() {
+		for _, spaceReport := range orgReport.SpaceReports() {
 			table.Append([]string{
-				orgReport.Name,
-				spaceReport.Name,
+				orgReport.Name(),
+				spaceReport.Name(),
 				strconv.Itoa(spaceReport.BillableAppInstancesCount()),
-				strconv.Itoa(spaceReport.AppInstancesCount),
-				strconv.Itoa(spaceReport.StoppedAppInstancesCount),
+				strconv.Itoa(spaceReport.AppInstancesCount()),
+				strconv.Itoa(spaceReport.StoppedAppInstancesCount()),
 				strconv.Itoa(spaceReport.SpringCloudServicesCount()),
 			})
 		}
@@ -35,10 +35,10 @@ func (p *Presenter) asTable() {
 	table.SetFooter([]string{
 		"-",
 		"Total",
-		strconv.Itoa(p.Report.SummaryReport.BillableAppInstancesCount),
-		strconv.Itoa(p.Report.SummaryReport.AppInstancesCount),
-		strconv.Itoa(p.Report.SummaryReport.StoppedAppInstancesCount),
-		strconv.Itoa(p.Report.SummaryReport.SpringCloudServicesCount),
+		strconv.Itoa(p.Report.SummaryReport.BillableAppInstancesCount()),
+		strconv.Itoa(p.Report.SummaryReport.AppInstancesCount()),
+		strconv.Itoa(p.Report.SummaryReport.StoppedAppInstancesCount()),
+		strconv.Itoa(p.Report.SummaryReport.SpringCloudServicesCount()),
 	})
 
 	table.Render()
