@@ -10,7 +10,7 @@ type OrgReporter interface {
 type OrgReport struct {
 	orgRef          Org
 	spaceReportsRef []SpaceReport
-	spacesRef       []Space
+	// spacesRef       []Space
 }
 
 // NewOrgReport -
@@ -23,7 +23,7 @@ func NewOrgReport(org Org) *OrgReport {
 	return &OrgReport{
 		orgRef:          org,
 		spaceReportsRef: spaceReports,
-		spacesRef:       org.Spaces,
+		// spacesRef:       org.Spaces,
 	}
 }
 
@@ -42,51 +42,85 @@ func (o *OrgReport) AppInstancesCount() int {
 
 // AppsCount -
 func (o *OrgReport) AppsCount() int {
-	// count := 0
-	// for _, space := range o.spaceReportsRef {
-	// 	count += len(space.Apps)
-	// }
-	// return count
-	return 0
+	count := 0
+	for _, space := range o.spaceReportsRef {
+		count += space.AppsCount()
+	}
+	return count
 }
 
-func (o *OrgReport) MemoryQuota() int { return 0 }
-func (o *OrgReport) MemoryUsage() int { return 0 }
-func (o *OrgReport) Name() string     { return "" }
+// MemoryQuota -
+func (o *OrgReport) MemoryQuota() int {
+	return o.orgRef.MemoryQuota
+
+}
+
+// MemoryUsage -
+func (o *OrgReport) MemoryUsage() int {
+	return o.orgRef.MemoryUsage
+}
+
+// Name -
+func (o *OrgReport) Name() string {
+	return o.orgRef.Name
+}
 
 // RunningAppInstancesCount -
 func (o *OrgReport) RunningAppInstancesCount() int {
-	// count := 0
-	// for _, space := range org.Spaces {
-	// 	count += space.RunningAppInstancesCount()
-	// }
-	// return count
-	return 0
+	count := 0
+	for _, space := range o.spaceReportsRef {
+		count += space.RunningAppInstancesCount()
+	}
+	return count
 }
 
 // RunningAppsCount -
 func (o *OrgReport) RunningAppsCount() int {
-	// count := 0
-	// for _, space := range org.Spaces {
-	// 	count += space.RunningAppsCount()
-	// }
-	// return count
-	return 0
+	count := 0
+	for _, space := range o.spaceReportsRef {
+		count += space.RunningAppsCount()
+	}
+	return count
 }
 
 // ServicesCount -
 func (o *OrgReport) ServicesCount() int {
+	count := 0
+	for _, space := range o.spaceReportsRef {
+		count += space.ServicesCount()
+	}
+	return count
+}
+
+// ServicesSuiteForPivotalPlatformCount -
+func (o *OrgReport) ServicesSuiteForPivotalPlatformCount() int {
+	count := 0
+	for _, space := range o.spaceReportsRef {
+		count += space.ServicesSuiteForPivotalPlatformCount()
+	}
+	return count
+
+}
+
+// StoppedAppInstancesCount - TODO
+func (o *OrgReport) StoppedAppInstancesCount() int {
 	// count := 0
-	// for _, space := range org.Spaces {
-	// 	count += len(space.Services)
+	// for _, space := range o.spaceReportsRef {
+	// 	count += space.ServicesSuiteForPivotalPlatformCount()
 	// }
 	// return count
 	return 0
 }
 
-func (o *OrgReport) ServicesSuiteForPivotalPlatformCount() int { return 0 }
-func (o *OrgReport) StoppedAppInstancesCount() int             { return 0 }
-func (o *OrgReport) StoppedAppsCount() int                     { return 0 }
+// StoppedAppsCount - TODO
+func (o *OrgReport) StoppedAppsCount() int {
+	// count := 0
+	// for _, space := range o.spaceReportsRef {
+	// 	count += space.ServicesSuiteForPivotalPlatformCount()
+	// }
+	// return count
+	return 0
+}
 
 // SpringCloudServicesCount -
 func (o *OrgReport) SpringCloudServicesCount() int {
