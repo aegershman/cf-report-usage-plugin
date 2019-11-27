@@ -19,12 +19,12 @@ func NewSpaceReport(space Space) *SpaceReport {
 	}
 }
 
-// ServicesCountByServiceLabel returns the number of service instances
+// servicesCountByServiceLabel returns the number of service instances
 // within a space which contain the provided service label.
 //
 // Keep in mind, when we say "service label", we aren't talking about
 // metadata labels; this is the label property of the "service" object
-func (s *SpaceReport) ServicesCountByServiceLabel(serviceType string) int {
+func (s *SpaceReport) servicesCountByServiceLabel(serviceType string) int {
 	count := 0
 	for _, service := range s.spaceRef.Services {
 		if strings.Contains(service.ServicePlanLabel, serviceType) {
@@ -38,17 +38,17 @@ func (s *SpaceReport) ServicesCountByServiceLabel(serviceType string) int {
 func (s *SpaceReport) ServicesSuiteForPivotalPlatformCount() int {
 	count := 0
 
-	count += s.ServicesCountByServiceLabel("p-dataflow-servers") // TODO
+	count += s.servicesCountByServiceLabel("p-dataflow-servers") // TODO
 
-	count += s.ServicesCountByServiceLabel("p-mysql")
-	count += s.ServicesCountByServiceLabel("p.mysql")
-	count += s.ServicesCountByServiceLabel("pivotal-mysql")
+	count += s.servicesCountByServiceLabel("p-mysql")
+	count += s.servicesCountByServiceLabel("p.mysql")
+	count += s.servicesCountByServiceLabel("pivotal-mysql")
 
-	count += s.ServicesCountByServiceLabel("p-redis")
-	count += s.ServicesCountByServiceLabel("p.redis")
+	count += s.servicesCountByServiceLabel("p-redis")
+	count += s.servicesCountByServiceLabel("p.redis")
 
-	count += s.ServicesCountByServiceLabel("p-rabbitmq")
-	count += s.ServicesCountByServiceLabel("p.rabbitmq")
+	count += s.servicesCountByServiceLabel("p-rabbitmq")
+	count += s.servicesCountByServiceLabel("p.rabbitmq")
 
 	return count
 }
@@ -62,13 +62,13 @@ func (s *SpaceReport) SpringCloudServicesCount() int {
 	count := 0
 
 	// scs 2.x
-	count += s.ServicesCountByServiceLabel("p-config-server")
-	count += s.ServicesCountByServiceLabel("p-service-registry")
-	count += s.ServicesCountByServiceLabel("p-circuit-breaker")
+	count += s.servicesCountByServiceLabel("p-config-server")
+	count += s.servicesCountByServiceLabel("p-service-registry")
+	count += s.servicesCountByServiceLabel("p-circuit-breaker")
 
 	// scs 3.x
-	count += s.ServicesCountByServiceLabel("p.config-server")
-	count += s.ServicesCountByServiceLabel("p.service-registry")
+	count += s.servicesCountByServiceLabel("p.config-server")
+	count += s.servicesCountByServiceLabel("p.service-registry")
 
 	return count
 }
