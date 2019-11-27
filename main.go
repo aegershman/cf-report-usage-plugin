@@ -36,7 +36,7 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		Version: plugin.VersionType{
 			Major: 2,
 			Minor: 9,
-			Build: 1,
+			Build: 2,
 		},
 		Commands: []plugin.Command{
 			{
@@ -46,7 +46,7 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 					Usage: "cf usage-report [-o orgName...] --format formatChoice",
 					Options: map[string]string{
 						"o":         "organization(s) included in report. Flag can be provided multiple times.",
-						"format":    "format to print as (options: string,table) (default: table)",
+						"format":    "format to print as (options: string,table,json) (default: table)",
 						"log-level": "(options: info,debug,trace) (default: info)",
 					},
 				},
