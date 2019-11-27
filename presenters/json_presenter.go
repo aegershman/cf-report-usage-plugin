@@ -13,5 +13,6 @@ func (p *Presenter) asJSON() {
 		log.Fatalln(err)
 	}
 
+	// TODO maybe there's a cleaner way of outputting this than just a println
 	fmt.Println(string(j))
 }
