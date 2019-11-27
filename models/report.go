@@ -20,14 +20,14 @@ type Reporter interface {
 
 // Report -
 type Report struct {
-	Orgs          []Org
+	orgsRef       []Org
 	SummaryReport SummaryReporter
 }
 
 // NewReport -
 func NewReport(orgs []Org) Report {
 	return Report{
-		Orgs:          orgs,
+		orgsRef:       orgs,
 		SummaryReport: NewSummaryReport(orgs),
 	}
 }

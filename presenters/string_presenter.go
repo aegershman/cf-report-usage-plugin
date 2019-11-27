@@ -30,7 +30,7 @@ func (p *Presenter) asString() {
 	response.WriteString(
 		fmt.Sprintf(
 			reportSummaryMsg,
-			len(p.Report.Orgs),
+			len(p.Report.SummaryReport.OrgReports()),
 			p.Report.SummaryReport.BillableAppInstancesCount(),
 			p.Report.SummaryReport.AppInstancesCount(),
 			p.Report.SummaryReport.RunningAppInstancesCount(),
