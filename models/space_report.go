@@ -53,6 +53,7 @@ func (s *SpaceReport) ServicesSuiteForPivotalPlatformCount() int {
 	return count
 }
 
+// Name -
 func (s *SpaceReport) Name() string {
 	return s.spaceRef.Name
 }
@@ -88,9 +89,9 @@ func (s *SpaceReport) BillableAppInstancesCount() int {
 	return count
 }
 
-// ConsumedMemory returns the amount of memory consumed by all
+// MemoryUsage returns the amount of memory consumed by all
 // running canonical application instances within a space
-func (s *SpaceReport) ConsumedMemory() int {
+func (s *SpaceReport) MemoryUsage() int {
 	count := 0
 	for _, app := range s.spaceRef.Apps {
 		count += int(app.RunningInstances * app.Memory)
@@ -139,18 +140,17 @@ func (s *SpaceReport) ServicesCount() int {
 	return count
 }
 
+// MemoryQuota - TODO unimplemented on 'space' level
 func (s *SpaceReport) MemoryQuota() int {
-	return 0
+	return -1
 }
 
-func (s *SpaceReport) MemoryUsage() int {
-	return 0
-}
-
+// StoppedAppInstancesCount -
 func (s *SpaceReport) StoppedAppInstancesCount() int {
-	return 0
+	return s.AppInstancesCount() - s.RunningAppInstancesCount()
 }
 
+// StoppedAppsCount -
 func (s *SpaceReport) StoppedAppsCount() int {
-	return 0
+	return s.AppsCount() - s.RunningAppsCount()
 }

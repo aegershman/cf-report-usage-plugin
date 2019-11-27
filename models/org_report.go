@@ -10,7 +10,6 @@ type OrgReporter interface {
 type OrgReport struct {
 	orgRef          Org
 	spaceReportsRef []SpaceReporter
-	// spacesRef       []Space
 }
 
 // NewOrgReport -
@@ -23,10 +22,10 @@ func NewOrgReport(org Org) *OrgReport {
 	return &OrgReport{
 		orgRef:          org,
 		spaceReportsRef: spaceReports,
-		// spacesRef:       org.Spaces,
 	}
 }
 
+// SpaceReports -
 func (o *OrgReport) SpaceReports() []SpaceReporter {
 	return o.spaceReportsRef
 }
@@ -52,7 +51,6 @@ func (o *OrgReport) AppsCount() int {
 // MemoryQuota -
 func (o *OrgReport) MemoryQuota() int {
 	return o.orgRef.MemoryQuota
-
 }
 
 // MemoryUsage -
@@ -102,24 +100,22 @@ func (o *OrgReport) ServicesSuiteForPivotalPlatformCount() int {
 
 }
 
-// StoppedAppInstancesCount - TODO
+// StoppedAppInstancesCount -
 func (o *OrgReport) StoppedAppInstancesCount() int {
-	// count := 0
-	// for _, space := range o.spaceReportsRef {
-	// 	count += space.ServicesSuiteForPivotalPlatformCount()
-	// }
-	// return count
-	return 0
+	count := 0
+	for _, space := range o.spaceReportsRef {
+		count += space.StoppedAppInstancesCount()
+	}
+	return count
 }
 
-// StoppedAppsCount - TODO
+// StoppedAppsCount -
 func (o *OrgReport) StoppedAppsCount() int {
-	// count := 0
-	// for _, space := range o.spaceReportsRef {
-	// 	count += space.ServicesSuiteForPivotalPlatformCount()
-	// }
-	// return count
-	return 0
+	count := 0
+	for _, space := range o.spaceReportsRef {
+		count += space.StoppedAppsCount()
+	}
+	return count
 }
 
 // SpringCloudServicesCount -
