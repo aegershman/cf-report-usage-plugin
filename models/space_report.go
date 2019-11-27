@@ -9,13 +9,13 @@ type SpaceReporter interface {
 
 // SpaceReport -
 type SpaceReport struct {
-	space Space
+	spaceRef Space
 }
 
 // NewSpaceReport -
 func NewSpaceReport(space Space) *SpaceReport {
 	return &SpaceReport{
-		space: space,
+		spaceRef: space,
 	}
 }
 
@@ -26,7 +26,7 @@ func NewSpaceReport(space Space) *SpaceReport {
 // metadata labels; this is the label property of the "service" object
 func (s *SpaceReport) ServicesCountByServiceLabel(serviceType string) int {
 	count := 0
-	for _, service := range s.space.Services {
+	for _, service := range s.spaceRef.Services {
 		if strings.Contains(service.ServicePlanLabel, serviceType) {
 			count++
 		}
@@ -81,7 +81,7 @@ func (s *SpaceReport) SpringCloudServicesCount() int {
 // This includes anything which Pivotal deems "billable" as an SI; this might mean
 // subtracting certain services (like SCS) from the count of `cf services`
 func (s *SpaceReport) BillableServicesCount() int {
-	count := s.space.ServicesCount()
+	count := s.spaceRef.ServicesCount()
 	count -= s.SpringCloudServicesCount()
 	return count
 }
@@ -92,7 +92,7 @@ func (s *SpaceReport) BillableServicesCount() int {
 // considers it a service; e.g., SCS instances (config server, service registry, etc.)
 func (s *SpaceReport) BillableAppInstancesCount() int {
 	count := 0
-	count += s.space.AppInstancesCount()
+	count += s.spaceRef.AppInstancesCount()
 	count += s.SpringCloudServicesCount()
 	return count
 }

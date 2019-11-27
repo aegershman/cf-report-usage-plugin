@@ -8,7 +8,7 @@ type SummaryReporter interface {
 
 // SummaryReport holds an aggregated view of multiple OrgReports
 type SummaryReport struct {
-	orgs          []Org
+	orgsRef       []Org
 	orgReportsRef []OrgReport
 }
 
@@ -20,7 +20,7 @@ func NewSummaryReport(orgs []Org) *SummaryReport {
 	}
 
 	return &SummaryReport{
-		orgs:          orgs,
+		orgsRef:       orgs,
 		orgReportsRef: orgReports,
 	}
 }
