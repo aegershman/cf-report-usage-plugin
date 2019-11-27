@@ -1,9 +1,5 @@
 package models
 
-import (
-	log "github.com/sirupsen/logrus"
-)
-
 // SummaryReporter -
 type SummaryReporter interface {
 	Reporter
@@ -17,32 +13,71 @@ type SummaryReporter interface {
 //
 // will probably get rid of this at some point
 type SummaryReport struct {
-	AppInstancesCount         int
-	RunningAppInstancesCount  int
-	StoppedAppInstancesCount  int
-	BillableAppInstancesCount int
-	SpringCloudServicesCount  int
-	BillableServicesCount     int
-	orgs                      []Org
-	OrgReports                []OrgReport
+	orgs       []Org
+	orgReports []OrgReport
 }
 
 // NewSummaryReport -
-func NewSummaryReport(orgs []Org) SummaryReport {
+func NewSummaryReport(orgs []Org) *SummaryReport {
 	var orgReports []OrgReport
 	for _, org := range orgs {
-
-		// this really isn't even that helpful, it's mostly
-		// here as a little example for myself TODO
-		log.WithFields(log.Fields{
-			"orgReport": org.Name,
-		}).Traceln("processing")
-
 		orgReports = append(orgReports, NewOrgReport(org))
 	}
 
-	return SummaryReport{
+	return &SummaryReport{
 		orgs:       orgs,
-		OrgReports: orgReports,
+		orgReports: orgReports,
 	}
+}
+
+func (s *SummaryReport) OrgReports() []OrgReport {
+	return s.orgReports
+}
+
+func (s *SummaryReport) AppInstancesCount() int {
+	return 0
+}
+
+func (s *SummaryReport) AppsCount() int {
+	return 0
+}
+
+func (s *SummaryReport) BillableAppInstancesCount() int {
+	return 0
+}
+
+func (s *SummaryReport) BillableServicesCount() int {
+	return 0
+}
+
+func (s *SummaryReport) MemoryQuota() int {
+	return 0
+}
+
+func (s *SummaryReport) MemoryUsage() int {
+	return 0
+}
+
+func (s *SummaryReport) RunningAppInstancesCount() int {
+	return 0
+}
+
+func (s *SummaryReport) RunningAppsCount() int {
+	return 0
+}
+
+func (s *SummaryReport) ServicesCount() int {
+	return 0
+}
+
+func (s *SummaryReport) SpringCloudServicesCount() int {
+	return 0
+}
+
+func (s *SummaryReport) StoppedAppInstancesCount() int {
+	return 0
+}
+
+func (s *SummaryReport) StoppedAppsCount() int {
+	return 0
 }

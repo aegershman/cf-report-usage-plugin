@@ -19,7 +19,7 @@ type Reporter interface {
 // Report -
 type Report struct {
 	Orgs          []Org
-	SummaryReport SummaryReport
+	SummaryReport SummaryReporter
 }
 
 // NewReport -
