@@ -43,13 +43,21 @@ func (s *SummaryReport) OrgReports() []OrgReport {
 }
 
 // AppInstancesCount returns the count of declared canonical app instances
-// regardless of start/stop state across all spaces within the org
+// regardless of start/stop state
+//
+// for example, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "5 app instances"
 func (s *SummaryReport) AppInstancesCount() int {
 	return 0
 }
 
 // AppsCount returns the count of unique canonical app guids
-// regardless of start/stop state across all spaces within the org
+// regardless of start/stop state
 //
 // for example, within a space, if you have the following result from `cf apps`:
 //
@@ -87,18 +95,34 @@ func (s *SummaryReport) MemoryUsage() int {
 }
 
 // RunningAppInstancesCount returns the count of declared canonical app instances
-// which are actively running across all spaces within the org
+// which are actively running
+//
+// for example, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "4 running app instances"
 func (s *SummaryReport) RunningAppInstancesCount() int {
 	return 0
 }
 
 // RunningAppsCount returns the count of unique canonical app
-// guids with at least 1 running app instance across all spaces within the org
+// guids with at least 1 running app instance
+//
+// for example, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "2 running apps"
 func (s *SummaryReport) RunningAppsCount() int {
 	return 0
 }
 
-// ServicesCount returns total count of registered services in all spaces of the org
+// ServicesCount returns total count of registered services
 //
 // Keep in mind, if a single service ends up creating more service instances
 // (or application instances) in a different space (e.g., Spring Cloud Data Flow, etc.)

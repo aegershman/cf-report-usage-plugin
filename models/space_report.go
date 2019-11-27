@@ -71,7 +71,7 @@ func (s *SpaceReport) SpringCloudServicesCount() int {
 
 // BillableServicesCount -
 func (s *SpaceReport) BillableServicesCount() int {
-	count := s.spaceRef.ServicesCount()
+	count := s.ServicesCount()
 	count -= s.SpringCloudServicesCount()
 	return count
 }
@@ -79,7 +79,58 @@ func (s *SpaceReport) BillableServicesCount() int {
 // BillableAppInstancesCount -
 func (s *SpaceReport) BillableAppInstancesCount() int {
 	count := 0
-	count += s.spaceRef.AppInstancesCount()
+	count += s.AppInstancesCount()
 	count += s.SpringCloudServicesCount()
+	return count
+}
+
+// ConsumedMemory returns the amount of memory consumed by all
+// running canonical application instances within a space
+func (s *SpaceReport) ConsumedMemory() int {
+	count := 0
+	for _, app := range s.spaceRef.Apps {
+		count += int(app.RunningInstances * app.Memory)
+	}
+	return count
+}
+
+// AppsCount -
+func (s *SpaceReport) AppsCount() int {
+	count := len(s.spaceRef.Apps)
+	return count
+}
+
+// RunningAppsCount -
+func (s *SpaceReport) RunningAppsCount() int {
+	count := 0
+	for _, app := range s.spaceRef.Apps {
+		if app.RunningInstances > 0 {
+			count++
+		}
+	}
+	return count
+}
+
+// AppInstancesCount -
+func (s *SpaceReport) AppInstancesCount() int {
+	count := 0
+	for _, app := range s.spaceRef.Apps {
+		count += int(app.Instances)
+	}
+	return count
+}
+
+// RunningAppInstancesCount -
+func (s *SpaceReport) RunningAppInstancesCount() int {
+	count := 0
+	for _, app := range s.spaceRef.Apps {
+		count += int(app.RunningInstances)
+	}
+	return count
+}
+
+// ServicesCount -
+func (s *SpaceReport) ServicesCount() int {
+	count := len(s.spaceRef.Services)
 	return count
 }
