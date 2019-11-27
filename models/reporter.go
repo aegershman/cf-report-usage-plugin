@@ -17,17 +17,3 @@ type Reporter interface {
 	StoppedAppInstancesCount() int
 	StoppedAppsCount() int
 }
-
-// Report -
-type Report struct {
-	orgsRef       []Org
-	SummaryReport SummaryReporter
-}
-
-// NewReport -
-func NewReport(orgs []Org) Report {
-	return Report{
-		orgsRef:       orgs,
-		SummaryReport: NewSummaryReport(orgs),
-	}
-}

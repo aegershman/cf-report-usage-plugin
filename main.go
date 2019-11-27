@@ -96,9 +96,9 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 		}
 	}
 
-	report := models.NewReport(orgs)
+	summaryReport := models.NewSummaryReport(orgs)
 
-	presenter := presenters.NewPresenter(report, formatFlag)
+	presenter := presenters.NewPresenter(summaryReport, formatFlag)
 	presenter.Render()
 }
 
