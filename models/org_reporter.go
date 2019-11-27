@@ -10,6 +10,7 @@ type OrgReporter interface {
 type OrgReport struct {
 	orgRef          Org
 	spaceReportsRef []SpaceReporter
+	Report          Report
 }
 
 // NewOrgReport -
