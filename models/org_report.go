@@ -8,29 +8,50 @@ type OrgReporter interface {
 
 // OrgReport -
 type OrgReport struct {
-	org          Org
-	SpaceReports []SpaceReport
-	Spaces       []Space
+	org             Org
+	spaceReportsRef []SpaceReport
+	Spaces          []Space
 }
 
 // NewOrgReport -
-func NewOrgReport(org Org) OrgReport {
+func NewOrgReport(org Org) *OrgReport {
 	var spaceReports []SpaceReport
 	for _, space := range org.Spaces {
 		spaceReports = append(spaceReports, NewSpaceReport(space))
 	}
 
-	return OrgReport{
-		org:          org,
-		SpaceReports: spaceReports,
-		Spaces:       org.Spaces,
+	return &OrgReport{
+		org:             org,
+		spaceReportsRef: spaceReports,
+		Spaces:          org.Spaces,
 	}
 }
+
+func (o *OrgReport) SpaceReports() []SpaceReport {
+	return o.spaceReportsRef
+}
+
+func (o *OrgReport) AppInstancesCount() int { return 0 }
+func (o *OrgReport) AppsCount() int         { return 0 }
+
+// func (o *OrgReport) BillableAppInstancesCount() int            { return 0 }
+// func (o *OrgReport) BillableServicesCount() int                { return 0 }
+func (o *OrgReport) MemoryQuota() int                          { return 0 }
+func (o *OrgReport) MemoryUsage() int                          { return 0 }
+func (o *OrgReport) Name() string                              { return "" }
+func (o *OrgReport) RunningAppInstancesCount() int             { return 0 }
+func (o *OrgReport) RunningAppsCount() int                     { return 0 }
+func (o *OrgReport) ServicesCount() int                        { return 0 }
+func (o *OrgReport) ServicesSuiteForPivotalPlatformCount() int { return 0 }
+
+// func (o *OrgReport) SpringCloudServicesCount() int             { return 0 }
+func (o *OrgReport) StoppedAppInstancesCount() int { return 0 }
+func (o *OrgReport) StoppedAppsCount() int         { return 0 }
 
 // SpringCloudServicesCount returns total count of SCS services across all spaces of the org
 func (o *OrgReport) SpringCloudServicesCount() int {
 	count := 0
-	for _, s := range o.SpaceReports {
+	for _, s := range o.spaceReportsRef {
 		count += s.SpringCloudServicesCount()
 	}
 	return count
@@ -42,7 +63,7 @@ func (o *OrgReport) SpringCloudServicesCount() int {
 // considers it a service; e.g., SCS instances (config server, service registry, etc.)
 func (o *OrgReport) BillableAppInstancesCount() int {
 	count := 0
-	for _, s := range o.SpaceReports {
+	for _, s := range o.spaceReportsRef {
 		count += s.BillableAppInstancesCount()
 	}
 	return count
@@ -54,7 +75,7 @@ func (o *OrgReport) BillableAppInstancesCount() int {
 // subtracting certain services (like SCS) from the count of `cf services`
 func (o *OrgReport) BillableServicesCount() int {
 	count := 0
-	for _, s := range o.SpaceReports {
+	for _, s := range o.spaceReportsRef {
 		count += s.BillableServicesCount()
 	}
 	return count
