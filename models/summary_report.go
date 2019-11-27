@@ -5,7 +5,6 @@ import "bytes"
 // SummaryReport holds an aggregated view of multiple OrgReports
 type SummaryReport struct {
 	OrgReports []OrgReport
-	orgsRef    []Org
 	Report
 }
 
@@ -17,7 +16,6 @@ func NewSummaryReport(orgs []Org) *SummaryReport {
 	}
 
 	self := &SummaryReport{
-		orgsRef:    orgs,
 		OrgReports: orgReports,
 	}
 

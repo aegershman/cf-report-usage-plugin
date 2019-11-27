@@ -1,6 +1,9 @@
 package models
 
-// Report -
+// Report should be present in all reports at all levels,
+// e.g. summary level, org level, space level, etc.
+// this allows us to calculate common data at discrete layers and be
+// confident it'll be available when presenting the data
 type Report struct {
 	AppInstancesCount                    int
 	AppsCount                            int
