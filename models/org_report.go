@@ -4,24 +4,25 @@ package models
 type OrgReport struct {
 	orgRef          Org
 	Report          Report
-	spaceReportsRef []SpaceReporter
+	spaceReportsRef []SpaceReport
 }
 
 // NewOrgReport -
 func NewOrgReport(org Org) *OrgReport {
-	var spaceReports []SpaceReporter
+	var spaceReports []SpaceReport
 	for _, space := range org.Spaces {
-		spaceReports = append(spaceReports, NewSpaceReport(space))
+		spaceReports = append(spaceReports, *NewSpaceReport(space))
 	}
 
 	return &OrgReport{
 		orgRef:          org,
 		spaceReportsRef: spaceReports,
+		Report:          Report{},
 	}
 }
 
 // SpaceReports -
-func (o *OrgReport) SpaceReports() []SpaceReporter {
+func (o *OrgReport) SpaceReports() []SpaceReport {
 	return o.spaceReportsRef
 }
 

@@ -4,26 +4,27 @@ import "bytes"
 
 // SummaryReport holds an aggregated view of multiple OrgReports
 type SummaryReport struct {
-	orgReportsRef []OrgReporter
+	orgReportsRef []OrgReport
 	orgsRef       []Org
 	Report        Report
 }
 
 // NewSummaryReport -
 func NewSummaryReport(orgs []Org) *SummaryReport {
-	var orgReports []OrgReporter
+	var orgReports []OrgReport
 	for _, org := range orgs {
-		orgReports = append(orgReports, NewOrgReport(org))
+		orgReports = append(orgReports, *NewOrgReport(org))
 	}
 
 	return &SummaryReport{
 		orgsRef:       orgs,
 		orgReportsRef: orgReports,
+		Report:        Report{},
 	}
 }
 
 // OrgReports -
-func (s *SummaryReport) OrgReports() []OrgReporter {
+func (s *SummaryReport) OrgReports() []OrgReport {
 	return s.orgReportsRef
 }
 

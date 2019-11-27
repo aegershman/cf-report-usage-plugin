@@ -5,13 +5,14 @@ import "strings"
 // SpaceReport -
 type SpaceReport struct {
 	spaceRef Space
-	Report   Report
+	Report
 }
 
 // NewSpaceReport -
 func NewSpaceReport(space Space) *SpaceReport {
 	return &SpaceReport{
 		spaceRef: space,
+		Report:   Report{}, // todo
 	}
 }
 
