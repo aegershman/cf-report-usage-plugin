@@ -2,20 +2,20 @@ package models
 
 // OrgReport -
 type OrgReport struct {
-	org                                  Org
-	Name                                 string
+	AppInstancesCount                    int
+	AppsCount                            int
 	MemoryQuota                          int
 	MemoryUsage                          int
-	Spaces                               []Space
-	SpaceReports                         []SpaceReport
-	AppsCount                            int
-	RunningAppsCount                     int
-	StoppedAppsCount                     int
-	AppInstancesCount                    int
+	Name                                 string
+	org                                  Org
 	RunningAppInstancesCount             int
-	StoppedAppInstancesCount             int
+	RunningAppsCount                     int
 	ServicesCount                        int
 	ServicesSuiteForPivotalPlatformCount int
+	SpaceReports                         []SpaceReport
+	Spaces                               []Space
+	StoppedAppInstancesCount             int
+	StoppedAppsCount                     int
 }
 
 // NewOrgReport -

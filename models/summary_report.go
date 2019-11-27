@@ -4,6 +4,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// SummaryReporter -
+type SummaryReporter interface {
+	Reporter
+	OrgReports() []OrgReport
+}
+
+// func (*s SummaryReport) AppInstancesCount() int {}
+
 // SummaryReport describes an aggregated view
 // of multiple OrgReport after a Report Execution run
 //
