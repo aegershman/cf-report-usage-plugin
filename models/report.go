@@ -6,9 +6,9 @@ import (
 
 // Report -
 type Report struct {
-	Orgs               []Org
-	OrgReports         []OrgReport
-	AggregateOrgReport SummaryReport
+	Orgs          []Org
+	OrgReports    []OrgReport
+	SummaryReport SummaryReport
 }
 
 // NewReport -
@@ -54,7 +54,7 @@ func (r *Report) Execute() {
 	}
 
 	r.OrgReports = aggregateOrgReport
-	r.AggregateOrgReport = SummaryReport{
+	r.SummaryReport = SummaryReport{
 		BillableAppInstancesCount: aggregateBillableAppInstancesCount,
 		BillableServicesCount:     aggregateBillableServicesCount,
 		AppInstancesCount:         aggregateAppInstancesCount,
