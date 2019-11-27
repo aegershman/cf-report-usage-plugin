@@ -2,21 +2,21 @@ package models
 
 // SummaryReporter -
 type SummaryReporter interface {
-	OrgReports() []OrgReport
+	OrgReports() []OrgReporter
 	Reporter
 }
 
 // SummaryReport holds an aggregated view of multiple OrgReports
 type SummaryReport struct {
 	orgsRef       []Org
-	orgReportsRef []OrgReport
+	orgReportsRef []OrgReporter
 }
 
 // NewSummaryReport -
 func NewSummaryReport(orgs []Org) *SummaryReport {
-	var orgReports []OrgReport
+	var orgReports []OrgReporter
 	for _, org := range orgs {
-		orgReports = append(orgReports, *NewOrgReport(org))
+		orgReports = append(orgReports, NewOrgReport(org))
 	}
 
 	return &SummaryReport{
@@ -38,7 +38,7 @@ func (s *SummaryReport) ServicesSuiteForPivotalPlatformCount() int {
 	return 0
 }
 
-func (s *SummaryReport) OrgReports() []OrgReport {
+func (s *SummaryReport) OrgReports() []OrgReporter {
 	return s.orgReportsRef
 }
 
