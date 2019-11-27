@@ -17,10 +17,10 @@ func (p *Presenter) asString() {
 	)
 
 	for _, orgReport := range p.Report.SummaryReport.OrgReports() {
-		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgReport.Name, orgReport.MemoryUsage, orgReport.MemoryQuota))
+		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgReport.Name(), orgReport.MemoryUsage(), orgReport.MemoryQuota()))
 		for _, spaceReport := range orgReport.SpaceReports() {
 			response.WriteString(fmt.Sprintf(spaceBillableAppInstancesMsg, spaceReport.BillableAppInstancesCount()))
-			response.WriteString(fmt.Sprintf(spaceAppInstancesMsg, spaceReport.AppInstancesCount, spaceReport.RunningAppInstancesCount, spaceReport.StoppedAppInstancesCount))
+			response.WriteString(fmt.Sprintf(spaceAppInstancesMsg, spaceReport.AppInstancesCount(), spaceReport.RunningAppInstancesCount(), spaceReport.StoppedAppInstancesCount()))
 			response.WriteString(fmt.Sprintf(spaceSCSMsg, spaceReport.SpringCloudServicesCount()))
 		}
 	}
@@ -29,11 +29,11 @@ func (p *Presenter) asString() {
 		fmt.Sprintf(
 			reportSummaryMsg,
 			len(p.Report.Orgs),
-			p.Report.SummaryReport.BillableAppInstancesCount,
-			p.Report.SummaryReport.AppInstancesCount,
-			p.Report.SummaryReport.RunningAppInstancesCount,
-			p.Report.SummaryReport.StoppedAppInstancesCount,
-			p.Report.SummaryReport.SpringCloudServicesCount,
+			p.Report.SummaryReport.BillableAppInstancesCount(),
+			p.Report.SummaryReport.AppInstancesCount(),
+			p.Report.SummaryReport.RunningAppInstancesCount(),
+			p.Report.SummaryReport.StoppedAppInstancesCount(),
+			p.Report.SummaryReport.SpringCloudServicesCount(),
 		),
 	)
 
