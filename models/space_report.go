@@ -10,9 +10,26 @@ type SpaceReport struct {
 
 // NewSpaceReport -
 func NewSpaceReport(space Space) *SpaceReport {
-	return &SpaceReport{
+
+	self := &SpaceReport{
 		spaceRef: space,
-		Report:   Report{}, // todo
+	}
+
+	self.Report = Report{
+		AppInstancesCount:                    self.appInstancesCount(),
+		AppsCount:                            self.appsCount(),
+		BillableAppInstancesCount:            self.billableAppInstancesCount(),
+		BillableServicesCount:                self.billableServicesCount(),
+		MemoryQuota:                          self.memoryQuota(),
+		MemoryUsage:                          self.memoryUsage(),
+		Name:                                 self.name(),
+		RunningAppInstancesCount:             self.runningAppInstancesCount(),
+		RunningAppsCount:                     self.runningAppsCount(),
+		ServicesCount:                        self.servicesCount(),
+		ServicesSuiteForPivotalPlatformCount: self.servicesSuiteForPivotalPlatformCount(),
+		SpringCloudServicesCount:             self.springCloudServicesCount(),
+		StoppedAppInstancesCount:             self.stoppedAppInstancesCount(),
+		StoppedAppsCount:                     self.stoppedAppsCount(),
 	}
 }
 
@@ -51,7 +68,7 @@ func (s *SpaceReport) ServicesSuiteForPivotalPlatformCount() int {
 }
 
 // Name -
-func (s *SpaceReport) Name() string {
+func (s *SpaceReport) name() string {
 	return s.spaceRef.Name
 }
 

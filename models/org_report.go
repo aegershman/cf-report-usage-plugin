@@ -26,7 +26,7 @@ func NewOrgReport(org Org) *OrgReport {
 		BillableServicesCount:                self.billableServicesCount(),
 		MemoryQuota:                          self.memoryQuota(),
 		MemoryUsage:                          self.memoryUsage(),
-		Name:                                 org.Name,
+		Name:                                 self.name(),
 		RunningAppInstancesCount:             self.runningAppInstancesCount(),
 		RunningAppsCount:                     self.runningAppsCount(),
 		ServicesCount:                        self.servicesCount(),
@@ -72,7 +72,7 @@ func (o *OrgReport) memoryUsage() int {
 }
 
 // Name -
-func (o *OrgReport) Name() string {
+func (o *OrgReport) name() string {
 	return o.orgRef.Name
 }
 
