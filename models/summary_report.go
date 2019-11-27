@@ -42,10 +42,22 @@ func (s *SummaryReport) OrgReports() []OrgReport {
 	return s.orgReportsRef
 }
 
+// AppInstancesCount returns the count of declared canonical app instances
+// regardless of start/stop state across all spaces within the org
 func (s *SummaryReport) AppInstancesCount() int {
 	return 0
 }
 
+// AppsCount returns the count of unique canonical app guids
+// regardless of start/stop state across all spaces within the org
+//
+// for example, within a space, if you have the following result from `cf apps`:
+//
+// hammerdb-test                   stopped           0/1
+// nodejs-web                      started           2/2
+// push-test-webhook-switchboard   started           2/2
+//
+// then you'd have "3 unique apps"
 func (s *SummaryReport) AppsCount() int {
 	return 0
 }
@@ -74,14 +86,24 @@ func (s *SummaryReport) MemoryUsage() int {
 	return 0
 }
 
+// RunningAppInstancesCount returns the count of declared canonical app instances
+// which are actively running across all spaces within the org
 func (s *SummaryReport) RunningAppInstancesCount() int {
 	return 0
 }
 
+// RunningAppsCount returns the count of unique canonical app
+// guids with at least 1 running app instance across all spaces within the org
 func (s *SummaryReport) RunningAppsCount() int {
 	return 0
 }
 
+// ServicesCount returns total count of registered services in all spaces of the org
+//
+// Keep in mind, if a single service ends up creating more service instances
+// (or application instances) in a different space (e.g., Spring Cloud Data Flow, etc.)
+// those aren't considered in this result. This only counts services registered which
+// show up in `cf services`
 func (s *SummaryReport) ServicesCount() int {
 	return 0
 }
