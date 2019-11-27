@@ -2,21 +2,37 @@ package models
 
 import "strings"
 
-// SpaceReporter -
-type SpaceReporter interface {
-	Reporter
-}
-
 // SpaceReport -
 type SpaceReport struct {
 	spaceRef Space
+	Report
 }
 
 // NewSpaceReport -
 func NewSpaceReport(space Space) *SpaceReport {
-	return &SpaceReport{
+
+	self := &SpaceReport{
 		spaceRef: space,
 	}
+
+	self.Report = Report{
+		AppInstancesCount:                    self.appInstancesCount(),
+		AppsCount:                            self.appsCount(),
+		BillableAppInstancesCount:            self.billableAppInstancesCount(),
+		BillableServicesCount:                self.billableServicesCount(),
+		MemoryQuota:                          self.memoryQuota(),
+		MemoryUsage:                          self.memoryUsage(),
+		Name:                                 self.name(),
+		RunningAppInstancesCount:             self.runningAppInstancesCount(),
+		RunningAppsCount:                     self.runningAppsCount(),
+		ServicesCount:                        self.servicesCount(),
+		ServicesSuiteForPivotalPlatformCount: self.servicesSuiteForPivotalPlatformCount(),
+		SpringCloudServicesCount:             self.springCloudServicesCount(),
+		StoppedAppInstancesCount:             self.stoppedAppInstancesCount(),
+		StoppedAppsCount:                     self.stoppedAppsCount(),
+	}
+
+	return self
 }
 
 // servicesCountByServiceLabel returns the number of service instances
@@ -35,7 +51,7 @@ func (s *SpaceReport) servicesCountByServiceLabel(serviceType string) int {
 }
 
 // ServicesSuiteForPivotalPlatformCount -
-func (s *SpaceReport) ServicesSuiteForPivotalPlatformCount() int {
+func (s *SpaceReport) servicesSuiteForPivotalPlatformCount() int {
 	count := 0
 
 	count += s.servicesCountByServiceLabel("p-dataflow-servers") // TODO
@@ -54,12 +70,12 @@ func (s *SpaceReport) ServicesSuiteForPivotalPlatformCount() int {
 }
 
 // Name -
-func (s *SpaceReport) Name() string {
+func (s *SpaceReport) name() string {
 	return s.spaceRef.Name
 }
 
 // SpringCloudServicesCount -
-func (s *SpaceReport) SpringCloudServicesCount() int {
+func (s *SpaceReport) springCloudServicesCount() int {
 	count := 0
 
 	// scs 2.x
@@ -75,23 +91,22 @@ func (s *SpaceReport) SpringCloudServicesCount() int {
 }
 
 // BillableServicesCount -
-func (s *SpaceReport) BillableServicesCount() int {
-	count := s.ServicesCount()
-	count -= s.SpringCloudServicesCount()
+func (s *SpaceReport) billableServicesCount() int {
+	count := s.servicesCount()
+	count -= s.springCloudServicesCount()
 	return count
 }
 
 // BillableAppInstancesCount -
-func (s *SpaceReport) BillableAppInstancesCount() int {
+func (s *SpaceReport) billableAppInstancesCount() int {
 	count := 0
-	count += s.AppInstancesCount()
-	count += s.SpringCloudServicesCount()
+	count += s.appInstancesCount()
+	count += s.springCloudServicesCount()
 	return count
 }
 
-// MemoryUsage returns the amount of memory consumed by all
-// running canonical application instances within a space
-func (s *SpaceReport) MemoryUsage() int {
+// MemoryUsage -
+func (s *SpaceReport) memoryUsage() int {
 	count := 0
 	for _, app := range s.spaceRef.Apps {
 		count += int(app.RunningInstances * app.Memory)
@@ -100,13 +115,13 @@ func (s *SpaceReport) MemoryUsage() int {
 }
 
 // AppsCount -
-func (s *SpaceReport) AppsCount() int {
+func (s *SpaceReport) appsCount() int {
 	count := len(s.spaceRef.Apps)
 	return count
 }
 
 // RunningAppsCount -
-func (s *SpaceReport) RunningAppsCount() int {
+func (s *SpaceReport) runningAppsCount() int {
 	count := 0
 	for _, app := range s.spaceRef.Apps {
 		if app.RunningInstances > 0 {
@@ -117,7 +132,7 @@ func (s *SpaceReport) RunningAppsCount() int {
 }
 
 // AppInstancesCount -
-func (s *SpaceReport) AppInstancesCount() int {
+func (s *SpaceReport) appInstancesCount() int {
 	count := 0
 	for _, app := range s.spaceRef.Apps {
 		count += int(app.Instances)
@@ -126,7 +141,7 @@ func (s *SpaceReport) AppInstancesCount() int {
 }
 
 // RunningAppInstancesCount -
-func (s *SpaceReport) RunningAppInstancesCount() int {
+func (s *SpaceReport) runningAppInstancesCount() int {
 	count := 0
 	for _, app := range s.spaceRef.Apps {
 		count += int(app.RunningInstances)
@@ -135,22 +150,22 @@ func (s *SpaceReport) RunningAppInstancesCount() int {
 }
 
 // ServicesCount -
-func (s *SpaceReport) ServicesCount() int {
+func (s *SpaceReport) servicesCount() int {
 	count := len(s.spaceRef.Services)
 	return count
 }
 
 // MemoryQuota - TODO unimplemented on 'space' level
-func (s *SpaceReport) MemoryQuota() int {
+func (s *SpaceReport) memoryQuota() int {
 	return -1
 }
 
 // StoppedAppInstancesCount -
-func (s *SpaceReport) StoppedAppInstancesCount() int {
-	return s.AppInstancesCount() - s.RunningAppInstancesCount()
+func (s *SpaceReport) stoppedAppInstancesCount() int {
+	return s.appInstancesCount() - s.runningAppInstancesCount()
 }
 
 // StoppedAppsCount -
-func (s *SpaceReport) StoppedAppsCount() int {
-	return s.AppsCount() - s.RunningAppsCount()
+func (s *SpaceReport) stoppedAppsCount() int {
+	return s.appsCount() - s.runningAppsCount()
 }

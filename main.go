@@ -98,7 +98,7 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 
 	summaryReport := models.NewSummaryReport(orgs)
 
-	presenter := presenters.NewPresenter(summaryReport, formatFlag)
+	presenter := presenters.NewPresenter(*summaryReport, formatFlag) // todo hacky pointer
 	presenter.Render()
 }
 
