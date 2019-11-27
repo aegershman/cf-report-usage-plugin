@@ -2,8 +2,8 @@ package models
 
 // SummaryReporter -
 type SummaryReporter interface {
-	Reporter
 	OrgReports() []OrgReport
+	Reporter
 }
 
 // func (*s SummaryReport) AppInstancesCount() int {}
@@ -28,6 +28,10 @@ func NewSummaryReport(orgs []Org) *SummaryReport {
 		orgs:       orgs,
 		orgReports: orgReports,
 	}
+}
+
+func (s *SummaryReport) Name() string {
+	return "nil"
 }
 
 func (s *SummaryReport) OrgReports() []OrgReport {

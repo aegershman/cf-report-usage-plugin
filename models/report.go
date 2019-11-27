@@ -8,6 +8,7 @@ type Reporter interface {
 	BillableServicesCount() int
 	MemoryQuota() int
 	MemoryUsage() int
+	Name() string
 	RunningAppInstancesCount() int
 	RunningAppsCount() int
 	ServicesCount() int

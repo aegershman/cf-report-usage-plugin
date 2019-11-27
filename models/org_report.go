@@ -1,11 +1,13 @@
 package models
 
+// OrgReporter -
+type OrgReporter interface {
+	SpaceReports() []SpaceReport
+	Reporter
+}
+
 // OrgReport -
 type OrgReport struct {
-	AppInstancesCount                    int
-	AppsCount                            int
-	MemoryQuota                          int
-	MemoryUsage                          int
 	Name                                 string
 	org                                  Org
 	RunningAppInstancesCount             int
