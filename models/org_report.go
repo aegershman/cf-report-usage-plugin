@@ -14,11 +14,29 @@ func NewOrgReport(org Org) *OrgReport {
 		spaceReports = append(spaceReports, *NewSpaceReport(space))
 	}
 
-	return &OrgReport{
+	self := &OrgReport{
 		orgRef:          org,
 		spaceReportsRef: spaceReports,
-		Report:          Report{},
 	}
+
+	self.Report = Report{
+		AppInstancesCount:                    self.appInstancesCount(),
+		AppsCount:                            self.appsCount(),
+		BillableAppInstancesCount:            self.billableAppInstancesCount(),
+		BillableServicesCount:                self.billableServicesCount(),
+		MemoryQuota:                          self.memoryQuota(),
+		MemoryUsage:                          self.memoryUsage(),
+		Name:                                 org.Name,
+		RunningAppInstancesCount:             self.runningAppInstancesCount(),
+		RunningAppsCount:                     self.runningAppsCount(),
+		ServicesCount:                        self.servicesCount(),
+		ServicesSuiteForPivotalPlatformCount: self.servicesSuiteForPivotalPlatformCount(),
+		SpringCloudServicesCount:             self.springCloudServicesCount(),
+		StoppedAppInstancesCount:             self.stoppedAppInstancesCount(),
+		StoppedAppsCount:                     self.stoppedAppsCount(),
+	}
+
+	return self
 }
 
 // SpaceReports -
@@ -26,8 +44,7 @@ func (o *OrgReport) SpaceReports() []SpaceReport {
 	return o.spaceReportsRef
 }
 
-// AppInstancesCount -
-func (o *OrgReport) AppInstancesCount() int {
+func (o *OrgReport) appInstancesCount() int {
 	count := 0
 	for _, space := range o.spaceReportsRef {
 		count += space.AppInstancesCount()
@@ -36,21 +53,21 @@ func (o *OrgReport) AppInstancesCount() int {
 }
 
 // AppsCount -
-func (o *OrgReport) AppsCount() int {
+func (o *OrgReport) appsCount() int {
 	count := 0
 	for _, space := range o.spaceReportsRef {
-		count += space.AppsCount()
+		count += space.appsCount()
 	}
 	return count
 }
 
 // MemoryQuota -
-func (o *OrgReport) MemoryQuota() int {
+func (o *OrgReport) memoryQuota() int {
 	return o.orgRef.MemoryQuota
 }
 
 // MemoryUsage -
-func (o *OrgReport) MemoryUsage() int {
+func (o *OrgReport) memoryUsage() int {
 	return o.orgRef.MemoryUsage
 }
 
@@ -60,83 +77,83 @@ func (o *OrgReport) Name() string {
 }
 
 // RunningAppInstancesCount -
-func (o *OrgReport) RunningAppInstancesCount() int {
+func (o *OrgReport) runningAppInstancesCount() int {
 	count := 0
 	for _, space := range o.spaceReportsRef {
-		count += space.RunningAppInstancesCount()
+		count += space.runningAppInstancesCount()
 	}
 	return count
 }
 
 // RunningAppsCount -
-func (o *OrgReport) RunningAppsCount() int {
+func (o *OrgReport) runningAppsCount() int {
 	count := 0
 	for _, space := range o.spaceReportsRef {
-		count += space.RunningAppsCount()
+		count += space.runningAppsCount()
 	}
 	return count
 }
 
 // ServicesCount -
-func (o *OrgReport) ServicesCount() int {
+func (o *OrgReport) servicesCount() int {
 	count := 0
 	for _, space := range o.spaceReportsRef {
-		count += space.ServicesCount()
+		count += space.servicesCount()
 	}
 	return count
 }
 
 // ServicesSuiteForPivotalPlatformCount -
-func (o *OrgReport) ServicesSuiteForPivotalPlatformCount() int {
+func (o *OrgReport) servicesSuiteForPivotalPlatformCount() int {
 	count := 0
 	for _, space := range o.spaceReportsRef {
-		count += space.ServicesSuiteForPivotalPlatformCount()
+		count += space.servicesSuiteForPivotalPlatformCount()
 	}
 	return count
 
 }
 
 // StoppedAppInstancesCount -
-func (o *OrgReport) StoppedAppInstancesCount() int {
+func (o *OrgReport) stoppedAppInstancesCount() int {
 	count := 0
 	for _, space := range o.spaceReportsRef {
-		count += space.StoppedAppInstancesCount()
+		count += space.stoppedAppInstancesCount()
 	}
 	return count
 }
 
 // StoppedAppsCount -
-func (o *OrgReport) StoppedAppsCount() int {
+func (o *OrgReport) stoppedAppsCount() int {
 	count := 0
 	for _, space := range o.spaceReportsRef {
-		count += space.StoppedAppsCount()
+		count += space.stoppedAppsCount()
 	}
 	return count
 }
 
 // SpringCloudServicesCount -
-func (o *OrgReport) SpringCloudServicesCount() int {
+func (o *OrgReport) springCloudServicesCount() int {
 	count := 0
 	for _, s := range o.spaceReportsRef {
-		count += s.SpringCloudServicesCount()
+		count += s.springCloudServicesCount()
 	}
 	return count
 }
 
 // BillableAppInstancesCount -
-func (o *OrgReport) BillableAppInstancesCount() int {
+func (o *OrgReport) billableAppInstancesCount() int {
 	count := 0
 	for _, s := range o.spaceReportsRef {
-		count += s.BillableAppInstancesCount()
+		count += s.billableAppInstancesCount()
 	}
 	return count
 }
 
 // BillableServicesCount -
-func (o *OrgReport) BillableServicesCount() int {
+func (o *OrgReport) billableServicesCount() int {
 	count := 0
 	for _, s := range o.spaceReportsRef {
-		count += s.BillableServicesCount()
+		count += s.billableServicesCount()
 	}
 	return count
 }
