@@ -32,7 +32,7 @@ func (s *SummaryReport) OrgReports() []OrgReport {
 func (s *SummaryReport) Name() string {
 	var name bytes.Buffer
 	for _, org := range s.orgReportsRef {
-		name.WriteString(org.Name())
+		name.WriteString(org.name())
 	}
 	return name.String()
 }

@@ -31,6 +31,8 @@ func NewSpaceReport(space Space) *SpaceReport {
 		StoppedAppInstancesCount:             self.stoppedAppInstancesCount(),
 		StoppedAppsCount:                     self.stoppedAppsCount(),
 	}
+
+	return self
 }
 
 // servicesCountByServiceLabel returns the number of service instances
@@ -90,16 +92,16 @@ func (s *SpaceReport) springCloudServicesCount() int {
 
 // BillableServicesCount -
 func (s *SpaceReport) billableServicesCount() int {
-	count := s.ServicesCount()
-	count -= s.SpringCloudServicesCount()
+	count := s.servicesCount()
+	count -= s.springCloudServicesCount()
 	return count
 }
 
 // BillableAppInstancesCount -
 func (s *SpaceReport) billableAppInstancesCount() int {
 	count := 0
-	count += s.AppInstancesCount()
-	count += s.SpringCloudServicesCount()
+	count += s.appInstancesCount()
+	count += s.springCloudServicesCount()
 	return count
 }
 
@@ -160,10 +162,10 @@ func (s *SpaceReport) memoryQuota() int {
 
 // StoppedAppInstancesCount -
 func (s *SpaceReport) stoppedAppInstancesCount() int {
-	return s.AppInstancesCount() - s.RunningAppInstancesCount()
+	return s.appInstancesCount() - s.runningAppInstancesCount()
 }
 
 // StoppedAppsCount -
 func (s *SpaceReport) stoppedAppsCount() int {
-	return s.AppsCount() - s.RunningAppsCount()
+	return s.appsCount() - s.runningAppsCount()
 }

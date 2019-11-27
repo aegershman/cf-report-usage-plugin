@@ -44,10 +44,11 @@ func (o *OrgReport) SpaceReports() []SpaceReport {
 	return o.spaceReportsRef
 }
 
+// AppInstancesCount -
 func (o *OrgReport) appInstancesCount() int {
 	count := 0
 	for _, space := range o.spaceReportsRef {
-		count += space.AppInstancesCount()
+		count += space.appInstancesCount()
 	}
 	return count
 }
