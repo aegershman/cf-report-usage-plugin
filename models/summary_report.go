@@ -1,5 +1,7 @@
 package models
 
+import "bytes"
+
 // SummaryReporter -
 type SummaryReporter interface {
 	OrgReports() []OrgReporter
@@ -8,8 +10,8 @@ type SummaryReporter interface {
 
 // SummaryReport holds an aggregated view of multiple OrgReports
 type SummaryReport struct {
-	orgsRef       []Org
 	orgReportsRef []OrgReporter
+	orgsRef       []Org
 }
 
 // NewSummaryReport -
@@ -25,8 +27,18 @@ func NewSummaryReport(orgs []Org) *SummaryReport {
 	}
 }
 
+// OrgReports -
+func (s *SummaryReport) OrgReports() []OrgReporter {
+	return s.orgReportsRef
+}
+
+// Name -
 func (s *SummaryReport) Name() string {
-	return "nil"
+	var name bytes.Buffer
+	for _, org := range s.orgReportsRef {
+		name.WriteString(org.Name())
+	}
+	return name.String()
 }
 
 // ServicesSuiteForPivotalPlatformCount returns the number of service instances
@@ -36,10 +48,6 @@ func (s *SummaryReport) Name() string {
 // (I know right? It's an intense function name)
 func (s *SummaryReport) ServicesSuiteForPivotalPlatformCount() int {
 	return 0
-}
-
-func (s *SummaryReport) OrgReports() []OrgReporter {
-	return s.orgReportsRef
 }
 
 // AppInstancesCount returns the count of declared canonical app instances
