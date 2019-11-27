@@ -2,35 +2,20 @@ package models
 
 import "strings"
 
-// SpaceReport is a way to represent the 'business logic'
-// of Spaces; we can use it as a way to decorate
-// a Space with extra info like billableAIs, etc.
+// SpaceReporter -
+type SpaceReporter interface {
+	Reporter
+}
+
+// SpaceReport -
 type SpaceReport struct {
-	AppInstancesCount        int
-	AppsCount                int
-	ConsumedMemory           int
-	Name                     string
-	RunningAppInstancesCount int
-	RunningAppsCount         int
-	ServicesCount            int
-	space                    Space
-	StoppedAppInstancesCount int
-	StoppedAppsCount         int
+	space Space
 }
 
 // NewSpaceReport -
-func NewSpaceReport(space Space) SpaceReport {
-	return SpaceReport{
-		space:                    space,
-		Name:                     space.Name,
-		AppsCount:                space.AppsCount(),
-		RunningAppsCount:         space.RunningAppsCount(),
-		StoppedAppsCount:         space.AppsCount() - space.RunningAppsCount(),
-		AppInstancesCount:        space.AppInstancesCount(),
-		RunningAppInstancesCount: space.RunningAppInstancesCount(),
-		StoppedAppInstancesCount: space.AppInstancesCount() - space.RunningAppInstancesCount(),
-		ServicesCount:            space.ServicesCount(),
-		ConsumedMemory:           space.ConsumedMemory(),
+func NewSpaceReport(space Space) *SpaceReport {
+	return &SpaceReport{
+		space: space,
 	}
 }
 

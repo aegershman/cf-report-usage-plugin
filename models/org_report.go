@@ -17,7 +17,7 @@ type OrgReport struct {
 func NewOrgReport(org Org) *OrgReport {
 	var spaceReports []SpaceReport
 	for _, space := range org.Spaces {
-		spaceReports = append(spaceReports, NewSpaceReport(space))
+		spaceReports = append(spaceReports, *NewSpaceReport(space))
 	}
 
 	return &OrgReport{
