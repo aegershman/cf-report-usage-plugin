@@ -11,5 +11,6 @@ func (p *Presenter) asJSON() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	log.Println(json)
+	log.Println(string(json))
+	log.Fatalln("TODO")
 }
