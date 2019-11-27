@@ -2,19 +2,14 @@ package models
 
 // SummaryReporter -
 type SummaryReporter interface {
-	OrgReports() []OrgReport
+	OrgReports() OrgReporter
 	Reporter
 }
 
-// func (*s SummaryReport) AppInstancesCount() int {}
-
-// SummaryReport describes an aggregated view
-// of multiple OrgReport after a Report Execution run
-//
-// will probably get rid of this at some point
+// SummaryReport holds an aggregated view of multiple OrgReports
 type SummaryReport struct {
 	orgs       []Org
-	orgReports []OrgReport
+	orgReports OrgReporter
 }
 
 // NewSummaryReport -
