@@ -6,15 +6,15 @@ import (
 
 // Presenter -
 type Presenter struct {
-	Report models.Report
-	Format string
+	SummaryReporter models.SummaryReporter
+	Format          string
 }
 
 // NewPresenter -
-func NewPresenter(r models.Report, format string) Presenter {
+func NewPresenter(r models.SummaryReporter, format string) Presenter {
 	return Presenter{
-		Report: r,
-		Format: format,
+		SummaryReporter: r,
+		Format:          format,
 	}
 }
 

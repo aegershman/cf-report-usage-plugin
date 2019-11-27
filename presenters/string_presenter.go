@@ -17,7 +17,7 @@ func (p *Presenter) asString() {
 		reportSummaryMsg             = "across %d org(s), you have %d billable AIs, %d are canonical AIs (%d running, %d stopped), %d are SCS instances\n"
 	)
 
-	for _, orgReport := range p.Report.SummaryReport.OrgReports() {
+	for _, orgReport := range p.SummaryReporter.OrgReports() {
 		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgReport.Name(), orgReport.MemoryUsage(), orgReport.MemoryQuota()))
 		for _, spaceReport := range orgReport.SpaceReports() {
 			response.WriteString(fmt.Sprintf(spaceOverviewMsg, spaceReport.Name(), spaceReport.MemoryUsage()))
@@ -30,12 +30,12 @@ func (p *Presenter) asString() {
 	response.WriteString(
 		fmt.Sprintf(
 			reportSummaryMsg,
-			len(p.Report.SummaryReport.OrgReports()),
-			p.Report.SummaryReport.BillableAppInstancesCount(),
-			p.Report.SummaryReport.AppInstancesCount(),
-			p.Report.SummaryReport.RunningAppInstancesCount(),
-			p.Report.SummaryReport.StoppedAppInstancesCount(),
-			p.Report.SummaryReport.SpringCloudServicesCount(),
+			len(p.SummaryReporter.OrgReports()),
+			p.SummaryReporter.BillableAppInstancesCount(),
+			p.SummaryReporter.AppInstancesCount(),
+			p.SummaryReporter.RunningAppInstancesCount(),
+			p.SummaryReporter.StoppedAppInstancesCount(),
+			p.SummaryReporter.SpringCloudServicesCount(),
 		),
 	)
 
