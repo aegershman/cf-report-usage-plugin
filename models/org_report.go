@@ -10,7 +10,6 @@ type OrgReporter interface {
 type OrgReport struct {
 	orgRef          Org
 	spaceReportsRef []SpaceReporter
-	// spacesRef       []Space
 }
 
 // NewOrgReport -
@@ -23,7 +22,6 @@ func NewOrgReport(org Org) *OrgReport {
 	return &OrgReport{
 		orgRef:          org,
 		spaceReportsRef: spaceReports,
-		// spacesRef:       org.Spaces,
 	}
 }
 
