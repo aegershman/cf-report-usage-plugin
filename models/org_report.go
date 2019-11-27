@@ -1,78 +1,149 @@
 package models
 
-// OrgReport -
-type OrgReport struct {
-	org                                  Org
-	Name                                 string
-	MemoryQuota                          int
-	MemoryUsage                          int
-	Spaces                               []Space
-	SpaceReport                          []SpaceReport
-	AppsCount                            int
-	RunningAppsCount                     int
-	StoppedAppsCount                     int
-	AppInstancesCount                    int
-	RunningAppInstancesCount             int
-	StoppedAppInstancesCount             int
-	ServicesCount                        int
-	ServicesSuiteForPivotalPlatformCount int
+// OrgReporter -
+type OrgReporter interface {
+	SpaceReports() []SpaceReporter
+	Reporter
 }
 
-// PopulateOrgReports -
-func PopulateOrgReports(orgs []Org, c chan OrgReport) {
-	for _, org := range orgs {
-		OrgReport := NewOrgReport(org)
-		c <- OrgReport
-	}
-	close(c)
+// OrgReport -
+type OrgReport struct {
+	orgRef          Org
+	spaceReportsRef []SpaceReporter
+	// spacesRef       []Space
 }
 
 // NewOrgReport -
-func NewOrgReport(org Org) OrgReport {
-	return OrgReport{
-		org:                      org,
-		Name:                     org.Name,
-		MemoryQuota:              org.MemoryQuota,
-		MemoryUsage:              org.MemoryUsage,
-		Spaces:                   org.Spaces,
-		AppsCount:                org.AppsCount(),
-		RunningAppsCount:         org.RunningAppsCount(),
-		StoppedAppsCount:         org.AppsCount() - org.RunningAppsCount(),
-		AppInstancesCount:        org.AppInstancesCount(),
-		RunningAppInstancesCount: org.RunningAppInstancesCount(),
-		StoppedAppInstancesCount: org.AppInstancesCount() - org.RunningAppInstancesCount(),
-		ServicesCount:            org.ServicesCount(),
+func NewOrgReport(org Org) *OrgReport {
+	var spaceReports []SpaceReporter
+	for _, space := range org.Spaces {
+		spaceReports = append(spaceReports, NewSpaceReport(space))
+	}
+
+	return &OrgReport{
+		orgRef:          org,
+		spaceReportsRef: spaceReports,
+		// spacesRef:       org.Spaces,
 	}
 }
 
-// SpringCloudServicesCount returns total count of SCS services across all spaces of the org
+func (o *OrgReport) SpaceReports() []SpaceReporter {
+	return o.spaceReportsRef
+}
+
+// AppInstancesCount -
+func (o *OrgReport) AppInstancesCount() int {
+	count := 0
+	for _, space := range o.spaceReportsRef {
+		count += space.AppInstancesCount()
+	}
+	return count
+}
+
+// AppsCount -
+func (o *OrgReport) AppsCount() int {
+	count := 0
+	for _, space := range o.spaceReportsRef {
+		count += space.AppsCount()
+	}
+	return count
+}
+
+// MemoryQuota -
+func (o *OrgReport) MemoryQuota() int {
+	return o.orgRef.MemoryQuota
+
+}
+
+// MemoryUsage -
+func (o *OrgReport) MemoryUsage() int {
+	return o.orgRef.MemoryUsage
+}
+
+// Name -
+func (o *OrgReport) Name() string {
+	return o.orgRef.Name
+}
+
+// RunningAppInstancesCount -
+func (o *OrgReport) RunningAppInstancesCount() int {
+	count := 0
+	for _, space := range o.spaceReportsRef {
+		count += space.RunningAppInstancesCount()
+	}
+	return count
+}
+
+// RunningAppsCount -
+func (o *OrgReport) RunningAppsCount() int {
+	count := 0
+	for _, space := range o.spaceReportsRef {
+		count += space.RunningAppsCount()
+	}
+	return count
+}
+
+// ServicesCount -
+func (o *OrgReport) ServicesCount() int {
+	count := 0
+	for _, space := range o.spaceReportsRef {
+		count += space.ServicesCount()
+	}
+	return count
+}
+
+// ServicesSuiteForPivotalPlatformCount -
+func (o *OrgReport) ServicesSuiteForPivotalPlatformCount() int {
+	count := 0
+	for _, space := range o.spaceReportsRef {
+		count += space.ServicesSuiteForPivotalPlatformCount()
+	}
+	return count
+
+}
+
+// StoppedAppInstancesCount - TODO
+func (o *OrgReport) StoppedAppInstancesCount() int {
+	// count := 0
+	// for _, space := range o.spaceReportsRef {
+	// 	count += space.ServicesSuiteForPivotalPlatformCount()
+	// }
+	// return count
+	return 0
+}
+
+// StoppedAppsCount - TODO
+func (o *OrgReport) StoppedAppsCount() int {
+	// count := 0
+	// for _, space := range o.spaceReportsRef {
+	// 	count += space.ServicesSuiteForPivotalPlatformCount()
+	// }
+	// return count
+	return 0
+}
+
+// SpringCloudServicesCount -
 func (o *OrgReport) SpringCloudServicesCount() int {
 	count := 0
-	for _, s := range o.SpaceReport {
+	for _, s := range o.spaceReportsRef {
 		count += s.SpringCloudServicesCount()
 	}
 	return count
 }
 
-// BillableAppInstancesCount returns the count of "billable" AIs across all spaces of the org
-//
-// This includes anything which Pivotal deems "billable" as an AI, even if CF
-// considers it a service; e.g., SCS instances (config server, service registry, etc.)
+// BillableAppInstancesCount -
 func (o *OrgReport) BillableAppInstancesCount() int {
 	count := 0
-	for _, s := range o.SpaceReport {
+	for _, s := range o.spaceReportsRef {
 		count += s.BillableAppInstancesCount()
 	}
 	return count
 }
 
-// BillableServicesCount returns the count of "billable" SIs across all spaces of the org
-//
-// This includes anything which Pivotal deems "billable" as an SI; this might mean
-// subtracting certain services (like SCS) from the count of `cf services`
+// BillableServicesCount -
 func (o *OrgReport) BillableServicesCount() int {
 	count := 0
-	for _, s := range o.SpaceReport {
+	for _, s := range o.spaceReportsRef {
 		count += s.BillableServicesCount()
 	}
 	return count
