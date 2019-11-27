@@ -1,5 +1,9 @@
 package models
 
+import (
+	log "github.com/sirupsen/logrus"
+)
+
 // SummaryReport describes an aggregated view
 // of multiple OrgReport after a Report Execution run
 //
@@ -11,4 +15,26 @@ type SummaryReport struct {
 	BillableAppInstancesCount int
 	SpringCloudServicesCount  int
 	BillableServicesCount     int
+	orgs                      []Org
+	OrgReports                []OrgReport
+}
+
+// NewSummaryReport -
+func NewSummaryReport(orgs []Org) SummaryReport {
+	var orgReports []OrgReport
+	for _, org := range orgs {
+
+		// this really isn't even that helpful, it's mostly
+		// here as a little example for myself TODO
+		log.WithFields(log.Fields{
+			"orgReport": org.Name,
+		}).Traceln("processing")
+
+		orgReports = append(orgReports, NewOrgReport(org))
+	}
+
+	return SummaryReport{
+		orgs:       orgs,
+		OrgReports: orgReports,
+	}
 }

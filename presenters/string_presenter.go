@@ -17,7 +17,7 @@ func (p *Presenter) asString() {
 		reportSummaryMsg             = "across %d org(s), you have %d billable AIs, %d are canonical AIs (%d running, %d stopped), %d are SCS instances\n"
 	)
 
-	for _, orgReport := range p.Report.OrgReports {
+	for _, orgReport := range p.Report.SummaryReport.OrgReports {
 		response.WriteString(fmt.Sprintf(orgOverviewMsg, orgReport.Name, orgReport.MemoryUsage, orgReport.MemoryQuota))
 		for _, spaceReport := range orgReport.SpaceReports {
 			if orgReport.MemoryQuota > 0 {
