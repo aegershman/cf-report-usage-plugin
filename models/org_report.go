@@ -2,9 +2,9 @@ package models
 
 // OrgReport -
 type OrgReport struct {
-	orgRef          Org
-	Report          Report
-	spaceReportsRef []SpaceReport
+	orgRef Org
+	Report
+	SpaceReports []SpaceReport
 }
 
 // NewOrgReport -
@@ -15,8 +15,8 @@ func NewOrgReport(org Org) *OrgReport {
 	}
 
 	self := &OrgReport{
-		orgRef:          org,
-		spaceReportsRef: spaceReports,
+		orgRef:       org,
+		SpaceReports: spaceReports,
 	}
 
 	self.Report = Report{
@@ -39,15 +39,10 @@ func NewOrgReport(org Org) *OrgReport {
 	return self
 }
 
-// SpaceReports -
-func (o *OrgReport) SpaceReports() []SpaceReport {
-	return o.spaceReportsRef
-}
-
 // AppInstancesCount -
 func (o *OrgReport) appInstancesCount() int {
 	count := 0
-	for _, space := range o.spaceReportsRef {
+	for _, space := range o.SpaceReports {
 		count += space.appInstancesCount()
 	}
 	return count
@@ -56,7 +51,7 @@ func (o *OrgReport) appInstancesCount() int {
 // AppsCount -
 func (o *OrgReport) appsCount() int {
 	count := 0
-	for _, space := range o.spaceReportsRef {
+	for _, space := range o.SpaceReports {
 		count += space.appsCount()
 	}
 	return count
@@ -80,7 +75,7 @@ func (o *OrgReport) name() string {
 // RunningAppInstancesCount -
 func (o *OrgReport) runningAppInstancesCount() int {
 	count := 0
-	for _, space := range o.spaceReportsRef {
+	for _, space := range o.SpaceReports {
 		count += space.runningAppInstancesCount()
 	}
 	return count
@@ -89,7 +84,7 @@ func (o *OrgReport) runningAppInstancesCount() int {
 // RunningAppsCount -
 func (o *OrgReport) runningAppsCount() int {
 	count := 0
-	for _, space := range o.spaceReportsRef {
+	for _, space := range o.SpaceReports {
 		count += space.runningAppsCount()
 	}
 	return count
@@ -98,7 +93,7 @@ func (o *OrgReport) runningAppsCount() int {
 // ServicesCount -
 func (o *OrgReport) servicesCount() int {
 	count := 0
-	for _, space := range o.spaceReportsRef {
+	for _, space := range o.SpaceReports {
 		count += space.servicesCount()
 	}
 	return count
@@ -107,7 +102,7 @@ func (o *OrgReport) servicesCount() int {
 // ServicesSuiteForPivotalPlatformCount -
 func (o *OrgReport) servicesSuiteForPivotalPlatformCount() int {
 	count := 0
-	for _, space := range o.spaceReportsRef {
+	for _, space := range o.SpaceReports {
 		count += space.servicesSuiteForPivotalPlatformCount()
 	}
 	return count
@@ -117,7 +112,7 @@ func (o *OrgReport) servicesSuiteForPivotalPlatformCount() int {
 // StoppedAppInstancesCount -
 func (o *OrgReport) stoppedAppInstancesCount() int {
 	count := 0
-	for _, space := range o.spaceReportsRef {
+	for _, space := range o.SpaceReports {
 		count += space.stoppedAppInstancesCount()
 	}
 	return count
@@ -126,7 +121,7 @@ func (o *OrgReport) stoppedAppInstancesCount() int {
 // StoppedAppsCount -
 func (o *OrgReport) stoppedAppsCount() int {
 	count := 0
-	for _, space := range o.spaceReportsRef {
+	for _, space := range o.SpaceReports {
 		count += space.stoppedAppsCount()
 	}
 	return count
@@ -135,7 +130,7 @@ func (o *OrgReport) stoppedAppsCount() int {
 // SpringCloudServicesCount -
 func (o *OrgReport) springCloudServicesCount() int {
 	count := 0
-	for _, s := range o.spaceReportsRef {
+	for _, s := range o.SpaceReports {
 		count += s.springCloudServicesCount()
 	}
 	return count
@@ -144,7 +139,7 @@ func (o *OrgReport) springCloudServicesCount() int {
 // BillableAppInstancesCount -
 func (o *OrgReport) billableAppInstancesCount() int {
 	count := 0
-	for _, s := range o.spaceReportsRef {
+	for _, s := range o.SpaceReports {
 		count += s.billableAppInstancesCount()
 	}
 	return count
@@ -153,7 +148,7 @@ func (o *OrgReport) billableAppInstancesCount() int {
 // BillableServicesCount -
 func (o *OrgReport) billableServicesCount() int {
 	count := 0
-	for _, s := range o.spaceReportsRef {
+	for _, s := range o.SpaceReports {
 		count += s.billableServicesCount()
 	}
 	return count

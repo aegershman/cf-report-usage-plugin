@@ -4,9 +4,9 @@ import "bytes"
 
 // SummaryReport holds an aggregated view of multiple OrgReports
 type SummaryReport struct {
-	orgReportsRef []OrgReport
-	orgsRef       []Org
-	Report        Report
+	OrgReports []OrgReport
+	orgsRef    []Org
+	Report
 }
 
 // NewSummaryReport -
@@ -17,8 +17,8 @@ func NewSummaryReport(orgs []Org) *SummaryReport {
 	}
 
 	self := &SummaryReport{
-		orgsRef:       orgs,
-		orgReportsRef: orgReports,
+		orgsRef:    orgs,
+		OrgReports: orgReports,
 	}
 
 	self.Report = Report{
@@ -41,15 +41,10 @@ func NewSummaryReport(orgs []Org) *SummaryReport {
 	return self
 }
 
-// OrgReports -
-func (s *SummaryReport) OrgReports() []OrgReport {
-	return s.orgReportsRef
-}
-
 // Name -
 func (s *SummaryReport) name() string {
 	var name bytes.Buffer
-	for _, org := range s.orgReportsRef {
+	for _, org := range s.OrgReports {
 		name.WriteString(org.name())
 	}
 	return name.String()
@@ -62,7 +57,7 @@ func (s *SummaryReport) name() string {
 // (I know right? It's an intense function name)
 func (s *SummaryReport) servicesSuiteForPivotalPlatformCount() int {
 	count := 0
-	for _, report := range s.orgReportsRef {
+	for _, report := range s.OrgReports {
 		count += report.servicesSuiteForPivotalPlatformCount()
 	}
 	return count
@@ -80,7 +75,7 @@ func (s *SummaryReport) servicesSuiteForPivotalPlatformCount() int {
 // then you'd have "5 app instances"
 func (s *SummaryReport) appInstancesCount() int {
 	count := 0
-	for _, report := range s.orgReportsRef {
+	for _, report := range s.OrgReports {
 		count += report.appInstancesCount()
 	}
 	return count
@@ -98,7 +93,7 @@ func (s *SummaryReport) appInstancesCount() int {
 // then you'd have "3 unique apps"
 func (s *SummaryReport) appsCount() int {
 	count := 0
-	for _, report := range s.orgReportsRef {
+	for _, report := range s.OrgReports {
 		count += report.appsCount()
 	}
 	return count
@@ -110,7 +105,7 @@ func (s *SummaryReport) appsCount() int {
 // considers it a service; e.g., SCS instances (config server, service registry, etc.)
 func (s *SummaryReport) billableAppInstancesCount() int {
 	count := 0
-	for _, report := range s.orgReportsRef {
+	for _, report := range s.OrgReports {
 		count += report.billableAppInstancesCount()
 	}
 	return count
@@ -122,7 +117,7 @@ func (s *SummaryReport) billableAppInstancesCount() int {
 // subtracting certain services (like SCS) from the count of `cf services`
 func (s *SummaryReport) billableServicesCount() int {
 	count := 0
-	for _, report := range s.orgReportsRef {
+	for _, report := range s.OrgReports {
 		count += report.billableServicesCount()
 	}
 	return count
@@ -131,7 +126,7 @@ func (s *SummaryReport) billableServicesCount() int {
 // MemoryQuota -
 func (s *SummaryReport) memoryQuota() int {
 	count := 0
-	for _, report := range s.orgReportsRef {
+	for _, report := range s.OrgReports {
 		count += report.memoryQuota()
 	}
 	return count
@@ -140,7 +135,7 @@ func (s *SummaryReport) memoryQuota() int {
 // MemoryUsage -
 func (s *SummaryReport) memoryUsage() int {
 	count := 0
-	for _, report := range s.orgReportsRef {
+	for _, report := range s.OrgReports {
 		count += report.memoryUsage()
 	}
 	return count
@@ -158,7 +153,7 @@ func (s *SummaryReport) memoryUsage() int {
 // then you'd have "4 running app instances"
 func (s *SummaryReport) runningAppInstancesCount() int {
 	count := 0
-	for _, report := range s.orgReportsRef {
+	for _, report := range s.OrgReports {
 		count += report.runningAppInstancesCount()
 	}
 	return count
@@ -176,7 +171,7 @@ func (s *SummaryReport) runningAppInstancesCount() int {
 // then you'd have "2 running apps"
 func (s *SummaryReport) runningAppsCount() int {
 	count := 0
-	for _, report := range s.orgReportsRef {
+	for _, report := range s.OrgReports {
 		count += report.runningAppsCount()
 	}
 	return count
@@ -190,7 +185,7 @@ func (s *SummaryReport) runningAppsCount() int {
 // show up in `cf services`
 func (s *SummaryReport) servicesCount() int {
 	count := 0
-	for _, report := range s.orgReportsRef {
+	for _, report := range s.OrgReports {
 		count += report.servicesCount()
 	}
 	return count
@@ -202,7 +197,7 @@ func (s *SummaryReport) servicesCount() int {
 // see: https://network.pivotal.io/products/p-spring-cloud-services/
 func (s *SummaryReport) springCloudServicesCount() int {
 	count := 0
-	for _, report := range s.orgReportsRef {
+	for _, report := range s.OrgReports {
 		count += report.springCloudServicesCount()
 	}
 	return count
@@ -211,7 +206,7 @@ func (s *SummaryReport) springCloudServicesCount() int {
 // StoppedAppInstancesCount -
 func (s *SummaryReport) stoppedAppInstancesCount() int {
 	count := 0
-	for _, report := range s.orgReportsRef {
+	for _, report := range s.OrgReports {
 		count += report.stoppedAppInstancesCount()
 	}
 	return count
@@ -220,7 +215,7 @@ func (s *SummaryReport) stoppedAppInstancesCount() int {
 // StoppedAppsCount -
 func (s *SummaryReport) stoppedAppsCount() int {
 	count := 0
-	for _, report := range s.orgReportsRef {
+	for _, report := range s.OrgReports {
 		count += report.stoppedAppsCount()
 	}
 	return count
