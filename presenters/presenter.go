@@ -1,7 +1,7 @@
 package presenters
 
 import (
-	"github.com/aegershman/cf-usage-report-plugin/models"
+	"github.com/aegershman/cf-report-usage-plugin/models"
 )
 
 // Presenter -
