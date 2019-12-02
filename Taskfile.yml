@@ -10,16 +10,16 @@ tasks:
   install:
     cmds:
       - task: build
-      - cf install-plugin dist/darwin_darwin_amd64/cf-usage-report-plugin -f
+      - cf install-plugin dist/darwin_darwin_amd64/cf-report-usage-plugin -f
 
   uninstall:
     cmds:
-      - cf uninstall-plugin cf-usage-report-plugin
+      - cf uninstall-plugin cf-report-usage-plugin
 
   test:
     cmds:
       - task: install
       # TODO wasteful; maybe ability to specify multiple formats on a single run...?
-      - cf usage-report -o voyager -o tenzing --format string
-      - cf usage-report -o voyager -o tenzing --format table
-      - cf usage-report -o voyager -o tenzing --format json
+      - cf report-usage -o voyager -o tenzing --format string
+      - cf report-usage -o voyager -o tenzing --format table
+      - cf report-usage -o voyager -o tenzing --format json

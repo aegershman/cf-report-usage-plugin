@@ -1,36 +1,36 @@
-# cf-usage-report-plugin
+# cf-report-usage-plugin
 
 cf-cli plugin showing memory consumption, application instances (AIs), and service instances (SIs) for each org and space you have permission to access.
 
 ## installation
 
-this plugin isn't currently listed on the cf OSS repo plugin exchange, because I wouldn't really describe it as "totally ready" yet. until then, if you want to try it out, install it directly from [the github releases tab as follows](https://github.com/aegershman/cf-usage-report-plugin/releases):
+this plugin isn't currently listed on the cf OSS repo plugin exchange, because I wouldn't really describe it as "totally ready" yet. until then, if you want to try it out, install it directly from [the github releases tab as follows](https://github.com/aegershman/cf-report-usage-plugin/releases):
 
 ```sh
 # osx 64bit
-cf install-plugin -f https://github.com/aegershman/cf-usage-report-plugin/releases/download/2.10.2/cf-usage-report-plugin-darwin
+cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/2.11.0/cf-report-usage-plugin-darwin
 
 # linux 64bit (32bit and ARM6 also available)
-cf install-plugin -f https://github.com/aegershman/cf-usage-report-plugin/releases/download/2.10.2/cf-usage-report-plugin-linux-amd64
+cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/2.11.0/cf-report-usage-plugin-linux-amd64
 
 # windows 64bit (32bit also available)
-cf install-plugin -f https://github.com/aegershman/cf-usage-report-plugin/releases/download/2.10.2/cf-usage-report-plugin-windows-amd64.exe
+cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/2.11.0/cf-report-usage-plugin-windows-amd64.exe
 ```
 
 ## usage
 
 ```sh
 # report all orgs you have access to
-cf usage-report
+cf report-usage
 
 # report specific orgs
-cf usage-report -o voyager
-cf usage-report -o voyager -o tenzing [-o orgName...]
+cf report-usage -o voyager
+cf report-usage -o voyager -o tenzing [-o orgName...]
 
 # report using different formats
-cf usage-report -o voyager -o tenzing --format table
-cf usage-report -o voyager -o tenzing --format string
-cf usage-report -o voyager -o tenzing --format json
+cf report-usage -o voyager -o tenzing --format table
+cf report-usage -o voyager -o tenzing --format string
+cf report-usage -o voyager -o tenzing --format json
 ```
 
 `--format table`:
