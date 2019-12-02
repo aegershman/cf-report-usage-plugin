@@ -4,7 +4,7 @@ cf-cli plugin showing memory consumption, application instances (AIs), and servi
 
 ## installation
 
-this plugin isn't currently listed on the cf OSS repo plugin exchange, because I wouldn't really describe it as "totally ready" yet. until then, if you want to try it out, install it directly from release as follows:
+this plugin isn't currently listed on the cf OSS repo plugin exchange, because I wouldn't really describe it as "totally ready" yet. until then, if you want to try it out, install it directly from [the github releases tab as follows](https://github.com/aegershman/cf-usage-report-plugin/releases):
 
 ```sh
 # osx 64bit
