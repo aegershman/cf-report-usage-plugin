@@ -8,13 +8,13 @@ this plugin isn't currently listed on the cf OSS repo plugin exchange, because I
 
 ```sh
 # osx 64bit
-cf install-plugin -f https://github.com/aegershman/cf-usage-report-plugin/releases/download/2.10.1/cf-usage-report-plugin-darwin
+cf install-plugin -f https://github.com/aegershman/cf-usage-report-plugin/releases/download/2.10.2/cf-usage-report-plugin-darwin
 
 # linux 64bit (32bit and ARM6 also available)
-cf install-plugin -f https://github.com/aegershman/cf-usage-report-plugin/releases/download/2.10.1/cf-usage-report-plugin-linux-amd64
+cf install-plugin -f https://github.com/aegershman/cf-usage-report-plugin/releases/download/2.10.2/cf-usage-report-plugin-linux-amd64
 
 # windows 64bit (32bit also available)
-cf install-plugin -f https://github.com/aegershman/cf-usage-report-plugin/releases/download/2.10.1/cf-usage-report-plugin-windows-amd64.exe
+cf install-plugin -f https://github.com/aegershman/cf-usage-report-plugin/releases/download/2.10.2/cf-usage-report-plugin-windows-amd64.exe
 ```
 
 ## usage
@@ -36,17 +36,17 @@ cf usage-report -o voyager -o tenzing --format json
 `--format table`:
 
 ```txt
-+---------+-------------+--------------+-----+-------------+-----+
-|   ORG   |    SPACE    | BILLABLE AIS | AIS | STOPPED AIS | SCS |
-+---------+-------------+--------------+-----+-------------+-----+
-| voyager | dev         | 20           | 18  | 5           | 2   |
-| voyager | test        | 20           | 19  | 2           | 1   |
-| tenzing | dev         | 2            | 0   | 0           | 2   |
-| tenzing | test        | 2            | 0   | 0           | 2   |
-| tenzing | integration | 1            | 0   | 0           | 1   |
-+---------+-------------+--------------+-----+-------------+-----+
-|    -    |    TOTAL    |      45      | 37  |      7      |  8  |
-+---------+-------------+--------------+-----+-------------+-----+
++---------+-------------+--------------+-----+-------------+------+-----+
+|   ORG   |    SPACE    | BILLABLE AIS | AIS | STOPPED AIS | APPS | SCS |
++---------+-------------+--------------+-----+-------------+------+-----+
+| voyager | dev         | 20           | 18  | 5           | 16   | 2   |
+| voyager | test        | 20           | 19  | 2           | 12   | 1   |
+| tenzing | dev         | 2            | 0   | 0           | 8    | 2   |
+| tenzing | test        | 2            | 0   | 0           | 9    | 2   |
+| tenzing | integration | 1            | 0   | 0           | 4    | 1   |
++---------+-------------+--------------+-----+-------------+------+-----+
+|    -    |    TOTAL    |      45      | 37  |      7      |  49  |  8  |
++---------+-------------+--------------+-----+-------------+------+-----+
 ```
 
 `--format string`:

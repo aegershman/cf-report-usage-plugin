@@ -16,6 +16,7 @@ func (p *Presenter) asTable() {
 		"Billable AIs",
 		"AIs",
 		"Stopped AIs",
+		"Apps",
 		"SCS",
 	})
 
@@ -27,6 +28,7 @@ func (p *Presenter) asTable() {
 				strconv.Itoa(spaceReport.BillableAppInstancesCount),
 				strconv.Itoa(spaceReport.AppInstancesCount),
 				strconv.Itoa(spaceReport.StoppedAppInstancesCount),
+				strconv.Itoa(spaceReport.AppsCount),
 				strconv.Itoa(spaceReport.SpringCloudServicesCount),
 			})
 		}
@@ -38,6 +40,7 @@ func (p *Presenter) asTable() {
 		strconv.Itoa(p.SummaryReport.BillableAppInstancesCount),
 		strconv.Itoa(p.SummaryReport.AppInstancesCount),
 		strconv.Itoa(p.SummaryReport.StoppedAppInstancesCount),
+		strconv.Itoa(p.SummaryReport.AppsCount),
 		strconv.Itoa(p.SummaryReport.SpringCloudServicesCount),
 	})
 
