@@ -6,9 +6,9 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/aegershman/cf-usage-report-plugin/models"
+	"github.com/aegershman/cf-report-usage-plugin/models"
 
-	"github.com/aegershman/cf-usage-report-plugin/cfcurl"
+	"github.com/aegershman/cf-report-usage-plugin/cfcurl"
 	"github.com/cloudfoundry/cli/plugin"
 	log "github.com/sirupsen/logrus"
 )

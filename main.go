@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/aegershman/cf-usage-report-plugin/apihelper"
-	"github.com/aegershman/cf-usage-report-plugin/models"
-	"github.com/aegershman/cf-usage-report-plugin/presenters"
+	"github.com/aegershman/cf-report-usage-plugin/apihelper"
+	"github.com/aegershman/cf-report-usage-plugin/models"
+	"github.com/aegershman/cf-report-usage-plugin/presenters"
 	"github.com/cloudfoundry/cli/plugin"
 	log "github.com/sirupsen/logrus"
 )
@@ -32,18 +32,18 @@ func (f *flags) Set(value string) error {
 // GetMetadata -
 func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
-		Name: "cf-usage-report-plugin",
+		Name: "cf-report-usage-plugin",
 		Version: plugin.VersionType{
 			Major: 2,
-			Minor: 10,
-			Build: 2,
+			Minor: 11,
+			Build: 0,
 		},
 		Commands: []plugin.Command{
 			{
-				Name:     "usage-report",
+				Name:     "report-usage",
 				HelpText: "View AIs, SIs and memory usage for orgs and spaces",
 				UsageDetails: plugin.Usage{
-					Usage: "cf usage-report [-o orgName...] --format formatChoice",
+					Usage: "cf report-usage [-o orgName...] --format formatChoice",
 					Options: map[string]string{
 						"o":         "organization(s) included in report. Flag can be provided multiple times.",
 						"format":    "format to print as (options: string,table,json) (default: table)",
@@ -183,7 +183,7 @@ func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, 
 
 // Run -
 func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
-	if args[0] == "usage-report" {
+	if args[0] == "report-usage" {
 		cmd.apiHelper = apihelper.New(cli)
 		cmd.UsageReportCommand(args)
 	}
