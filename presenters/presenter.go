@@ -6,8 +6,8 @@ import (
 
 // Presenter -
 type Presenter struct {
-	SummaryReport models.SummaryReport
-	Format        string
+	SummaryReport models.SummaryReport `json:"summary_report"`
+	Format        string               `json:"format"`
 }
 
 // NewPresenter -

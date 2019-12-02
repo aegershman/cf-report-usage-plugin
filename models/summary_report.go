@@ -6,7 +6,7 @@ import "bytes"
 // It effectively serves as the entrypoint into aggregating the data
 // in preparation for it being presented
 type SummaryReport struct {
-	OrgReports []OrgReport
+	OrgReports []OrgReport `json:"org_reports"`
 	Report
 }
 
