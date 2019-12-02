@@ -4,7 +4,7 @@ package models
 type OrgReport struct {
 	orgRef Org
 	Report
-	SpaceReports []SpaceReport
+	SpaceReports []SpaceReport `json:"space_reports"`
 }
 
 // NewOrgReport -

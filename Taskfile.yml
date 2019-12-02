@@ -20,6 +20,6 @@ tasks:
     cmds:
       - task: install
       # TODO wasteful; maybe ability to specify multiple formats on a single run...?
-      - cf usage-report -o voyager -o tenzing --format string
-      - cf usage-report -o voyager -o tenzing --format table
+      # - cf usage-report -o voyager -o tenzing --format string
+      # - cf usage-report -o voyager -o tenzing --format table
       - cf usage-report -o voyager -o tenzing --format json
