@@ -36,7 +36,7 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		Version: plugin.VersionType{
 			Major: 2,
 			Minor: 11,
-			Build: 0,
+			Build: 1,
 		},
 		Commands: []plugin.Command{
 			{
@@ -79,33 +79,33 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 	}
 	log.SetLevel(logLevel)
 
-	var orgs []models.Org
-
-	if len(userFlags.OrgNames) > 0 {
-		for _, orgArg := range userFlags.OrgNames {
-			org, err := cmd.getOrg(orgArg)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			orgs = append(orgs, org)
-		}
-	} else {
-		orgs, err = cmd.getOrgs()
-		if err != nil {
-			log.Fatalln(err)
-		}
+	orgs, err := cmd.getOrgs(userFlags.OrgNames)
+	if err != nil {
+		log.Fatalln(err)
 	}
 
 	summaryReport := models.NewSummaryReport(orgs)
-
 	presenter := presenters.NewPresenter(*summaryReport, formatFlag) // todo hacky pointer
 	presenter.Render()
 }
 
-func (cmd *UsageReportCmd) getOrgs() ([]models.Org, error) {
-	rawOrgs, err := cmd.apiHelper.GetOrgs()
-	if nil != err {
-		return nil, err
+func (cmd *UsageReportCmd) getOrgs(orgNames []string) ([]models.Org, error) {
+	var rawOrgs []models.Org
+
+	if len(orgNames) > 0 {
+		for _, orgName := range orgNames {
+			rawOrg, err := cmd.apiHelper.GetOrg(orgName)
+			if err != nil {
+				return nil, err
+			}
+			rawOrgs = append(rawOrgs, rawOrg)
+		}
+	} else {
+		extraRawOrgs, err := cmd.apiHelper.GetOrgs()
+		if nil != err {
+			return nil, err
+		}
+		rawOrgs = extraRawOrgs
 	}
 
 	var orgs = []models.Org{}
@@ -118,15 +118,6 @@ func (cmd *UsageReportCmd) getOrgs() ([]models.Org, error) {
 		orgs = append(orgs, orgDetails)
 	}
 	return orgs, nil
-}
-
-func (cmd *UsageReportCmd) getOrg(name string) (models.Org, error) {
-	rawOrg, err := cmd.apiHelper.GetOrg(name)
-	if nil != err {
-		return models.Org{}, err
-	}
-
-	return cmd.getOrgDetails(rawOrg)
 }
 
 func (cmd *UsageReportCmd) getOrgDetails(o models.Org) (models.Org, error) {
