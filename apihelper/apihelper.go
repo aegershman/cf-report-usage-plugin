@@ -42,7 +42,7 @@ func New(cli plugin.CliConnection) CFAPIHelper {
 // GetTarget -
 func (api *APIHelper) GetTarget() string {
 	envInfo, err := cfcurl.Curl(api.cli, "/v2/info")
-	if nil != err {
+	if err != nil {
 		return ""
 	}
 	apiep, _ := envInfo["routing_endpoint"].(string)
@@ -57,7 +57,7 @@ func (api *APIHelper) GetTarget() string {
 // GetOrgs -
 func (api *APIHelper) GetOrgs() ([]models.Org, error) {
 	orgsJSON, err := cfcurl.Curl(api.cli, "/v2/organizations")
-	if nil != err {
+	if err != nil {
 		return nil, err
 	}
 	pages := int(orgsJSON["total_pages"].(float64))
@@ -91,7 +91,7 @@ func (api *APIHelper) GetOrg(name string) (models.Org, error) {
 	query := fmt.Sprintf("name:%s", name)
 	path := fmt.Sprintf("/v2/organizations?q=%s", url.QueryEscape(query))
 	orgsJSON, err := cfcurl.Curl(api.cli, path)
-	if nil != err {
+	if err != nil {
 		return models.Org{}, err
 	}
 
@@ -121,7 +121,7 @@ func (api *APIHelper) orgResourceToOrg(o interface{}) models.Org {
 // GetQuota returns quota of a given entity
 func (api *APIHelper) GetQuota(quotaURL string) (models.Quota, error) {
 	quotaJSON, err := cfcurl.Curl(api.cli, quotaURL)
-	if nil != err {
+	if err != nil {
 		return models.Quota{}, err
 	}
 
@@ -144,7 +144,7 @@ func (api *APIHelper) GetQuota(quotaURL string) (models.Quota, error) {
 // GetQuotaMemoryLimit returns memory quota (in MB) of a given org
 func (api *APIHelper) GetQuotaMemoryLimit(quotaURL string) (float64, error) {
 	quotaJSON, err := cfcurl.Curl(api.cli, quotaURL)
-	if nil != err {
+	if err != nil {
 		return 0, err
 	}
 	return quotaJSON["entity"].(map[string]interface{})["memory_limit"].(float64), nil
@@ -153,7 +153,7 @@ func (api *APIHelper) GetQuotaMemoryLimit(quotaURL string) (float64, error) {
 // GetOrgMemoryUsage returns amount of memory (in MB) a given org is currently using
 func (api *APIHelper) GetOrgMemoryUsage(org models.Org) (float64, error) {
 	usageJSON, err := cfcurl.Curl(api.cli, org.URL+"/memory_usage")
-	if nil != err {
+	if err != nil {
 		return 0, err
 	}
 	return usageJSON["memory_usage_in_mb"].(float64), nil
@@ -165,7 +165,7 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) ([]models.Space, error) {
 	spaces := []models.Space{}
 	for nextURL != "" {
 		spacesJSON, err := cfcurl.Curl(api.cli, nextURL)
-		if nil != err {
+		if err != nil {
 			return nil, err
 		}
 		for _, s := range spacesJSON["resources"].([]interface{}) {
@@ -190,7 +190,7 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) ([]models.Space, error) {
 // GetSpaceAppsAndServices returns the apps and the services from a space's /summary endpoint
 func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) ([]models.App, []models.Service, error) {
 	summaryJSON, err := cfcurl.Curl(api.cli, summaryURL)
-	if nil != err {
+	if err != nil {
 		return nil, nil, err
 	}
 
