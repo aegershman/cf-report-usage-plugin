@@ -118,6 +118,29 @@ func (api *APIHelper) orgResourceToOrg(o interface{}) models.Org {
 	}
 }
 
+// GetQuota returns quota of a given entity
+func (api *APIHelper) GetQuota(quotaURL string) (models.Quota, error) {
+	quotaJSON, err := cfcurl.Curl(api.cli, quotaURL)
+	if nil != err {
+		return models.Quota{}, err
+	}
+
+	quota := quotaJSON["entity"].(map[string]interface{})
+	return models.Quota{
+		Name:                    quota["name"].(string),
+		TotalServices:           quota["total_services"].(int),
+		TotalRoutes:             quota["total_routes"].(int),
+		TotalPrivateDomains:     quota["total_private_domains"].(int),
+		MemoryLimit:             quota["memory_limit"].(int),
+		InstanceMemoryLimit:     quota["instance_memory_limit"].(int),
+		AppInstanceLimit:        quota["app_instance_limit"].(int),
+		AppTaskLimit:            quota["app_task_limit"].(int),
+		TotalServiceKeys:        quota["total_service_keys"].(int),
+		TotalReservedRoutePorts: quota["total_service_keys"].(int),
+	}, nil
+
+}
+
 // GetQuotaMemoryLimit returns memory quota (in MB) of a given org
 func (api *APIHelper) GetQuotaMemoryLimit(quotaURL string) (float64, error) {
 	quotaJSON, err := cfcurl.Curl(api.cli, quotaURL)
