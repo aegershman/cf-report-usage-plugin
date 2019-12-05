@@ -18,7 +18,7 @@ var (
 	ErrOrgNotFound = errors.New("organization not found")
 )
 
-// CFAPIHelper wraps cf curl results
+// CFAPIHelper wraps cf-curl results, acts as a cf-curl client
 type CFAPIHelper interface {
 	GetTarget() string
 	GetOrgs() ([]models.Org, error)
