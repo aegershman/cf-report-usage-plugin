@@ -6,20 +6,18 @@ import (
 	"strings"
 
 	"github.com/cloudfoundry/cli/plugin"
+	log "github.com/sirupsen/logrus"
 )
 
-func callAndValidateCLI(cli plugin.CliConnection, path string) ([]string, error) {
+// Curl calls cf-curl and returns the resulting json
+func Curl(cli plugin.CliConnection, path string) (map[string]interface{}, error) {
+	log.Traceln(path)
 	output, err := cli.CliCommandWithoutTerminalOutput("curl", path)
-
 	if nil != err {
 		return nil, err
 	}
-
-	if nil == output || 0 == len(output) {
-		return nil, errors.New("CF API returned no output")
-	}
-
-	return output, nil
+	log.Traceln(output)
+	return parseOutput(output)
 }
 
 func parseOutput(output []string) (map[string]interface{}, error) {
@@ -36,30 +34,4 @@ func parseOutput(output []string) (map[string]interface{}, error) {
 	var f interface{}
 	err := json.Unmarshal([]byte(data), &f)
 	return f.(map[string]interface{}), err
-}
-
-// Curl calls cf curl and returns the resulting json
-// This method will panic if the api is depricated
-func Curl(cli plugin.CliConnection, path string) (map[string]interface{}, error) {
-	output, err := cli.CliCommandWithoutTerminalOutput("curl", path)
-
-	if nil != err {
-		return nil, err
-	}
-
-	return parseOutput(output)
-}
-
-// CurlDepricated calls cf curl and returns the resulting json, even if the api is deprecated
-func CurlDepricated(cli plugin.CliConnection, path string) (map[string]interface{}, error) {
-	output, err := callAndValidateCLI(cli, path)
-	if nil != err {
-		return nil, err
-	}
-
-	if strings.Contains(output[len(output)-1], "Endpoint deprecated") {
-		output = output[:len(output)-1]
-	}
-
-	return parseOutput(output)
 }
