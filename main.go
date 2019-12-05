@@ -125,7 +125,10 @@ func (cmd *UsageReportCmd) getOrgDetails(o models.Org) (models.Org, error) {
 	if err != nil {
 		return models.Org{}, err
 	}
-	quota, err := cmd.apiHelper.GetQuotaMemoryLimit(o.QuotaURL)
+
+	// TODO teeing up to swap out for 'quota' being it's own managed entity
+	// for time being, going to simply modify it _here_ to not break anything obvious
+	quota, err := cmd.apiHelper.GetOrgQuota(o.QuotaURL)
 	if err != nil {
 		return models.Org{}, err
 	}
@@ -136,7 +139,7 @@ func (cmd *UsageReportCmd) getOrgDetails(o models.Org) (models.Org, error) {
 
 	return models.Org{
 		Name:        o.Name,
-		MemoryQuota: int(quota),
+		MemoryQuota: quota.MemoryLimit,
 		MemoryUsage: int(usage),
 		Spaces:      spaces,
 	}, nil

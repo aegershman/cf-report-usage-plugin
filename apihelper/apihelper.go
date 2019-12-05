@@ -23,6 +23,7 @@ type CFAPIHelper interface {
 	GetTarget() string
 	GetOrgs() ([]models.Org, error)
 	GetOrg(string) (models.Org, error)
+	GetOrgQuota(string) (models.OrgQuota, error)
 	GetQuotaMemoryLimit(string) (float64, error)
 	GetOrgMemoryUsage(models.Org) (float64, error)
 	GetOrgSpaces(string) ([]models.Space, error)
@@ -118,15 +119,17 @@ func (api *APIHelper) orgResourceToOrg(o interface{}) models.Org {
 	}
 }
 
-// GetQuota returns quota of a given entity
-func (api *APIHelper) GetQuota(quotaURL string) (models.Quota, error) {
+// GetOrgQuota returns an org's quota. A space quota looks very similar
+// but it uses a different (v2) API endpoint, so just to be safe, going to explicitly
+// reference this as a way to get quota of an Org
+func (api *APIHelper) GetOrgQuota(quotaURL string) (models.OrgQuota, error) {
 	quotaJSON, err := cfcurl.Curl(api.cli, quotaURL)
 	if err != nil {
-		return models.Quota{}, err
+		return models.OrgQuota{}, err
 	}
 
 	quota := quotaJSON["entity"].(map[string]interface{})
-	return models.Quota{
+	return models.OrgQuota{
 		Name:                    quota["name"].(string),
 		TotalServices:           quota["total_services"].(int),
 		TotalRoutes:             quota["total_routes"].(int),

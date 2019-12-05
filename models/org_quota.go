@@ -1,7 +1,9 @@
 package models
 
-// Quota -
-type Quota struct {
+// OrgQuota -
+// A space quota looks very similar but it uses a different (v2) API endpoint
+// just to be safe, going to explicitly reference this as a way to get quota of an Org
+type OrgQuota struct {
 	Name                    string `json:"name"`
 	TotalServices           int    `json:"total_services"`
 	TotalRoutes             int    `json:"total_routes"`
