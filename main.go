@@ -102,7 +102,7 @@ func (cmd *UsageReportCmd) getOrgs(orgNames []string) ([]models.Org, error) {
 		}
 	} else {
 		extraRawOrgs, err := cmd.apiHelper.GetOrgs()
-		if nil != err {
+		if err != nil {
 			return nil, err
 		}
 		rawOrgs = extraRawOrgs
@@ -122,15 +122,15 @@ func (cmd *UsageReportCmd) getOrgs(orgNames []string) ([]models.Org, error) {
 
 func (cmd *UsageReportCmd) getOrgDetails(o models.Org) (models.Org, error) {
 	usage, err := cmd.apiHelper.GetOrgMemoryUsage(o)
-	if nil != err {
+	if err != nil {
 		return models.Org{}, err
 	}
 	quota, err := cmd.apiHelper.GetQuotaMemoryLimit(o.QuotaURL)
-	if nil != err {
+	if err != nil {
 		return models.Org{}, err
 	}
 	spaces, err := cmd.getSpaces(o.SpacesURL)
-	if nil != err {
+	if err != nil {
 		return models.Org{}, err
 	}
 
@@ -144,13 +144,13 @@ func (cmd *UsageReportCmd) getOrgDetails(o models.Org) (models.Org, error) {
 
 func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]models.Space, error) {
 	rawSpaces, err := cmd.apiHelper.GetOrgSpaces(spaceURL)
-	if nil != err {
+	if err != nil {
 		return nil, err
 	}
 	var spaces = []models.Space{}
 	for _, s := range rawSpaces {
 		apps, services, err := cmd.getAppsAndServices(s.SummaryURL)
-		if nil != err {
+		if err != nil {
 			return nil, err
 		}
 		spaces = append(spaces,
@@ -166,7 +166,7 @@ func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]models.Space, error) {
 
 func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, []models.Service, error) {
 	apps, services, err := cmd.apiHelper.GetSpaceAppsAndServices(summaryURL)
-	if nil != err {
+	if err != nil {
 		return nil, nil, err
 	}
 	return apps, services, nil
