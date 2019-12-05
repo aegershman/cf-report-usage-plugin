@@ -139,7 +139,7 @@ func (cmd *UsageReportCmd) getOrgDetails(o models.Org) (models.Org, error) {
 
 	return models.Org{
 		Name:        o.Name,
-		MemoryQuota: quota.MemoryLimit,
+		MemoryQuota: int(quota.MemoryLimit),
 		MemoryUsage: int(usage),
 		Spaces:      spaces,
 	}, nil

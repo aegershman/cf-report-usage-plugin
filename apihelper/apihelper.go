@@ -24,7 +24,6 @@ type CFAPIHelper interface {
 	GetOrgs() ([]models.Org, error)
 	GetOrg(string) (models.Org, error)
 	GetOrgQuota(string) (models.OrgQuota, error)
-	GetQuotaMemoryLimit(string) (float64, error)
 	GetOrgMemoryUsage(models.Org) (float64, error)
 	GetOrgSpaces(string) ([]models.Space, error)
 	GetSpaceAppsAndServices(string) ([]models.App, []models.Service, error)
@@ -131,26 +130,16 @@ func (api *APIHelper) GetOrgQuota(quotaURL string) (models.OrgQuota, error) {
 	quota := quotaJSON["entity"].(map[string]interface{})
 	return models.OrgQuota{
 		Name:                    quota["name"].(string),
-		TotalServices:           quota["total_services"].(int),
-		TotalRoutes:             quota["total_routes"].(int),
-		TotalPrivateDomains:     quota["total_private_domains"].(int),
-		MemoryLimit:             quota["memory_limit"].(int),
-		InstanceMemoryLimit:     quota["instance_memory_limit"].(int),
-		AppInstanceLimit:        quota["app_instance_limit"].(int),
-		AppTaskLimit:            quota["app_task_limit"].(int),
-		TotalServiceKeys:        quota["total_service_keys"].(int),
-		TotalReservedRoutePorts: quota["total_service_keys"].(int),
+		TotalServices:           int(quota["total_services"].(float64)),
+		TotalRoutes:             int(quota["total_routes"].(float64)),
+		TotalPrivateDomains:     int(quota["total_private_domains"].(float64)),
+		MemoryLimit:             int(quota["memory_limit"].(float64)),
+		InstanceMemoryLimit:     int(quota["instance_memory_limit"].(float64)),
+		AppInstanceLimit:        int(quota["app_instance_limit"].(float64)),
+		AppTaskLimit:            int(quota["app_task_limit"].(float64)),
+		TotalServiceKeys:        int(quota["total_service_keys"].(float64)),
+		TotalReservedRoutePorts: int(quota["total_service_keys"].(float64)),
 	}, nil
-
-}
-
-// GetQuotaMemoryLimit returns memory quota (in MB) of a given org
-func (api *APIHelper) GetQuotaMemoryLimit(quotaURL string) (float64, error) {
-	quotaJSON, err := cfcurl.Curl(api.cli, quotaURL)
-	if err != nil {
-		return 0, err
-	}
-	return quotaJSON["entity"].(map[string]interface{})["memory_limit"].(float64), nil
 }
 
 // GetOrgMemoryUsage returns amount of memory (in MB) a given org is currently using
