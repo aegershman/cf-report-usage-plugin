@@ -13,7 +13,7 @@ import (
 func Curl(cli plugin.CliConnection, path string) (map[string]interface{}, error) {
 	log.Traceln(path)
 	output, err := cli.CliCommandWithoutTerminalOutput("curl", path)
-	if nil != err {
+	if err != nil {
 		return nil, err
 	}
 	log.Traceln(output)

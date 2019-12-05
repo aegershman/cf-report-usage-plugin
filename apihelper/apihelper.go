@@ -23,7 +23,7 @@ type CFAPIHelper interface {
 	GetTarget() string
 	GetOrgs() ([]models.Org, error)
 	GetOrg(string) (models.Org, error)
-	GetQuotaMemoryLimit(string) (float64, error)
+	GetOrgQuota(string) (models.OrgQuota, error)
 	GetOrgMemoryUsage(models.Org) (float64, error)
 	GetOrgSpaces(string) ([]models.Space, error)
 	GetSpaceAppsAndServices(string) ([]models.App, []models.Service, error)
@@ -42,7 +42,7 @@ func New(cli plugin.CliConnection) CFAPIHelper {
 // GetTarget -
 func (api *APIHelper) GetTarget() string {
 	envInfo, err := cfcurl.Curl(api.cli, "/v2/info")
-	if nil != err {
+	if err != nil {
 		return ""
 	}
 	apiep, _ := envInfo["routing_endpoint"].(string)
@@ -57,7 +57,7 @@ func (api *APIHelper) GetTarget() string {
 // GetOrgs -
 func (api *APIHelper) GetOrgs() ([]models.Org, error) {
 	orgsJSON, err := cfcurl.Curl(api.cli, "/v2/organizations")
-	if nil != err {
+	if err != nil {
 		return nil, err
 	}
 	pages := int(orgsJSON["total_pages"].(float64))
@@ -91,7 +91,7 @@ func (api *APIHelper) GetOrg(name string) (models.Org, error) {
 	query := fmt.Sprintf("name:%s", name)
 	path := fmt.Sprintf("/v2/organizations?q=%s", url.QueryEscape(query))
 	orgsJSON, err := cfcurl.Curl(api.cli, path)
-	if nil != err {
+	if err != nil {
 		return models.Org{}, err
 	}
 
@@ -118,19 +118,34 @@ func (api *APIHelper) orgResourceToOrg(o interface{}) models.Org {
 	}
 }
 
-// GetQuotaMemoryLimit returns memory quota (in MB) of a given org
-func (api *APIHelper) GetQuotaMemoryLimit(quotaURL string) (float64, error) {
+// GetOrgQuota returns an org's quota. A space quota looks very similar
+// but it uses a different (v2) API endpoint, so just to be safe, going to explicitly
+// reference this as a way to get quota of an Org
+func (api *APIHelper) GetOrgQuota(quotaURL string) (models.OrgQuota, error) {
 	quotaJSON, err := cfcurl.Curl(api.cli, quotaURL)
-	if nil != err {
-		return 0, err
+	if err != nil {
+		return models.OrgQuota{}, err
 	}
-	return quotaJSON["entity"].(map[string]interface{})["memory_limit"].(float64), nil
+
+	quota := quotaJSON["entity"].(map[string]interface{})
+	return models.OrgQuota{
+		Name:                    quota["name"].(string),
+		TotalServices:           int(quota["total_services"].(float64)),
+		TotalRoutes:             int(quota["total_routes"].(float64)),
+		TotalPrivateDomains:     int(quota["total_private_domains"].(float64)),
+		MemoryLimit:             int(quota["memory_limit"].(float64)),
+		InstanceMemoryLimit:     int(quota["instance_memory_limit"].(float64)),
+		AppInstanceLimit:        int(quota["app_instance_limit"].(float64)),
+		AppTaskLimit:            int(quota["app_task_limit"].(float64)),
+		TotalServiceKeys:        int(quota["total_service_keys"].(float64)),
+		TotalReservedRoutePorts: int(quota["total_service_keys"].(float64)),
+	}, nil
 }
 
 // GetOrgMemoryUsage returns amount of memory (in MB) a given org is currently using
 func (api *APIHelper) GetOrgMemoryUsage(org models.Org) (float64, error) {
 	usageJSON, err := cfcurl.Curl(api.cli, org.URL+"/memory_usage")
-	if nil != err {
+	if err != nil {
 		return 0, err
 	}
 	return usageJSON["memory_usage_in_mb"].(float64), nil
@@ -142,7 +157,7 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) ([]models.Space, error) {
 	spaces := []models.Space{}
 	for nextURL != "" {
 		spacesJSON, err := cfcurl.Curl(api.cli, nextURL)
-		if nil != err {
+		if err != nil {
 			return nil, err
 		}
 		for _, s := range spacesJSON["resources"].([]interface{}) {
@@ -167,7 +182,7 @@ func (api *APIHelper) GetOrgSpaces(spacesURL string) ([]models.Space, error) {
 // GetSpaceAppsAndServices returns the apps and the services from a space's /summary endpoint
 func (api *APIHelper) GetSpaceAppsAndServices(summaryURL string) ([]models.App, []models.Service, error) {
 	summaryJSON, err := cfcurl.Curl(api.cli, summaryURL)
-	if nil != err {
+	if err != nil {
 		return nil, nil, err
 	}
 
