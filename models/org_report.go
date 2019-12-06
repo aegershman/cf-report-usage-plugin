@@ -3,6 +3,7 @@ package models
 // OrgReport -
 type OrgReport struct {
 	orgRef Org
+	Quota  OrgQuota `json:"quota"` // TODO https://github.com/aegershman/cf-report-usage-plugin/issues/90
 	Report
 	SpaceReports []SpaceReport `json:"space_reports"`
 }
@@ -16,6 +17,7 @@ func NewOrgReport(org Org) *OrgReport {
 
 	self := &OrgReport{
 		orgRef:       org,
+		Quota:        org.Quota,
 		SpaceReports: spaceReports,
 	}
 
