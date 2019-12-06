@@ -40,18 +40,17 @@ func (c *Client) Curl(path string) (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return parseOutput(output)
-}
 
-func parseOutput(output []string) (map[string]interface{}, error) {
 	if nil == output || 0 == len(output) {
 		return nil, errors.New("CF API returned no output")
 	}
+
 	data := strings.Join(output, "\n")
 	if 0 == len(data) || "" == data {
 		return nil, errors.New("Failed to join output")
 	}
+
 	var f interface{}
-	err := json.Unmarshal([]byte(data), &f)
+	err = json.Unmarshal([]byte(data), &f)
 	return f.(map[string]interface{}), err
 }
