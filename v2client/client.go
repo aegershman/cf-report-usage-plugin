@@ -13,6 +13,7 @@ type Client struct {
 	cli    plugin.CliConnection
 	common service
 
+	Info      *InfoService
 	OrgQuotas *OrgQuotasService
 	Orgs      *OrgsService
 	Services  *ServicesService
@@ -23,6 +24,7 @@ type Client struct {
 func NewClient(cli plugin.CliConnection) *Client {
 	c := &Client{cli: cli}
 	c.common.client = c
+	c.Info = (*InfoService)(&c.common)
 	c.OrgQuotas = (*OrgQuotasService)(&c.common)
 	c.Orgs = (*OrgsService)(&c.common)
 	c.Services = (*ServicesService)(&c.common)
