@@ -21,7 +21,6 @@ type CFAPIHelper interface {
 	GetTarget() string
 	GetOrgQuota(string) (models.OrgQuota, error)
 	GetOrgMemoryUsage(models.Org) (float64, error)
-	GetOrgSpaces(string) ([]models.Space, error)
 	GetSpaceAppsAndServices(string) ([]models.App, []models.Service, error)
 }
 
@@ -81,34 +80,6 @@ func (api *APIHelper) GetOrgMemoryUsage(org models.Org) (float64, error) {
 		return 0, err
 	}
 	return usageJSON["memory_usage_in_mb"].(float64), nil
-}
-
-// GetOrgSpaces returns the spaces in an org
-func (api *APIHelper) GetOrgSpaces(spacesURL string) ([]models.Space, error) {
-	nextURL := spacesURL
-	spaces := []models.Space{}
-	for nextURL != "" {
-		spacesJSON, err := cfcurl.Curl(api.cli, nextURL)
-		if err != nil {
-			return nil, err
-		}
-		for _, s := range spacesJSON["resources"].([]interface{}) {
-			theSpace := s.(map[string]interface{})
-			metadata := theSpace["metadata"].(map[string]interface{})
-			entity := theSpace["entity"].(map[string]interface{})
-			spaces = append(spaces,
-				models.Space{
-					Name:       entity["name"].(string),
-					SummaryURL: metadata["url"].(string) + "/summary",
-				})
-		}
-		if next, ok := spacesJSON["next_url"].(string); ok {
-			nextURL = next
-		} else {
-			nextURL = ""
-		}
-	}
-	return spaces, nil
 }
 
 // GetSpaceAppsAndServices returns the apps and the services from a space's /summary endpoint

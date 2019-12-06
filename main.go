@@ -149,7 +149,7 @@ func (cmd *UsageReportCmd) getOrgDetails(o models.Org) (models.Org, error) {
 }
 
 func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]models.Space, error) {
-	rawSpaces, err := cmd.apiHelper.GetOrgSpaces(spaceURL)
+	rawSpaces, err := cmd.client.Orgs.GetOrgSpaces(spaceURL)
 	if err != nil {
 		return nil, err
 	}
