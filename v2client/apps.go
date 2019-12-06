@@ -1,4 +1,4 @@
-package models
+package v2client
 
 // App -
 type App struct {
@@ -7,3 +7,6 @@ type App struct {
 	Memory           int
 	Instances        int
 }
+
+// AppsService -
+type AppsService service
