@@ -171,7 +171,7 @@ func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]models.Space, error) {
 }
 
 func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, []models.Service, error) {
-	apps, services, err := cmd.apiHelper.GetSpaceAppsAndServices(summaryURL)
+	apps, services, err := cmd.client.Spaces.GetSpaceAppsAndServices(summaryURL)
 	if err != nil {
 		return nil, nil, err
 	}
