@@ -1,14 +1,18 @@
 package models
 
+import (
+	"github.com/aegershman/cf-report-usage-plugin/v2client"
+)
+
 // OrgReport -
 type OrgReport struct {
-	orgRef Org
+	orgRef v2client.Org
 	Report
 	SpaceReports []SpaceReport `json:"space_reports"`
 }
 
 // NewOrgReport -
-func NewOrgReport(org Org) *OrgReport {
+func NewOrgReport(org v2client.Org) *OrgReport {
 	var spaceReports []SpaceReport
 	for _, space := range org.Spaces {
 		spaceReports = append(spaceReports, *NewSpaceReport(space))

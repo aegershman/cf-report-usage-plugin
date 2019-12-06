@@ -1,6 +1,10 @@
 package models
 
-import "bytes"
+import (
+	"github.com/aegershman/cf-report-usage-plugin/v2client"
+
+	"bytes"
+)
 
 // SummaryReport holds an aggregated view of multiple OrgReports
 // It effectively serves as the entrypoint into aggregating the data
@@ -11,7 +15,7 @@ type SummaryReport struct {
 }
 
 // NewSummaryReport -
-func NewSummaryReport(orgs []Org) *SummaryReport {
+func NewSummaryReport(orgs []v2client.Org) *SummaryReport {
 	var orgReports []OrgReport
 	for _, org := range orgs {
 		orgReports = append(orgReports, *NewOrgReport(org))

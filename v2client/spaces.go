@@ -1,9 +1,5 @@
 package v2client
 
-import (
-	"github.com/aegershman/cf-report-usage-plugin/models"
-)
-
 // Space -
 type Space struct {
 	Name       string
@@ -16,20 +12,20 @@ type Space struct {
 type SpacesService service
 
 // GetSpaceAppsAndServices returns the apps and the services from a space's /summary endpoint
-func (s *SpacesService) GetSpaceAppsAndServices(summaryURL string) ([]models.App, []models.Service, error) {
+func (s *SpacesService) GetSpaceAppsAndServices(summaryURL string) ([]App, []Service, error) {
 	summaryJSON, err := s.client.Curl(summaryURL)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	apps := []models.App{}
-	services := []models.Service{}
+	apps := []App{}
+	services := []Service{}
 
 	if _, ok := summaryJSON["apps"]; ok {
 		for _, a := range summaryJSON["apps"].([]interface{}) {
 			theApp := a.(map[string]interface{})
 			apps = append(apps,
-				models.App{
+				App{
 					Name:             theApp["name"].(string),
 					RunningInstances: int(theApp["running_instances"].(float64)),
 					Instances:        int(theApp["instances"].(float64)),
@@ -44,7 +40,7 @@ func (s *SpacesService) GetSpaceAppsAndServices(summaryURL string) ([]models.App
 
 			// these properties should exist whether 'service_plan' exists
 			// should imply it's a user-provided service
-			serviceToAppend := models.Service{
+			serviceToAppend := Service{
 				Name: theService["name"].(string),
 				Type: theService["type"].(string),
 			}

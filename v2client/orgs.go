@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
-
-	"github.com/aegershman/cf-report-usage-plugin/models"
 )
 
 // Org -
@@ -29,17 +27,17 @@ var (
 type OrgsService service
 
 // GetOrg -
-func (o *OrgsService) GetOrg(name string) (models.Org, error) {
+func (o *OrgsService) GetOrg(name string) (Org, error) {
 	query := fmt.Sprintf("name:%s", name)
 	path := fmt.Sprintf("/v2/organizations?q=%s", url.QueryEscape(query))
 	orgsJSON, err := o.client.Curl(path)
 	if err != nil {
-		return models.Org{}, err
+		return Org{}, err
 	}
 
 	results := int(orgsJSON["total_results"].(float64))
 	if results == 0 {
-		return models.Org{}, ErrOrgNotFound
+		return Org{}, ErrOrgNotFound
 	}
 
 	orgResource := orgsJSON["resources"].([]interface{})[0]
@@ -47,7 +45,7 @@ func (o *OrgsService) GetOrg(name string) (models.Org, error) {
 	entity := theOrg["entity"].(map[string]interface{})
 	metadata := theOrg["metadata"].(map[string]interface{})
 
-	return models.Org{
+	return Org{
 		Name:      entity["name"].(string),
 		URL:       metadata["url"].(string),
 		QuotaURL:  entity["quota_definition_url"].(string),
@@ -56,13 +54,13 @@ func (o *OrgsService) GetOrg(name string) (models.Org, error) {
 }
 
 // GetOrgs -
-func (o *OrgsService) GetOrgs() ([]models.Org, error) {
+func (o *OrgsService) GetOrgs() ([]Org, error) {
 	orgsJSON, err := o.client.Curl("/v2/organizations")
 	if err != nil {
 		return nil, err
 	}
 	pages := int(orgsJSON["total_pages"].(float64))
-	orgs := []models.Org{}
+	orgs := []Org{}
 	for i := 1; i <= pages; i++ {
 		if 1 != i {
 			orgsJSON, err = o.client.Curl("/v2/organizations?page=" + strconv.Itoa(i))
@@ -76,7 +74,7 @@ func (o *OrgsService) GetOrgs() ([]models.Org, error) {
 			}
 			metadata := theOrg["metadata"].(map[string]interface{})
 			orgs = append(orgs,
-				models.Org{
+				Org{
 					Name:      name,
 					URL:       metadata["url"].(string),
 					QuotaURL:  entity["quota_definition_url"].(string),
@@ -88,9 +86,9 @@ func (o *OrgsService) GetOrgs() ([]models.Org, error) {
 }
 
 // GetOrgSpaces returns the spaces in an org
-func (o *OrgsService) GetOrgSpaces(spacesURL string) ([]models.Space, error) {
+func (o *OrgsService) GetOrgSpaces(spacesURL string) ([]Space, error) {
 	nextURL := spacesURL
-	spaces := []models.Space{}
+	spaces := []Space{}
 	for nextURL != "" {
 		spacesJSON, err := o.client.Curl(nextURL)
 		if err != nil {
@@ -101,7 +99,7 @@ func (o *OrgsService) GetOrgSpaces(spacesURL string) ([]models.Space, error) {
 			metadata := theSpace["metadata"].(map[string]interface{})
 			entity := theSpace["entity"].(map[string]interface{})
 			spaces = append(spaces,
-				models.Space{
+				Space{
 					Name:       entity["name"].(string),
 					SummaryURL: metadata["url"].(string) + "/summary",
 				})
@@ -116,7 +114,7 @@ func (o *OrgsService) GetOrgSpaces(spacesURL string) ([]models.Space, error) {
 }
 
 // GetOrgMemoryUsage returns amount of memory (in MB) a given org is currently using
-func (o *OrgsService) GetOrgMemoryUsage(org models.Org) (float64, error) {
+func (o *OrgsService) GetOrgMemoryUsage(org Org) (float64, error) {
 	usageJSON, err := o.client.Curl(org.URL + "/memory_usage")
 	if err != nil {
 		return 0, err
