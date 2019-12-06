@@ -4,6 +4,14 @@ import (
 	"github.com/aegershman/cf-report-usage-plugin/models"
 )
 
+// Space -
+type Space struct {
+	Name       string
+	Apps       []App
+	Services   []Service
+	SummaryURL string
+}
+
 // SpacesService -
 type SpacesService service
 

@@ -9,6 +9,17 @@ import (
 	"github.com/aegershman/cf-report-usage-plugin/models"
 )
 
+// Org -
+type Org struct {
+	Name        string
+	MemoryQuota int
+	MemoryUsage int
+	Spaces      []Space
+	QuotaURL    string
+	SpacesURL   string
+	URL         string
+}
+
 var (
 	// ErrOrgNotFound -
 	ErrOrgNotFound = errors.New("organization not found")
