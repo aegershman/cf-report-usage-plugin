@@ -1,4 +1,4 @@
-package models
+package report
 
 import (
 	"github.com/aegershman/cf-report-usage-plugin/v2client"

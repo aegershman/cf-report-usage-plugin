@@ -1,4 +1,4 @@
-package models
+package report
 
 // Report should be present in all reports at all levels,
 // e.g. summary level, org level, space level, etc.
