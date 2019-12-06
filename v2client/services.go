@@ -1,4 +1,4 @@
-package models
+package v2client
 
 // Service -
 // admittantly, did flatten this structure out to avoid nesting structs
@@ -9,3 +9,8 @@ type Service struct {
 	ServicePlanName   string
 	ServicePlanLabel  string
 }
+
+// ServicesService -
+//
+// wow that's quite the name, isn't it?
+type ServicesService service

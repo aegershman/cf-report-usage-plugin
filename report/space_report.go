@@ -1,15 +1,19 @@
-package models
+package report
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/aegershman/cf-report-usage-plugin/v2client"
+)
 
 // SpaceReport -
 type SpaceReport struct {
-	spaceRef Space
+	spaceRef v2client.Space
 	Report
 }
 
 // NewSpaceReport -
-func NewSpaceReport(space Space) *SpaceReport {
+func NewSpaceReport(space v2client.Space) *SpaceReport {
 
 	self := &SpaceReport{
 		spaceRef: space,

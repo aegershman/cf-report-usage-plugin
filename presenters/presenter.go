@@ -1,17 +1,17 @@
 package presenters
 
 import (
-	"github.com/aegershman/cf-report-usage-plugin/models"
+	"github.com/aegershman/cf-report-usage-plugin/report"
 )
 
 // Presenter -
 type Presenter struct {
-	SummaryReport models.SummaryReport `json:"summary_report"`
+	SummaryReport report.SummaryReport `json:"summary_report"`
 	Format        string               `json:"format"`
 }
 
 // NewPresenter -
-func NewPresenter(r models.SummaryReport, format string) Presenter {
+func NewPresenter(r report.SummaryReport, format string) Presenter {
 	return Presenter{
 		SummaryReport: r,
 		Format:        format,

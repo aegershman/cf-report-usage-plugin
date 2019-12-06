@@ -4,16 +4,17 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/aegershman/cf-report-usage-plugin/apihelper"
-	"github.com/aegershman/cf-report-usage-plugin/models"
+	"github.com/aegershman/cf-report-usage-plugin/v2client"
+
 	"github.com/aegershman/cf-report-usage-plugin/presenters"
+	"github.com/aegershman/cf-report-usage-plugin/report"
 	"github.com/cloudfoundry/cli/plugin"
 	log "github.com/sirupsen/logrus"
 )
 
 // UsageReportCmd -
 type UsageReportCmd struct {
-	apiHelper apihelper.CFAPIHelper
+	client *v2client.Client
 }
 
 type flags struct {
@@ -35,8 +36,8 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		Name: "cf-report-usage-plugin",
 		Version: plugin.VersionType{
 			Major: 2,
-			Minor: 11,
-			Build: 2,
+			Minor: 12,
+			Build: 0,
 		},
 		Commands: []plugin.Command{
 			{
@@ -84,31 +85,31 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 		log.Fatalln(err)
 	}
 
-	summaryReport := models.NewSummaryReport(orgs)
+	summaryReport := report.NewSummaryReport(orgs)
 	presenter := presenters.NewPresenter(*summaryReport, formatFlag) // todo hacky pointer
 	presenter.Render()
 }
 
-func (cmd *UsageReportCmd) getOrgs(orgNames []string) ([]models.Org, error) {
-	var rawOrgs []models.Org
+func (cmd *UsageReportCmd) getOrgs(orgNames []string) ([]v2client.Org, error) {
+	var rawOrgs []v2client.Org
 
 	if len(orgNames) > 0 {
 		for _, orgName := range orgNames {
-			rawOrg, err := cmd.apiHelper.GetOrg(orgName)
+			rawOrg, err := cmd.client.Orgs.GetOrg(orgName)
 			if err != nil {
 				return nil, err
 			}
 			rawOrgs = append(rawOrgs, rawOrg)
 		}
 	} else {
-		extraRawOrgs, err := cmd.apiHelper.GetOrgs()
+		extraRawOrgs, err := cmd.client.Orgs.GetOrgs()
 		if err != nil {
 			return nil, err
 		}
 		rawOrgs = extraRawOrgs
 	}
 
-	var orgs = []models.Org{}
+	var orgs = []v2client.Org{}
 
 	for _, o := range rawOrgs {
 		orgDetails, err := cmd.getOrgDetails(o)
@@ -120,24 +121,24 @@ func (cmd *UsageReportCmd) getOrgs(orgNames []string) ([]models.Org, error) {
 	return orgs, nil
 }
 
-func (cmd *UsageReportCmd) getOrgDetails(o models.Org) (models.Org, error) {
-	usage, err := cmd.apiHelper.GetOrgMemoryUsage(o)
+func (cmd *UsageReportCmd) getOrgDetails(o v2client.Org) (v2client.Org, error) {
+	usage, err := cmd.client.Orgs.GetOrgMemoryUsage(o)
 	if err != nil {
-		return models.Org{}, err
+		return v2client.Org{}, err
 	}
 
 	// TODO teeing up to swap out for 'quota' being it's own managed entity
 	// for time being, going to simply modify it _here_ to not break anything obvious
-	quota, err := cmd.apiHelper.GetOrgQuota(o.QuotaURL)
+	quota, err := cmd.client.OrgQuotas.GetOrgQuota(o.QuotaURL)
 	if err != nil {
-		return models.Org{}, err
+		return v2client.Org{}, err
 	}
 	spaces, err := cmd.getSpaces(o.SpacesURL)
 	if err != nil {
-		return models.Org{}, err
+		return v2client.Org{}, err
 	}
 
-	return models.Org{
+	return v2client.Org{
 		Name:        o.Name,
 		MemoryQuota: quota.MemoryLimit,
 		MemoryUsage: int(usage),
@@ -145,19 +146,19 @@ func (cmd *UsageReportCmd) getOrgDetails(o models.Org) (models.Org, error) {
 	}, nil
 }
 
-func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]models.Space, error) {
-	rawSpaces, err := cmd.apiHelper.GetOrgSpaces(spaceURL)
+func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]v2client.Space, error) {
+	rawSpaces, err := cmd.client.Orgs.GetOrgSpaces(spaceURL)
 	if err != nil {
 		return nil, err
 	}
-	var spaces = []models.Space{}
+	var spaces = []v2client.Space{}
 	for _, s := range rawSpaces {
 		apps, services, err := cmd.getAppsAndServices(s.SummaryURL)
 		if err != nil {
 			return nil, err
 		}
 		spaces = append(spaces,
-			models.Space{
+			v2client.Space{
 				Name:     s.Name,
 				Apps:     apps,
 				Services: services,
@@ -167,8 +168,8 @@ func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]models.Space, error) {
 	return spaces, nil
 }
 
-func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, []models.Service, error) {
-	apps, services, err := cmd.apiHelper.GetSpaceAppsAndServices(summaryURL)
+func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]v2client.App, []v2client.Service, error) {
+	apps, services, err := cmd.client.Spaces.GetSpaceAppsAndServices(summaryURL)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -178,7 +179,7 @@ func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, 
 // Run -
 func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
 	if args[0] == "report-usage" {
-		cmd.apiHelper = apihelper.New(cli)
+		cmd.client = v2client.NewClient(cli)
 		cmd.UsageReportCommand(args)
 	}
 }
