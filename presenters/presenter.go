@@ -27,6 +27,8 @@ func (p *Presenter) Render() {
 		p.asTable()
 	case "json":
 		p.asJSON()
+	case "garbage":
+		p.asGarbage()
 	default:
 		// TODO
 		// yeah this is kind of awful I know, I'm sorry, I'm still learning,
