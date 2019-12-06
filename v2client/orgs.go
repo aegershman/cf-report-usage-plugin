@@ -103,3 +103,12 @@ func (o *OrgsService) GetOrgSpaces(spacesURL string) ([]models.Space, error) {
 	}
 	return spaces, nil
 }
+
+// GetOrgMemoryUsage returns amount of memory (in MB) a given org is currently using
+func (o *OrgsService) GetOrgMemoryUsage(org models.Org) (float64, error) {
+	usageJSON, err := o.client.Curl(org.URL + "/memory_usage")
+	if err != nil {
+		return 0, err
+	}
+	return usageJSON["memory_usage_in_mb"].(float64), nil
+}

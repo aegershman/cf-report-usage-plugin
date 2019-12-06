@@ -124,14 +124,14 @@ func (cmd *UsageReportCmd) getOrgs(orgNames []string) ([]models.Org, error) {
 }
 
 func (cmd *UsageReportCmd) getOrgDetails(o models.Org) (models.Org, error) {
-	usage, err := cmd.apiHelper.GetOrgMemoryUsage(o)
+	usage, err := cmd.client.Orgs.GetOrgMemoryUsage(o)
 	if err != nil {
 		return models.Org{}, err
 	}
 
 	// TODO teeing up to swap out for 'quota' being it's own managed entity
 	// for time being, going to simply modify it _here_ to not break anything obvious
-	quota, err := cmd.apiHelper.GetOrgQuota(o.QuotaURL)
+	quota, err := cmd.client.OrgQuotas.GetOrgQuota(o.QuotaURL)
 	if err != nil {
 		return models.Org{}, err
 	}
