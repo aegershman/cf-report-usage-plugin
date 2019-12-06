@@ -6,7 +6,6 @@ import (
 
 	"github.com/aegershman/cf-report-usage-plugin/v2client"
 
-	"github.com/aegershman/cf-report-usage-plugin/apihelper"
 	"github.com/aegershman/cf-report-usage-plugin/models"
 	"github.com/aegershman/cf-report-usage-plugin/presenters"
 	"github.com/cloudfoundry/cli/plugin"
@@ -15,8 +14,7 @@ import (
 
 // UsageReportCmd -
 type UsageReportCmd struct {
-	apiHelper apihelper.CFAPIHelper
-	client    *v2client.Client
+	client *v2client.Client
 }
 
 type flags struct {
@@ -181,7 +179,6 @@ func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, 
 // Run -
 func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
 	if args[0] == "report-usage" {
-		cmd.apiHelper = apihelper.New(cli)
 		cmd.client = v2client.NewClient(cli)
 		cmd.UsageReportCommand(args)
 	}
