@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/aegershman/cf-report-usage-plugin/v2client"
+
 	"github.com/aegershman/cf-report-usage-plugin/apihelper"
 	"github.com/aegershman/cf-report-usage-plugin/models"
 	"github.com/aegershman/cf-report-usage-plugin/presenters"
@@ -14,6 +16,7 @@ import (
 // UsageReportCmd -
 type UsageReportCmd struct {
 	apiHelper apihelper.CFAPIHelper
+	client    *v2client.Client
 }
 
 type flags struct {
@@ -94,14 +97,14 @@ func (cmd *UsageReportCmd) getOrgs(orgNames []string) ([]models.Org, error) {
 
 	if len(orgNames) > 0 {
 		for _, orgName := range orgNames {
-			rawOrg, err := cmd.apiHelper.GetOrg(orgName)
+			rawOrg, err := cmd.client.Orgs.GetOrg(orgName)
 			if err != nil {
 				return nil, err
 			}
 			rawOrgs = append(rawOrgs, rawOrg)
 		}
 	} else {
-		extraRawOrgs, err := cmd.apiHelper.GetOrgs()
+		extraRawOrgs, err := cmd.client.Orgs.GetOrgs()
 		if err != nil {
 			return nil, err
 		}
@@ -179,6 +182,7 @@ func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]models.App, 
 func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
 	if args[0] == "report-usage" {
 		cmd.apiHelper = apihelper.New(cli)
+		cmd.client = v2client.NewClient(cli)
 		cmd.UsageReportCommand(args)
 	}
 }
