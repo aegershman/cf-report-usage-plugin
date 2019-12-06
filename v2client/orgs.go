@@ -1,13 +1,48 @@
 package v2client
 
 import (
+	"errors"
+	"fmt"
+	"net/url"
 	"strconv"
 
 	"github.com/aegershman/cf-report-usage-plugin/models"
 )
 
+var (
+	// ErrOrgNotFound -
+	ErrOrgNotFound = errors.New("organization not found")
+)
+
 // OrgsService -
 type OrgsService service
+
+// GetOrg -
+func (o *OrgsService) GetOrg(name string) (models.Org, error) {
+	query := fmt.Sprintf("name:%s", name)
+	path := fmt.Sprintf("/v2/organizations?q=%s", url.QueryEscape(query))
+	orgsJSON, err := o.client.Curl(path)
+	if err != nil {
+		return models.Org{}, err
+	}
+
+	results := int(orgsJSON["total_results"].(float64))
+	if results == 0 {
+		return models.Org{}, ErrOrgNotFound
+	}
+
+	orgResource := orgsJSON["resources"].([]interface{})[0]
+	theOrg := orgResource.(map[string]interface{})
+	entity := theOrg["entity"].(map[string]interface{})
+	metadata := theOrg["metadata"].(map[string]interface{})
+
+	return models.Org{
+		Name:      entity["name"].(string),
+		URL:       metadata["url"].(string),
+		QuotaURL:  entity["quota_definition_url"].(string),
+		SpacesURL: entity["spaces_url"].(string),
+	}, nil
+}
 
 // GetOrgs -
 func (o *OrgsService) GetOrgs() ([]models.Org, error) {
