@@ -28,8 +28,8 @@ func (f *flags) Set(value string) error {
 	return nil
 }
 
-// UsageReportCommand -
-func (cmd *ReportUsageCmd) UsageReportCommand(args []string) {
+// ReportUsageCommand -
+func (cmd *ReportUsageCmd) ReportUsageCommand(args []string) {
 	var (
 		userFlags    flags
 		formatFlag   string
@@ -67,7 +67,7 @@ func (cmd *ReportUsageCmd) Run(cli plugin.CliConnection, args []string) {
 	cmd.cli = cli
 	switch args[0] {
 	case "report-usage":
-		cmd.UsageReportCommand(args)
+		cmd.ReportUsageCommand(args)
 	}
 }
 
