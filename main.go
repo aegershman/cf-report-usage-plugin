@@ -4,8 +4,6 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/aegershman/cf-report-usage-plugin/v2client"
-
 	"github.com/aegershman/cf-report-usage-plugin/presenters"
 	"github.com/aegershman/cf-report-usage-plugin/report"
 	"github.com/cloudfoundry/cli/plugin"
@@ -14,7 +12,7 @@ import (
 
 // UsageReportCmd -
 type UsageReportCmd struct {
-	client *v2client.Client
+	cli plugin.CliConnection
 }
 
 type flags struct {
@@ -37,7 +35,7 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 		Version: plugin.VersionType{
 			Major: 2,
 			Minor: 12,
-			Build: 0,
+			Build: 1,
 		},
 		Commands: []plugin.Command{
 			{
@@ -80,106 +78,20 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 	}
 	log.SetLevel(logLevel)
 
-	orgs, err := cmd.getOrgs(userFlags.OrgNames)
+	reporter := report.NewReporter(cmd.cli, userFlags.OrgNames)
+	summaryReport, err := reporter.GetSummaryReport()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	summaryReport := report.NewSummaryReport(orgs)
 	presenter := presenters.NewPresenter(*summaryReport, formatFlag) // todo hacky pointer
 	presenter.Render()
-}
-
-func (cmd *UsageReportCmd) getOrgs(orgNames []string) ([]v2client.Org, error) {
-	var rawOrgs []v2client.Org
-
-	if len(orgNames) > 0 {
-		for _, orgName := range orgNames {
-			rawOrg, err := cmd.client.Orgs.GetOrg(orgName)
-			if err != nil {
-				return nil, err
-			}
-			rawOrgs = append(rawOrgs, rawOrg)
-		}
-	} else {
-		extraRawOrgs, err := cmd.client.Orgs.GetOrgs()
-		if err != nil {
-			return nil, err
-		}
-		rawOrgs = extraRawOrgs
-	}
-
-	var orgs = []v2client.Org{}
-
-	for _, o := range rawOrgs {
-		orgDetails, err := cmd.getOrgDetails(o)
-		if err != nil {
-			return nil, err
-		}
-		orgs = append(orgs, orgDetails)
-	}
-	return orgs, nil
-}
-
-func (cmd *UsageReportCmd) getOrgDetails(o v2client.Org) (v2client.Org, error) {
-	usage, err := cmd.client.Orgs.GetOrgMemoryUsage(o)
-	if err != nil {
-		return v2client.Org{}, err
-	}
-
-	// TODO teeing up to swap out for 'quota' being it's own managed entity
-	// for time being, going to simply modify it _here_ to not break anything obvious
-	quota, err := cmd.client.OrgQuotas.GetOrgQuota(o.QuotaURL)
-	if err != nil {
-		return v2client.Org{}, err
-	}
-	spaces, err := cmd.getSpaces(o.SpacesURL)
-	if err != nil {
-		return v2client.Org{}, err
-	}
-
-	return v2client.Org{
-		Name:        o.Name,
-		MemoryQuota: quota.MemoryLimit,
-		MemoryUsage: int(usage),
-		Spaces:      spaces,
-	}, nil
-}
-
-func (cmd *UsageReportCmd) getSpaces(spaceURL string) ([]v2client.Space, error) {
-	rawSpaces, err := cmd.client.Orgs.GetOrgSpaces(spaceURL)
-	if err != nil {
-		return nil, err
-	}
-	var spaces = []v2client.Space{}
-	for _, s := range rawSpaces {
-		apps, services, err := cmd.getAppsAndServices(s.SummaryURL)
-		if err != nil {
-			return nil, err
-		}
-		spaces = append(spaces,
-			v2client.Space{
-				Name:     s.Name,
-				Apps:     apps,
-				Services: services,
-			},
-		)
-	}
-	return spaces, nil
-}
-
-func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]v2client.App, []v2client.Service, error) {
-	apps, services, err := cmd.client.Spaces.GetSpaceAppsAndServices(summaryURL)
-	if err != nil {
-		return nil, nil, err
-	}
-	return apps, services, nil
 }
 
 // Run -
 func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
 	if args[0] == "report-usage" {
-		cmd.client = v2client.NewClient(cli)
+		cmd.cli = cli
 		cmd.UsageReportCommand(args)
 	}
 }
