@@ -64,8 +64,9 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 
 // Run -
 func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
-	if args[0] == "report-usage" {
-		cmd.cli = cli
+	cmd.cli = cli
+	switch args[0] {
+	case "report-usage":
 		cmd.UsageReportCommand(args)
 	}
 }
