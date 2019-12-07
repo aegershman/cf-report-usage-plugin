@@ -25,45 +25,36 @@ func (o *orgNamesFlag) Set(value string) error {
 	return nil
 }
 
-var (
-	globalOrgNamesFlag orgNamesFlag
-	globalFormatFlag   string
-	globalLogLevelFlag string
-)
-
-func (cmd *reportUsageCmd) parseFlags(args []string) error {
-	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
-	flagss.Var(&globalOrgNamesFlag, "o", "")
-	flagss.StringVar(&globalFormatFlag, "format", "table", "")
-	flagss.StringVar(&globalLogLevelFlag, "log-level", "info", "")
-
-	if err := flagss.Parse(args[1:]); err != nil {
-		return err
-	}
-
-	logLevel, err := log.ParseLevel(globalLogLevelFlag)
-	if err != nil {
-		return err
-	}
-
-	log.SetLevel(logLevel)
-
-	return nil
-}
-
 // reportUsageCommand is the "real" main entrypoint into program execution
 func (cmd *reportUsageCmd) reportUsageCommand(cli plugin.CliConnection, args []string) {
-	if err := cmd.parseFlags(args); err != nil {
+
+	var (
+		orgNamesFlag orgNamesFlag
+		formatFlag   string
+		logLevelFlag string
+	)
+
+	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
+	flagss.Var(&orgNamesFlag, "o", "")
+	flagss.StringVar(&formatFlag, "format", "table", "")
+	flagss.StringVar(&logLevelFlag, "log-level", "info", "")
+	if err := flagss.Parse(args[1:]); err != nil {
 		log.Fatalln(err)
 	}
 
-	reporter := report.NewReporter(cli, globalOrgNamesFlag.names)
+	logLevel, err := log.ParseLevel(logLevelFlag)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	log.SetLevel(logLevel)
+
+	reporter := report.NewReporter(cli, orgNamesFlag.names)
 	summaryReport, err := reporter.GetSummaryReport()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	presenter := presenters.NewPresenter(*summaryReport, globalFormatFlag) // todo hacky pointer
+	presenter := presenters.NewPresenter(*summaryReport, formatFlag) // todo hacky pointer
 	presenter.Render()
 }
 
