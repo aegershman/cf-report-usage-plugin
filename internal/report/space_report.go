@@ -3,7 +3,7 @@ package report
 import (
 	"strings"
 
-	"github.com/aegershman/cf-report-usage-plugin/v2client"
+	"github.com/aegershman/cf-report-usage-plugin/internal/v2client"
 )
 
 // SpaceReport -
