@@ -4,8 +4,6 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/aegershman/cf-report-usage-plugin/v2client"
-
 	"github.com/aegershman/cf-report-usage-plugin/presenters"
 	"github.com/aegershman/cf-report-usage-plugin/report"
 	"github.com/cloudfoundry/cli/plugin"
@@ -14,8 +12,7 @@ import (
 
 // UsageReportCmd -
 type UsageReportCmd struct {
-	client *v2client.Client
-	cli    plugin.CliConnection
+	cli plugin.CliConnection
 }
 
 type flags struct {
