@@ -52,8 +52,8 @@ func (cmd *ReportUsageCmd) parseFlags(args []string) error {
 	return nil
 }
 
-// Run -
-func (cmd *ReportUsageCmd) Run(cli plugin.CliConnection, args []string) {
+// ReportUsageCommand is the "real" main entrypoint into program execution
+func (cmd *ReportUsageCmd) reportUsageCommand(cli plugin.CliConnection, args []string) {
 	if err := cmd.parseFlags(args); err != nil {
 		log.Fatalln(err)
 	}
@@ -66,6 +66,17 @@ func (cmd *ReportUsageCmd) Run(cli plugin.CliConnection, args []string) {
 
 	presenter := presenters.NewPresenter(*summaryReport, globalFormatFlag) // todo hacky pointer
 	presenter.Render()
+}
+
+// Run -
+func (cmd *ReportUsageCmd) Run(cli plugin.CliConnection, args []string) {
+	switch args[0] {
+	case "report-usage":
+		cmd.reportUsageCommand(cli, args)
+	default:
+		log.Infoln("did you know plugin commands can still get ran when uninstalling a plugin? interesting, right?")
+		return
+	}
 }
 
 // GetMetadata -
