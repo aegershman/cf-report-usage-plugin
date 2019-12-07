@@ -212,13 +212,13 @@ If you want to try it out, install it directly from [the github releases tab as 
 
 ```sh
 # osx 64bit
-cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/2.13.0/cf-report-usage-plugin-darwin
+cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.0.0/cf-report-usage-plugin-darwin
 
 # linux 64bit (32bit and ARM6 also available)
-cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/2.13.0/cf-report-usage-plugin-linux-amd64
+cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.0.0/cf-report-usage-plugin-linux-amd64
 
 # windows 64bit (32bit also available)
-cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/2.13.0/cf-report-usage-plugin-windows-amd64.exe
+cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.0.0/cf-report-usage-plugin-windows-amd64.exe
 ```
 
 ## backwards compatibility
