@@ -11,9 +11,7 @@ import (
 )
 
 // ReportUsageCmd -
-type ReportUsageCmd struct {
-	cli plugin.CliConnection
-}
+type ReportUsageCmd struct{}
 
 type orgNamesFlag struct {
 	names []string
@@ -28,8 +26,15 @@ func (o *orgNamesFlag) Set(value string) error {
 	return nil
 }
 
-// ReportUsageCommand -
-func (cmd *ReportUsageCmd) ReportUsageCommand(args []string) {
+// Run -
+func (cmd *ReportUsageCmd) Run(cli plugin.CliConnection, args []string) {
+
+	// TODO can't really imagine a situation where this would happen, but
+	// I don't know I guess I'll just leave it for now
+	if args[0] != "report-usage" {
+		return
+	}
+
 	var (
 		orgNamesFlag orgNamesFlag
 		formatFlag   string
@@ -52,7 +57,7 @@ func (cmd *ReportUsageCmd) ReportUsageCommand(args []string) {
 	}
 	log.SetLevel(logLevel)
 
-	reporter := report.NewReporter(cmd.cli, orgNamesFlag.names)
+	reporter := report.NewReporter(cli, orgNamesFlag.names)
 	summaryReport, err := reporter.GetSummaryReport()
 	if err != nil {
 		log.Fatalln(err)
@@ -60,15 +65,7 @@ func (cmd *ReportUsageCmd) ReportUsageCommand(args []string) {
 
 	presenter := presenters.NewPresenter(*summaryReport, formatFlag) // todo hacky pointer
 	presenter.Render()
-}
 
-// Run -
-func (cmd *ReportUsageCmd) Run(cli plugin.CliConnection, args []string) {
-	cmd.cli = cli
-	switch args[0] {
-	case "report-usage":
-		cmd.ReportUsageCommand(args)
-	}
 }
 
 // GetMetadata -
