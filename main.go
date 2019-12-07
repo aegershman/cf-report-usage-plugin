@@ -10,8 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// ReportUsageCmd -
-type ReportUsageCmd struct{}
+type reportUsageCmd struct{}
 
 type orgNamesFlag struct {
 	names []string
@@ -32,7 +31,7 @@ var (
 	globalLogLevelFlag string
 )
 
-func (cmd *ReportUsageCmd) parseFlags(args []string) error {
+func (cmd *reportUsageCmd) parseFlags(args []string) error {
 	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
 	flagss.Var(&globalOrgNamesFlag, "o", "")
 	flagss.StringVar(&globalFormatFlag, "format", "table", "")
@@ -52,8 +51,8 @@ func (cmd *ReportUsageCmd) parseFlags(args []string) error {
 	return nil
 }
 
-// ReportUsageCommand is the "real" main entrypoint into program execution
-func (cmd *ReportUsageCmd) reportUsageCommand(cli plugin.CliConnection, args []string) {
+// reportUsageCommand is the "real" main entrypoint into program execution
+func (cmd *reportUsageCmd) reportUsageCommand(cli plugin.CliConnection, args []string) {
 	if err := cmd.parseFlags(args); err != nil {
 		log.Fatalln(err)
 	}
@@ -69,7 +68,7 @@ func (cmd *ReportUsageCmd) reportUsageCommand(cli plugin.CliConnection, args []s
 }
 
 // Run -
-func (cmd *ReportUsageCmd) Run(cli plugin.CliConnection, args []string) {
+func (cmd *reportUsageCmd) Run(cli plugin.CliConnection, args []string) {
 	switch args[0] {
 	case "report-usage":
 		cmd.reportUsageCommand(cli, args)
@@ -80,7 +79,7 @@ func (cmd *ReportUsageCmd) Run(cli plugin.CliConnection, args []string) {
 }
 
 // GetMetadata -
-func (cmd *ReportUsageCmd) GetMetadata() plugin.PluginMetadata {
+func (cmd *reportUsageCmd) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
 		Name: "cf-report-usage-plugin",
 		Version: plugin.VersionType{
@@ -106,5 +105,5 @@ func (cmd *ReportUsageCmd) GetMetadata() plugin.PluginMetadata {
 }
 
 func main() {
-	plugin.Start(new(ReportUsageCmd))
+	plugin.Start(new(reportUsageCmd))
 }
