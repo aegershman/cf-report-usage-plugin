@@ -28,32 +28,6 @@ func (f *flags) Set(value string) error {
 	return nil
 }
 
-// GetMetadata -
-func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
-	return plugin.PluginMetadata{
-		Name: "cf-report-usage-plugin",
-		Version: plugin.VersionType{
-			Major: 2,
-			Minor: 12,
-			Build: 1,
-		},
-		Commands: []plugin.Command{
-			{
-				Name:     "report-usage",
-				HelpText: "View AIs, SIs and memory usage for orgs and spaces",
-				UsageDetails: plugin.Usage{
-					Usage: "cf report-usage [-o orgName...] --format formatChoice",
-					Options: map[string]string{
-						"o":         "organization(s) included in report. Flag can be provided multiple times.",
-						"format":    "format to print as (options: string,table,json) (default: table)",
-						"log-level": "(options: info,debug,trace) (default: info)",
-					},
-				},
-			},
-		},
-	}
-}
-
 // UsageReportCommand -
 func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 	var (
@@ -93,6 +67,32 @@ func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
 	if args[0] == "report-usage" {
 		cmd.cli = cli
 		cmd.UsageReportCommand(args)
+	}
+}
+
+// GetMetadata -
+func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
+	return plugin.PluginMetadata{
+		Name: "cf-report-usage-plugin",
+		Version: plugin.VersionType{
+			Major: 2,
+			Minor: 12,
+			Build: 1,
+		},
+		Commands: []plugin.Command{
+			{
+				Name:     "report-usage",
+				HelpText: "View AIs, SIs and memory usage for orgs and spaces",
+				UsageDetails: plugin.Usage{
+					Usage: "cf report-usage [-o orgName...] --format formatChoice",
+					Options: map[string]string{
+						"o":         "organization(s) included in report. Flag can be provided multiple times.",
+						"format":    "format to print as (options: string,table,json) (default: table)",
+						"log-level": "(options: info,debug,trace) (default: info)",
+					},
+				},
+			},
+		},
 	}
 }
 
