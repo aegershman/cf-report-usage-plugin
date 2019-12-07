@@ -26,44 +26,46 @@ func (o *orgNamesFlag) Set(value string) error {
 	return nil
 }
 
-// Run -
-func (cmd *ReportUsageCmd) Run(cli plugin.CliConnection, args []string) {
+var (
+	globalOrgNamesFlag orgNamesFlag
+	globalFormatFlag   string
+	globalLogLevelFlag string
+)
 
-	// TODO can't really imagine a situation where this would happen, but
-	// I don't know I guess I'll just leave it for now
-	if args[0] != "report-usage" {
-		return
-	}
-
-	var (
-		orgNamesFlag orgNamesFlag
-		formatFlag   string
-		logLevelFlag string
-	)
-
+func (cmd *ReportUsageCmd) parseFlags(args []string) error {
 	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
-	flagss.Var(&orgNamesFlag, "o", "")
-	flagss.StringVar(&formatFlag, "format", "table", "")
-	flagss.StringVar(&logLevelFlag, "log-level", "info", "")
+	flagss.Var(&globalOrgNamesFlag, "o", "")
+	flagss.StringVar(&globalFormatFlag, "format", "table", "")
+	flagss.StringVar(&globalLogLevelFlag, "log-level", "info", "")
 
 	err := flagss.Parse(args[1:])
 	if err != nil {
-		log.Fatalln(err)
+		return err
 	}
 
-	logLevel, err := log.ParseLevel(logLevelFlag)
+	logLevel, err := log.ParseLevel(globalLogLevelFlag)
 	if err != nil {
-		log.Fatalln(err)
+		return err
 	}
 	log.SetLevel(logLevel)
 
-	reporter := report.NewReporter(cli, orgNamesFlag.names)
+	return nil
+}
+
+// Run -
+func (cmd *ReportUsageCmd) Run(cli plugin.CliConnection, args []string) {
+	err := cmd.parseFlags(args)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	reporter := report.NewReporter(cli, globalOrgNamesFlag.names)
 	summaryReport, err := reporter.GetSummaryReport()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	presenter := presenters.NewPresenter(*summaryReport, formatFlag) // todo hacky pointer
+	presenter := presenters.NewPresenter(*summaryReport, globalFormatFlag) // todo hacky pointer
 	presenter.Render()
 
 }
