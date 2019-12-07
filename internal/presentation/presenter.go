@@ -1,4 +1,4 @@
-package presenters
+package presentation
 
 import (
 	"github.com/aegershman/cf-report-usage-plugin/internal/report"

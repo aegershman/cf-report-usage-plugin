@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/aegershman/cf-report-usage-plugin/internal/presenters"
+	"github.com/aegershman/cf-report-usage-plugin/internal/presentation"
 	"github.com/aegershman/cf-report-usage-plugin/internal/report"
 	"github.com/cloudfoundry/cli/plugin"
 	log "github.com/sirupsen/logrus"
@@ -54,7 +54,7 @@ func (cmd *reportUsageCmd) reportUsageCommand(cli plugin.CliConnection, args []s
 		log.Fatalln(err)
 	}
 
-	presenter := presenters.NewPresenter(*summaryReport, formatFlag) // todo hacky pointer
+	presenter := presentation.NewPresenter(*summaryReport, formatFlag) // todo hacky pointer
 	presenter.Render()
 }
 
