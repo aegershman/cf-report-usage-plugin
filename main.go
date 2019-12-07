@@ -10,8 +10,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// UsageReportCmd -
-type UsageReportCmd struct {
+// ReportUsageCmd -
+type ReportUsageCmd struct {
 	cli plugin.CliConnection
 }
 
@@ -29,7 +29,7 @@ func (f *flags) Set(value string) error {
 }
 
 // UsageReportCommand -
-func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
+func (cmd *ReportUsageCmd) UsageReportCommand(args []string) {
 	var (
 		userFlags    flags
 		formatFlag   string
@@ -63,7 +63,7 @@ func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
 }
 
 // Run -
-func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
+func (cmd *ReportUsageCmd) Run(cli plugin.CliConnection, args []string) {
 	cmd.cli = cli
 	switch args[0] {
 	case "report-usage":
@@ -72,7 +72,7 @@ func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
 }
 
 // GetMetadata -
-func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
+func (cmd *ReportUsageCmd) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
 		Name: "cf-report-usage-plugin",
 		Version: plugin.VersionType{
@@ -98,5 +98,5 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 }
 
 func main() {
-	plugin.Start(new(UsageReportCmd))
+	plugin.Start(new(ReportUsageCmd))
 }
