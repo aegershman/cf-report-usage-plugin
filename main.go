@@ -19,25 +19,25 @@ type orgNamesFlag struct {
 	OrgNames []string
 }
 
-func (f *orgNamesFlag) String() string {
-	return fmt.Sprint(f.OrgNames)
+func (o *orgNamesFlag) String() string {
+	return fmt.Sprint(o.OrgNames)
 }
 
-func (f *orgNamesFlag) Set(value string) error {
-	f.OrgNames = append(f.OrgNames, value)
+func (o *orgNamesFlag) Set(value string) error {
+	o.OrgNames = append(o.OrgNames, value)
 	return nil
 }
 
 // ReportUsageCommand -
 func (cmd *ReportUsageCmd) ReportUsageCommand(args []string) {
 	var (
-		userFlags    orgNamesFlag
+		orgNamesFlag orgNamesFlag
 		formatFlag   string
 		logLevelFlag string
 	)
 
 	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
-	flagss.Var(&userFlags, "o", "")
+	flagss.Var(&orgNamesFlag, "o", "")
 	flagss.StringVar(&formatFlag, "format", "table", "")
 	flagss.StringVar(&logLevelFlag, "log-level", "info", "")
 
@@ -52,7 +52,7 @@ func (cmd *ReportUsageCmd) ReportUsageCommand(args []string) {
 	}
 	log.SetLevel(logLevel)
 
-	reporter := report.NewReporter(cmd.cli, userFlags.OrgNames)
+	reporter := report.NewReporter(cmd.cli, orgNamesFlag.OrgNames)
 	summaryReport, err := reporter.GetSummaryReport()
 	if err != nil {
 		log.Fatalln(err)
