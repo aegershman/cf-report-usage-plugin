@@ -15,6 +15,7 @@ import (
 // UsageReportCmd -
 type UsageReportCmd struct {
 	client *v2client.Client
+	cli    plugin.CliConnection
 }
 
 type flags struct {
@@ -58,6 +59,8 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 
 // UsageReportCommand -
 func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
+	cmd.client = v2client.NewClient(cmd.cli) // TODO remove in just a bit
+
 	var (
 		userFlags    flags
 		formatFlag   string
@@ -179,7 +182,7 @@ func (cmd *UsageReportCmd) getAppsAndServices(summaryURL string) ([]v2client.App
 // Run -
 func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
 	if args[0] == "report-usage" {
-		cmd.client = v2client.NewClient(cli)
+		cmd.cli = cli
 		cmd.UsageReportCommand(args)
 	}
 }
