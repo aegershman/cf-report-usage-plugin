@@ -38,8 +38,7 @@ func (cmd *ReportUsageCmd) parseFlags(args []string) error {
 	flagss.StringVar(&globalFormatFlag, "format", "table", "")
 	flagss.StringVar(&globalLogLevelFlag, "log-level", "info", "")
 
-	err := flagss.Parse(args[1:])
-	if err != nil {
+	if err := flagss.Parse(args[1:]); err != nil {
 		return err
 	}
 
@@ -47,6 +46,7 @@ func (cmd *ReportUsageCmd) parseFlags(args []string) error {
 	if err != nil {
 		return err
 	}
+
 	log.SetLevel(logLevel)
 
 	return nil
@@ -54,8 +54,7 @@ func (cmd *ReportUsageCmd) parseFlags(args []string) error {
 
 // Run -
 func (cmd *ReportUsageCmd) Run(cli plugin.CliConnection, args []string) {
-	err := cmd.parseFlags(args)
-	if err != nil {
+	if err := cmd.parseFlags(args); err != nil {
 		log.Fatalln(err)
 	}
 
@@ -67,7 +66,6 @@ func (cmd *ReportUsageCmd) Run(cli plugin.CliConnection, args []string) {
 
 	presenter := presenters.NewPresenter(*summaryReport, globalFormatFlag) // todo hacky pointer
 	presenter.Render()
-
 }
 
 // GetMetadata -
