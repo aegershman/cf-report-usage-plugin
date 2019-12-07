@@ -16,15 +16,15 @@ type ReportUsageCmd struct {
 }
 
 type orgNamesFlag struct {
-	OrgNames []string
+	names []string
 }
 
 func (o *orgNamesFlag) String() string {
-	return fmt.Sprint(o.OrgNames)
+	return fmt.Sprint(o.names)
 }
 
 func (o *orgNamesFlag) Set(value string) error {
-	o.OrgNames = append(o.OrgNames, value)
+	o.names = append(o.names, value)
 	return nil
 }
 
@@ -52,7 +52,7 @@ func (cmd *ReportUsageCmd) ReportUsageCommand(args []string) {
 	}
 	log.SetLevel(logLevel)
 
-	reporter := report.NewReporter(cmd.cli, orgNamesFlag.OrgNames)
+	reporter := report.NewReporter(cmd.cli, orgNamesFlag.names)
 	summaryReport, err := reporter.GetSummaryReport()
 	if err != nil {
 		log.Fatalln(err)
