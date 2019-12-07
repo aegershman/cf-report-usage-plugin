@@ -15,15 +15,15 @@ type ReportUsageCmd struct {
 	cli plugin.CliConnection
 }
 
-type flags struct {
+type orgNamesFlag struct {
 	OrgNames []string
 }
 
-func (f *flags) String() string {
+func (f *orgNamesFlag) String() string {
 	return fmt.Sprint(f.OrgNames)
 }
 
-func (f *flags) Set(value string) error {
+func (f *orgNamesFlag) Set(value string) error {
 	f.OrgNames = append(f.OrgNames, value)
 	return nil
 }
@@ -31,7 +31,7 @@ func (f *flags) Set(value string) error {
 // ReportUsageCommand -
 func (cmd *ReportUsageCmd) ReportUsageCommand(args []string) {
 	var (
-		userFlags    flags
+		userFlags    orgNamesFlag
 		formatFlag   string
 		logLevelFlag string
 	)
