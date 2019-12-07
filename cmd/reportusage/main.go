@@ -4,8 +4,8 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/aegershman/cf-report-usage-plugin/presenters"
-	"github.com/aegershman/cf-report-usage-plugin/report"
+	"github.com/aegershman/cf-report-usage-plugin/internal/presenters"
+	"github.com/aegershman/cf-report-usage-plugin/internal/report"
 	"github.com/cloudfoundry/cli/plugin"
 	log "github.com/sirupsen/logrus"
 )
