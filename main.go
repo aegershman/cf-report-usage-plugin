@@ -10,26 +10,76 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// UsageReportCmd -
-type UsageReportCmd struct {
-	cli plugin.CliConnection
+type reportUsageCmd struct{}
+
+type orgNamesFlag struct {
+	names []string
 }
 
-type flags struct {
-	OrgNames []string
+func (o *orgNamesFlag) String() string {
+	return fmt.Sprint(o.names)
 }
 
-func (f *flags) String() string {
-	return fmt.Sprint(f.OrgNames)
-}
-
-func (f *flags) Set(value string) error {
-	f.OrgNames = append(f.OrgNames, value)
+func (o *orgNamesFlag) Set(value string) error {
+	o.names = append(o.names, value)
 	return nil
 }
 
+var (
+	globalOrgNamesFlag orgNamesFlag
+	globalFormatFlag   string
+	globalLogLevelFlag string
+)
+
+func (cmd *reportUsageCmd) parseFlags(args []string) error {
+	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
+	flagss.Var(&globalOrgNamesFlag, "o", "")
+	flagss.StringVar(&globalFormatFlag, "format", "table", "")
+	flagss.StringVar(&globalLogLevelFlag, "log-level", "info", "")
+
+	if err := flagss.Parse(args[1:]); err != nil {
+		return err
+	}
+
+	logLevel, err := log.ParseLevel(globalLogLevelFlag)
+	if err != nil {
+		return err
+	}
+
+	log.SetLevel(logLevel)
+
+	return nil
+}
+
+// reportUsageCommand is the "real" main entrypoint into program execution
+func (cmd *reportUsageCmd) reportUsageCommand(cli plugin.CliConnection, args []string) {
+	if err := cmd.parseFlags(args); err != nil {
+		log.Fatalln(err)
+	}
+
+	reporter := report.NewReporter(cli, globalOrgNamesFlag.names)
+	summaryReport, err := reporter.GetSummaryReport()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	presenter := presenters.NewPresenter(*summaryReport, globalFormatFlag) // todo hacky pointer
+	presenter.Render()
+}
+
+// Run -
+func (cmd *reportUsageCmd) Run(cli plugin.CliConnection, args []string) {
+	switch args[0] {
+	case "report-usage":
+		cmd.reportUsageCommand(cli, args)
+	default:
+		log.Infoln("did you know plugin commands can still get ran when uninstalling a plugin? interesting, right?")
+		return
+	}
+}
+
 // GetMetadata -
-func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
+func (cmd *reportUsageCmd) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
 		Name: "cf-report-usage-plugin",
 		Version: plugin.VersionType{
@@ -54,48 +104,6 @@ func (cmd *UsageReportCmd) GetMetadata() plugin.PluginMetadata {
 	}
 }
 
-// UsageReportCommand -
-func (cmd *UsageReportCmd) UsageReportCommand(args []string) {
-	var (
-		userFlags    flags
-		formatFlag   string
-		logLevelFlag string
-	)
-
-	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
-	flagss.Var(&userFlags, "o", "")
-	flagss.StringVar(&formatFlag, "format", "table", "")
-	flagss.StringVar(&logLevelFlag, "log-level", "info", "")
-
-	err := flagss.Parse(args[1:])
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	logLevel, err := log.ParseLevel(logLevelFlag)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	log.SetLevel(logLevel)
-
-	reporter := report.NewReporter(cmd.cli, userFlags.OrgNames)
-	summaryReport, err := reporter.GetSummaryReport()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	presenter := presenters.NewPresenter(*summaryReport, formatFlag) // todo hacky pointer
-	presenter.Render()
-}
-
-// Run -
-func (cmd *UsageReportCmd) Run(cli plugin.CliConnection, args []string) {
-	if args[0] == "report-usage" {
-		cmd.cli = cli
-		cmd.UsageReportCommand(args)
-	}
-}
-
 func main() {
-	plugin.Start(new(UsageReportCmd))
+	plugin.Start(new(reportUsageCmd))
 }
