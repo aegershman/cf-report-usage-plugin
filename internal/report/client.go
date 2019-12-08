@@ -19,7 +19,7 @@ func NewClient(cli plugin.CliConnection) *Client {
 
 // GetSummaryReportByOrgNames -
 func (r *Client) GetSummaryReportByOrgNames(orgNames ...string) (*SummaryReport, error) {
-	populatedOrgs, err := r.getOrgs(orgNames)
+	populatedOrgs, err := r.getOrgs(orgNames...)
 	if err != nil {
 		return &SummaryReport{}, nil
 	}
@@ -44,7 +44,7 @@ func (r *Client) getSpaceReportsByOrg(org v2client.Org) []SpaceReport {
 	return spaceReports
 }
 
-func (r *Client) getOrgs(orgNames []string) ([]v2client.Org, error) {
+func (r *Client) getOrgs(orgNames ...string) ([]v2client.Org, error) {
 	var rawOrgs []v2client.Org
 
 	if len(orgNames) > 0 {
