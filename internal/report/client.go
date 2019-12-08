@@ -24,7 +24,12 @@ func (r *Client) GetSummaryReportByOrgNames(orgNames []string) (*SummaryReport, 
 		return &SummaryReport{}, nil
 	}
 
-	return NewSummaryReport(populatedOrgs), nil
+	var orgReports []OrgReport
+	for _, org := range populatedOrgs {
+		orgReports = append(orgReports, *NewOrgReport(org))
+	}
+
+	return NewSummaryReport(orgReports), nil
 }
 
 func (r *Client) getOrgs(orgNames []string) ([]v2client.Org, error) {
