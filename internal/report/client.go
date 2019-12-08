@@ -12,13 +12,9 @@ type Client struct {
 
 // NewClient -
 func NewClient(cli plugin.CliConnection) *Client {
-	client := v2client.NewClient(cli)
-
-	r := &Client{
-		client: client,
+	return &Client{
+		client: v2client.NewClient(cli),
 	}
-
-	return r
 }
 
 // GetSummaryReportByOrgNames -
