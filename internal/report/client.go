@@ -24,20 +24,20 @@ func (r *Client) GetSummaryReportByOrgNames(orgNames []string) (*SummaryReport, 
 		return &SummaryReport{}, nil
 	}
 
-	var orgReports []OrgReport
+	var orgReports []*OrgReport
 	for _, org := range populatedOrgs {
 		spaceReports := r.getSpaceReportsByOrg(org)
-		orgReport := *NewOrgReport(org, spaceReports)
+		orgReport := NewOrgReport(org, spaceReports)
 		orgReports = append(orgReports, orgReport)
 	}
 
 	return NewSummaryReport(orgReports), nil
 }
 
-func (r *Client) getSpaceReportsByOrg(org v2client.Org) []SpaceReport {
-	var spaceReports []SpaceReport
+func (r *Client) getSpaceReportsByOrg(org v2client.Org) []*SpaceReport {
+	var spaceReports []*SpaceReport
 	for _, space := range org.Spaces {
-		spaceReport := *NewSpaceReport(space)
+		spaceReport := NewSpaceReport(space)
 		spaceReports = append(spaceReports, spaceReport)
 	}
 	return spaceReports

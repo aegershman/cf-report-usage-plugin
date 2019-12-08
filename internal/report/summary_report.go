@@ -8,12 +8,12 @@ import (
 // It effectively serves as the entrypoint into aggregating the data
 // in preparation for it being presented
 type SummaryReport struct {
-	OrgReports []OrgReport `json:"org_reports"`
+	OrgReports []*OrgReport `json:"org_reports"`
 	Report
 }
 
 // NewSummaryReport -
-func NewSummaryReport(orgReports []OrgReport) *SummaryReport {
+func NewSummaryReport(orgReports []*OrgReport) *SummaryReport {
 	self := &SummaryReport{
 		OrgReports: orgReports,
 	}

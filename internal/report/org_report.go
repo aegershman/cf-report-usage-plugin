@@ -8,11 +8,11 @@ import (
 type OrgReport struct {
 	orgRef v2client.Org
 	Report
-	SpaceReports []SpaceReport `json:"space_reports"`
+	SpaceReports []*SpaceReport `json:"space_reports"`
 }
 
 // NewOrgReport -
-func NewOrgReport(org v2client.Org, spaceReports []SpaceReport) *OrgReport {
+func NewOrgReport(org v2client.Org, spaceReports []*SpaceReport) *OrgReport {
 	self := &OrgReport{
 		orgRef:       org,
 		SpaceReports: spaceReports,
