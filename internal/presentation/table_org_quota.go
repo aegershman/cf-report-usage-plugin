@@ -11,7 +11,7 @@ import (
 // I just need to get this out for working on a project
 func (p *Presenter) asTableOrgQuota() {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetAlignment(tablewriter.ALIGN_CENTER)
 	table.SetHeader([]string{
 		"Org",
 		"AI Quota",
