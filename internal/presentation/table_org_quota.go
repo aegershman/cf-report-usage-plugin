@@ -14,31 +14,28 @@ func (p *Presenter) asTableOrgQuota() {
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
 	table.SetHeader([]string{
 		"Org",
-		"Billable AIs",
-		"AIs",
+		"AI Quota",
+		"Deployed AIs",
+		"Running AIs",
 		"Stopped AIs",
-		"Apps",
-		"SCS",
 	})
 
 	for _, orgReport := range p.SummaryReport.OrgReports {
 		table.Append([]string{
 			orgReport.Name,
-			strconv.Itoa(orgReport.BillableAppInstancesCount),
+			strconv.Itoa(orgReport.OrgQuota.AppInstanceLimit),
 			strconv.Itoa(orgReport.AppInstancesCount),
+			strconv.Itoa(orgReport.RunningAppInstancesCount),
 			strconv.Itoa(orgReport.StoppedAppInstancesCount),
-			strconv.Itoa(orgReport.AppsCount),
-			strconv.Itoa(orgReport.SpringCloudServicesCount),
 		})
 	}
 
 	table.SetFooter([]string{
 		"Total",
-		strconv.Itoa(p.SummaryReport.BillableAppInstancesCount),
+		"-",
 		strconv.Itoa(p.SummaryReport.AppInstancesCount),
+		strconv.Itoa(p.SummaryReport.RunningAppInstancesCount),
 		strconv.Itoa(p.SummaryReport.StoppedAppInstancesCount),
-		strconv.Itoa(p.SummaryReport.AppsCount),
-		strconv.Itoa(p.SummaryReport.SpringCloudServicesCount),
 	})
 
 	table.Render()
