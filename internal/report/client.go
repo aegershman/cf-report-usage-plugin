@@ -18,8 +18,8 @@ func NewClient(cli plugin.CliConnection) *Client {
 }
 
 // GetSummaryReportByOrgNames -
-func (r *Client) GetSummaryReportByOrgNames(orgNames []string) (*SummaryReport, error) {
-	populatedOrgs, err := r.getOrgs(orgNames)
+func (r *Client) GetSummaryReportByOrgNames(orgNames ...string) (*SummaryReport, error) {
+	populatedOrgs, err := r.getOrgs(orgNames...)
 	if err != nil {
 		return &SummaryReport{}, nil
 	}
@@ -28,11 +28,11 @@ func (r *Client) GetSummaryReportByOrgNames(orgNames []string) (*SummaryReport, 
 	for _, org := range populatedOrgs {
 		spaceReports := r.getSpaceReportsByOrg(org)
 		orgQuota, _ := r.client.OrgQuotas.GetOrgQuota(org.QuotaURL)
-		orgReport := *NewOrgReport(orgQuota, org, spaceReports)
+		orgReport := *NewOrgReport(orgQuota, org, spaceReports...)
 		orgReports = append(orgReports, orgReport)
 	}
 
-	return NewSummaryReport(orgReports), nil
+	return NewSummaryReport(orgReports...), nil
 }
 
 func (r *Client) getSpaceReportsByOrg(org v2client.Org) []SpaceReport {
@@ -44,7 +44,7 @@ func (r *Client) getSpaceReportsByOrg(org v2client.Org) []SpaceReport {
 	return spaceReports
 }
 
-func (r *Client) getOrgs(orgNames []string) ([]v2client.Org, error) {
+func (r *Client) getOrgs(orgNames ...string) ([]v2client.Org, error) {
 	var rawOrgs []v2client.Org
 
 	if len(orgNames) > 0 {

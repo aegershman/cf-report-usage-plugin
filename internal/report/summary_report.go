@@ -13,7 +13,7 @@ type SummaryReport struct {
 }
 
 // NewSummaryReport -
-func NewSummaryReport(orgReports []OrgReport) *SummaryReport {
+func NewSummaryReport(orgReports ...OrgReport) *SummaryReport {
 	self := &SummaryReport{
 		OrgReports: orgReports,
 	}
