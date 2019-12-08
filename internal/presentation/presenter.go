@@ -21,12 +21,14 @@ func NewPresenter(r report.SummaryReport, format string) Presenter {
 // Render -
 func (p *Presenter) Render() {
 	switch p.Format {
-	case "string":
-		p.asString()
-	case "table":
-		p.asTable()
 	case "json":
 		p.asJSON()
+	case "string":
+		p.asString()
+	case "table-org-quota": // again, TODO, bleh
+		p.asTableOrgQuota()
+	case "table":
+		p.asTable()
 	default:
 		// TODO
 		// yeah this is kind of awful I know, I'm sorry, I'm still learning,
