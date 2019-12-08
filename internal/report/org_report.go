@@ -13,7 +13,7 @@ type OrgReport struct {
 }
 
 // NewOrgReport -
-func NewOrgReport(orgQuota v2client.OrgQuota, org v2client.Org, spaceReports []SpaceReport) *OrgReport {
+func NewOrgReport(orgQuota v2client.OrgQuota, org v2client.Org, spaceReports ...SpaceReport) *OrgReport {
 	self := &OrgReport{
 		OrgQuota:     orgQuota,
 		orgRef:       org,

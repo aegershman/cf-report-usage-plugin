@@ -28,11 +28,11 @@ func (r *Client) GetSummaryReportByOrgNames(orgNames ...string) (*SummaryReport,
 	for _, org := range populatedOrgs {
 		spaceReports := r.getSpaceReportsByOrg(org)
 		orgQuota, _ := r.client.OrgQuotas.GetOrgQuota(org.QuotaURL)
-		orgReport := *NewOrgReport(orgQuota, org, spaceReports)
+		orgReport := *NewOrgReport(orgQuota, org, spaceReports...)
 		orgReports = append(orgReports, orgReport)
 	}
 
-	return NewSummaryReport(orgReports), nil
+	return NewSummaryReport(orgReports...), nil
 }
 
 func (r *Client) getSpaceReportsByOrg(org v2client.Org) []SpaceReport {
