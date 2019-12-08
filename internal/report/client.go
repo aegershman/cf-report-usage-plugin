@@ -7,25 +7,23 @@ import (
 
 // Client orchestrates generation and aggregation of report data
 type Client struct {
-	orgNames []string
-	client   *v2client.Client
+	client *v2client.Client
 }
 
 // NewClient -
-func NewClient(cli plugin.CliConnection, orgNames []string) *Client {
+func NewClient(cli plugin.CliConnection) *Client {
 	client := v2client.NewClient(cli)
 
 	r := &Client{
-		client:   client,
-		orgNames: orgNames,
+		client: client,
 	}
 
 	return r
 }
 
-// GetSummaryReport -
-func (r *Client) GetSummaryReport() (*SummaryReport, error) {
-	populatedOrgs, err := r.getOrgs()
+// GetSummaryReportByOrgNames -
+func (r *Client) GetSummaryReportByOrgNames(orgNames []string) (*SummaryReport, error) {
+	populatedOrgs, err := r.getOrgs(orgNames)
 	if err != nil {
 		return &SummaryReport{}, nil
 	}
@@ -33,11 +31,11 @@ func (r *Client) GetSummaryReport() (*SummaryReport, error) {
 	return NewSummaryReport(populatedOrgs), nil
 }
 
-func (r *Client) getOrgs() ([]v2client.Org, error) {
+func (r *Client) getOrgs(orgNames []string) ([]v2client.Org, error) {
 	var rawOrgs []v2client.Org
 
-	if len(r.orgNames) > 0 {
-		for _, orgName := range r.orgNames {
+	if len(orgNames) > 0 {
+		for _, orgName := range orgNames {
 			rawOrg, err := r.client.Orgs.GetOrg(orgName)
 			if err != nil {
 				return nil, err
