@@ -48,7 +48,7 @@ func (cmd *reportUsageCmd) reportUsageCommand(cli plugin.CliConnection, args []s
 	}
 	log.SetLevel(logLevel)
 
-	reporter := report.NewReporter(cli, orgNamesFlag.names)
+	reporter := report.NewClient(cli, orgNamesFlag.names)
 	summaryReport, err := reporter.GetSummaryReport()
 	if err != nil {
 		log.Fatalln(err)

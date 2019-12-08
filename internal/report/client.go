@@ -5,17 +5,17 @@ import (
 	"github.com/cloudfoundry/cli/plugin"
 )
 
-// Reporter -
-type Reporter struct {
+// Client orchestrates generation and aggregation of report data
+type Client struct {
 	orgNames []string
 	client   *v2client.Client
 }
 
-// NewReporter -
-func NewReporter(cli plugin.CliConnection, orgNames []string) *Reporter {
+// NewClient -
+func NewClient(cli plugin.CliConnection, orgNames []string) *Client {
 	client := v2client.NewClient(cli)
 
-	r := &Reporter{
+	r := &Client{
 		client:   client,
 		orgNames: orgNames,
 	}
@@ -24,7 +24,7 @@ func NewReporter(cli plugin.CliConnection, orgNames []string) *Reporter {
 }
 
 // GetSummaryReport -
-func (r *Reporter) GetSummaryReport() (*SummaryReport, error) {
+func (r *Client) GetSummaryReport() (*SummaryReport, error) {
 	populatedOrgs, err := r.getOrgs()
 	if err != nil {
 		return &SummaryReport{}, nil
@@ -33,7 +33,7 @@ func (r *Reporter) GetSummaryReport() (*SummaryReport, error) {
 	return NewSummaryReport(populatedOrgs), nil
 }
 
-func (r *Reporter) getOrgs() ([]v2client.Org, error) {
+func (r *Client) getOrgs() ([]v2client.Org, error) {
 	var rawOrgs []v2client.Org
 
 	if len(r.orgNames) > 0 {
@@ -64,7 +64,7 @@ func (r *Reporter) getOrgs() ([]v2client.Org, error) {
 	return orgs, nil
 }
 
-func (r *Reporter) getOrgDetails(o v2client.Org) (v2client.Org, error) {
+func (r *Client) getOrgDetails(o v2client.Org) (v2client.Org, error) {
 	usage, err := r.client.Orgs.GetOrgMemoryUsage(o)
 	if err != nil {
 		return v2client.Org{}, err
@@ -89,7 +89,7 @@ func (r *Reporter) getOrgDetails(o v2client.Org) (v2client.Org, error) {
 	}, nil
 }
 
-func (r *Reporter) getSpaces(spaceURL string) ([]v2client.Space, error) {
+func (r *Client) getSpaces(spaceURL string) ([]v2client.Space, error) {
 	rawSpaces, err := r.client.Orgs.GetOrgSpaces(spaceURL)
 	if err != nil {
 		return nil, err
@@ -111,7 +111,7 @@ func (r *Reporter) getSpaces(spaceURL string) ([]v2client.Space, error) {
 	return spaces, nil
 }
 
-func (r *Reporter) getAppsAndServices(summaryURL string) ([]v2client.App, []v2client.Service, error) {
+func (r *Client) getAppsAndServices(summaryURL string) ([]v2client.App, []v2client.Service, error) {
 	apps, services, err := r.client.Spaces.GetSpaceAppsAndServices(summaryURL)
 	if err != nil {
 		return nil, nil, err
