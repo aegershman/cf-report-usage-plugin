@@ -18,7 +18,7 @@ func NewClient(cli plugin.CliConnection) *Client {
 }
 
 // GetSummaryReportByOrgNames -
-func (r *Client) GetSummaryReportByOrgNames(orgNames []string) (*SummaryReport, error) {
+func (r *Client) GetSummaryReportByOrgNames(orgNames ...string) (*SummaryReport, error) {
 	populatedOrgs, err := r.getOrgs(orgNames)
 	if err != nil {
 		return &SummaryReport{}, nil
