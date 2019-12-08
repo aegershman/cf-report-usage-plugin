@@ -27,11 +27,17 @@ func (r *Client) GetSummaryReportByOrgNames(orgNames []string) (*SummaryReport, 
 	var orgReports []OrgReport
 	for _, org := range populatedOrgs {
 		spaceReports := r.getSpaceReportsByOrg(org)
-		orgReport := *NewOrgReport(org, spaceReports)
+		orgQuota := r.getOrgQuotaByOrg(org)
+		orgReport := *NewOrgReport(orgQuota, org, spaceReports)
 		orgReports = append(orgReports, orgReport)
 	}
 
 	return NewSummaryReport(orgReports), nil
+}
+
+func (r *Client) getOrgQuotaByOrg(org v2client.Org) v2client.OrgQuota {
+	quota, _ := r.client.OrgQuotas.GetOrgQuota(org.QuotaURL)
+	return quota
 }
 
 func (r *Client) getSpaceReportsByOrg(org v2client.Org) []SpaceReport {
