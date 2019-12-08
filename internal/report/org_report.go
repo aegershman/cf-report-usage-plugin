@@ -12,12 +12,7 @@ type OrgReport struct {
 }
 
 // NewOrgReport -
-func NewOrgReport(org v2client.Org) *OrgReport {
-	var spaceReports []SpaceReport
-	for _, space := range org.Spaces {
-		spaceReports = append(spaceReports, *NewSpaceReport(space))
-	}
-
+func NewOrgReport(org v2client.Org, spaceReports []SpaceReport) *OrgReport {
 	self := &OrgReport{
 		orgRef:       org,
 		SpaceReports: spaceReports,

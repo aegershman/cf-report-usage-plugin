@@ -1,8 +1,6 @@
 package report
 
 import (
-	"github.com/aegershman/cf-report-usage-plugin/internal/v2client"
-
 	"bytes"
 )
 
@@ -15,12 +13,7 @@ type SummaryReport struct {
 }
 
 // NewSummaryReport -
-func NewSummaryReport(orgs []v2client.Org) *SummaryReport {
-	var orgReports []OrgReport
-	for _, org := range orgs {
-		orgReports = append(orgReports, *NewOrgReport(org))
-	}
-
+func NewSummaryReport(orgReports []OrgReport) *SummaryReport {
 	self := &SummaryReport{
 		OrgReports: orgReports,
 	}

@@ -5,39 +5,49 @@ import (
 	"github.com/cloudfoundry/cli/plugin"
 )
 
-// Reporter -
-type Reporter struct {
-	orgNames []string
-	client   *v2client.Client
+// Client orchestrates generation and aggregation of report data
+type Client struct {
+	client *v2client.Client
 }
 
-// NewReporter -
-func NewReporter(cli plugin.CliConnection, orgNames []string) *Reporter {
-	client := v2client.NewClient(cli)
-
-	r := &Reporter{
-		client:   client,
-		orgNames: orgNames,
+// NewClient -
+func NewClient(cli plugin.CliConnection) *Client {
+	return &Client{
+		client: v2client.NewClient(cli),
 	}
-
-	return r
 }
 
-// GetSummaryReport -
-func (r *Reporter) GetSummaryReport() (*SummaryReport, error) {
-	populatedOrgs, err := r.getOrgs()
+// GetSummaryReportByOrgNames -
+func (r *Client) GetSummaryReportByOrgNames(orgNames []string) (*SummaryReport, error) {
+	populatedOrgs, err := r.getOrgs(orgNames)
 	if err != nil {
 		return &SummaryReport{}, nil
 	}
 
-	return NewSummaryReport(populatedOrgs), nil
+	var orgReports []OrgReport
+	for _, org := range populatedOrgs {
+		spaceReports := r.getSpaceReportsByOrg(org)
+		orgReport := *NewOrgReport(org, spaceReports)
+		orgReports = append(orgReports, orgReport)
+	}
+
+	return NewSummaryReport(orgReports), nil
 }
 
-func (r *Reporter) getOrgs() ([]v2client.Org, error) {
+func (r *Client) getSpaceReportsByOrg(org v2client.Org) []SpaceReport {
+	var spaceReports []SpaceReport
+	for _, space := range org.Spaces {
+		spaceReport := *NewSpaceReport(space)
+		spaceReports = append(spaceReports, spaceReport)
+	}
+	return spaceReports
+}
+
+func (r *Client) getOrgs(orgNames []string) ([]v2client.Org, error) {
 	var rawOrgs []v2client.Org
 
-	if len(r.orgNames) > 0 {
-		for _, orgName := range r.orgNames {
+	if len(orgNames) > 0 {
+		for _, orgName := range orgNames {
 			rawOrg, err := r.client.Orgs.GetOrg(orgName)
 			if err != nil {
 				return nil, err
@@ -64,7 +74,7 @@ func (r *Reporter) getOrgs() ([]v2client.Org, error) {
 	return orgs, nil
 }
 
-func (r *Reporter) getOrgDetails(o v2client.Org) (v2client.Org, error) {
+func (r *Client) getOrgDetails(o v2client.Org) (v2client.Org, error) {
 	usage, err := r.client.Orgs.GetOrgMemoryUsage(o)
 	if err != nil {
 		return v2client.Org{}, err
@@ -89,7 +99,7 @@ func (r *Reporter) getOrgDetails(o v2client.Org) (v2client.Org, error) {
 	}, nil
 }
 
-func (r *Reporter) getSpaces(spaceURL string) ([]v2client.Space, error) {
+func (r *Client) getSpaces(spaceURL string) ([]v2client.Space, error) {
 	rawSpaces, err := r.client.Orgs.GetOrgSpaces(spaceURL)
 	if err != nil {
 		return nil, err
@@ -111,7 +121,7 @@ func (r *Reporter) getSpaces(spaceURL string) ([]v2client.Space, error) {
 	return spaces, nil
 }
 
-func (r *Reporter) getAppsAndServices(summaryURL string) ([]v2client.App, []v2client.Service, error) {
+func (r *Client) getAppsAndServices(summaryURL string) ([]v2client.App, []v2client.Service, error) {
 	apps, services, err := r.client.Spaces.GetSpaceAppsAndServices(summaryURL)
 	if err != nil {
 		return nil, nil, err
