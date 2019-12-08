@@ -14,7 +14,6 @@ type SpaceReport struct {
 
 // NewSpaceReport -
 func NewSpaceReport(space v2client.Space) *SpaceReport {
-
 	self := &SpaceReport{
 		spaceRef: space,
 	}
