@@ -71,6 +71,18 @@ This example is going to be a bit cluttered, so it's recommended using `jq` to p
   "summary_report": {
     "org_reports": [
       {
+        "org_quota": {
+          "name": "voyager",
+          "total_services": -1,
+          "total_routes": -1,
+          "total_private_domains": -1,
+          "memory_limit": 83968,
+          "instance_memory_limit": -1,
+          "app_instance_limit": 38,
+          "app_task_limit": -1,
+          "total_service_keys": -1,
+          "total_reserved_route_ports": -1
+        },
         "app_instances_count": 37,
         "apps_count": 28,
         "billable_app_instances_count": 40,
@@ -121,6 +133,18 @@ This example is going to be a bit cluttered, so it's recommended using `jq` to p
         ]
       },
       {
+        "org_quota": {
+          "name": "tenzing",
+          "total_services": -1,
+          "total_routes": -1,
+          "total_private_domains": -1,
+          "memory_limit": 83968,
+          "instance_memory_limit": -1,
+          "app_instance_limit": 0,
+          "app_task_limit": -1,
+          "total_service_keys": -1,
+          "total_reserved_route_ports": -1
+        },
         "app_instances_count": 0,
         "apps_count": 21,
         "billable_app_instances_count": 5,

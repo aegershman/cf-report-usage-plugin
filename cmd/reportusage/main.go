@@ -75,8 +75,8 @@ func (cmd *reportUsageCmd) GetMetadata() plugin.PluginMetadata {
 		Name: "cf-report-usage-plugin",
 		Version: plugin.VersionType{
 			Major: 3,
-			Minor: 0,
-			Build: 1,
+			Minor: 1,
+			Build: 0,
 		},
 		Commands: []plugin.Command{
 			{
