@@ -25,4 +25,5 @@ tasks:
       - cf report-usage -o voyager -o tenzing --format json
       # TODO will remove this last line, shouldn't be displayed in README
       - cf report-usage -o voyager -o tenzing --format table-org-quota
+      - cf report-usage --format table-org-quota
       - task: uninstall
