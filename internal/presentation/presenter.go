@@ -21,6 +21,11 @@ func NewPresenter(r report.SummaryReport, formats ...string) Presenter {
 
 // Render -
 func (p *Presenter) Render() {
+	// TODO better handling of defaults
+	if len(p.formats) == 0 {
+		p.asTable()
+	}
+
 	for _, format := range p.formats {
 		switch format {
 		case "json":

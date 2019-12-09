@@ -41,10 +41,11 @@ func (f *formatFlag) Set(value string) error {
 // reportUsageCommand is the "real" main entrypoint into program execution
 func (cmd *reportUsageCmd) reportUsageCommand(cli plugin.CliConnection, args []string) {
 
-	// TODO better way to handle flag defaults
-	var orgNamesFlag orgNamesFlag
-	formatFlag := formatFlag{formats: []string{"table"}}
-	var logLevelFlag string
+	var (
+		orgNamesFlag orgNamesFlag
+		formatFlag   formatFlag
+		logLevelFlag string
+	)
 
 	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
 	flagss.Var(&orgNamesFlag, "o", "")
