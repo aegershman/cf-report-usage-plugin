@@ -25,18 +25,31 @@ func (o *orgNamesFlag) Set(value string) error {
 	return nil
 }
 
+type formatFlag struct {
+	formats []string
+}
+
+func (f *formatFlag) String() string {
+	return fmt.Sprint(f.formats)
+}
+
+func (f *formatFlag) Set(value string) error {
+	f.formats = append(f.formats, value)
+	return nil
+}
+
 // reportUsageCommand is the "real" main entrypoint into program execution
 func (cmd *reportUsageCmd) reportUsageCommand(cli plugin.CliConnection, args []string) {
 
 	var (
 		orgNamesFlag orgNamesFlag
-		formatFlag   string
+		formatFlag   formatFlag
 		logLevelFlag string
 	)
 
 	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
 	flagss.Var(&orgNamesFlag, "o", "")
-	flagss.StringVar(&formatFlag, "format", "table", "")
+	flagss.Var(&formatFlag, "format", "")
 	flagss.StringVar(&logLevelFlag, "log-level", "info", "")
 	if err := flagss.Parse(args[1:]); err != nil {
 		log.Fatalln(err)
@@ -54,7 +67,7 @@ func (cmd *reportUsageCmd) reportUsageCommand(cli plugin.CliConnection, args []s
 		log.Fatalln(err)
 	}
 
-	presenter := presentation.NewPresenter(*summaryReport, formatFlag) // todo hacky pointer
+	presenter := presentation.NewPresenter(*summaryReport, formatFlag.formats...) // todo hacky pointer
 	presenter.Render()
 }
 
@@ -64,7 +77,7 @@ func (cmd *reportUsageCmd) Run(cli plugin.CliConnection, args []string) {
 	case "report-usage":
 		cmd.reportUsageCommand(cli, args)
 	default:
-		log.Infoln("did you know plugin commands can still get ran when uninstalling a plugin? interesting, right?")
+		log.Debugln("did you know plugin commands can still get ran when uninstalling a plugin? interesting, right?")
 		return
 	}
 }
@@ -75,18 +88,18 @@ func (cmd *reportUsageCmd) GetMetadata() plugin.PluginMetadata {
 		Name: "cf-report-usage-plugin",
 		Version: plugin.VersionType{
 			Major: 3,
-			Minor: 1,
-			Build: 1,
+			Minor: 2,
+			Build: 0,
 		},
 		Commands: []plugin.Command{
 			{
 				Name:     "report-usage",
 				HelpText: "View AIs, SIs and memory usage for orgs and spaces",
 				UsageDetails: plugin.Usage{
-					Usage: "cf report-usage [-o orgName...] --format formatChoice",
+					Usage: "cf report-usage [-o orgName...] [--format formatChoice...]",
 					Options: map[string]string{
 						"o":         "organization(s) included in report. Flag can be provided multiple times.",
-						"format":    "format to print as (options: string,table,json) (default: table)",
+						"format":    "format to print as (options: string,table,json). Flag can be provided multiple times.",
 						"log-level": "(options: info,debug,trace) (default: info)",
 					},
 				},

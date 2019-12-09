@@ -2,38 +2,42 @@ package presentation
 
 import (
 	"github.com/aegershman/cf-report-usage-plugin/internal/report"
+	log "github.com/sirupsen/logrus"
 )
 
 // Presenter -
 type Presenter struct {
 	SummaryReport report.SummaryReport `json:"summary_report"`
-	Format        string               `json:"format"`
+	formats       []string
 }
 
 // NewPresenter -
-func NewPresenter(r report.SummaryReport, format string) Presenter {
+func NewPresenter(r report.SummaryReport, formats ...string) Presenter {
 	return Presenter{
 		SummaryReport: r,
-		Format:        format,
+		formats:       formats,
 	}
 }
 
 // Render -
 func (p *Presenter) Render() {
-	switch p.Format {
-	case "json":
-		p.asJSON()
-	case "string":
-		p.asString()
-	case "table-org-quota": // again, TODO, bleh
-		p.asTableOrgQuota()
-	case "table":
+	// TODO better handling of defaults
+	if len(p.formats) == 0 {
 		p.asTable()
-	default:
-		// TODO
-		// yeah this is kind of awful I know, I'm sorry, I'm still learning,
-		// I'll fix this along with much better and earlier error handling on this
-		// I'll fix this, I promise
-		p.asString()
+	}
+
+	for _, format := range p.formats {
+		switch format {
+		case "json":
+			p.asJSON()
+		case "string":
+			p.asString()
+		case "table-org-quota": // again, TODO, get rid of this, bleh
+			p.asTableOrgQuota()
+		case "table":
+			p.asTable()
+		default:
+			log.Debugf("could not identify presentation format %s\n", format)
+		}
 	}
 }

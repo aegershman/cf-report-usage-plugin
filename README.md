@@ -12,10 +12,14 @@ cf report-usage
 cf report-usage -o voyager
 cf report-usage -o voyager -o tenzing [-o orgName...]
 
-# report using different formats
+# report using specific formats
 cf report-usage -o voyager -o tenzing --format table
 cf report-usage -o voyager -o tenzing --format string
 cf report-usage -o voyager -o tenzing --format json
+
+# or output multiple report formats in the same run by specifying --format multiple times
+cf report-usage -o voyager -o tenzing --format table --format json
+cf report-usage -o voyager -o tenzing [--format formatName...]
 ```
 
 `--format table`:
@@ -225,8 +229,7 @@ This example is going to be a bit cluttered, so it's recommended using `jq` to p
     "spring_cloud_services_count": 8,
     "stopped_app_instances_count": 7,
     "stopped_apps_count": 28
-  },
-  "format": "json"
+  }
 }
 ```
 
@@ -236,20 +239,18 @@ If you want to try it out, install it directly from [the github releases tab as 
 
 ```sh
 # osx 64bit
-cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.1.1/cf-report-usage-plugin-darwin
+cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.2.0/cf-report-usage-plugin-darwin
 
 # linux 64bit (32bit and ARM6 also available)
-cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.1.1/cf-report-usage-plugin-linux-amd64
+cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.2.0/cf-report-usage-plugin-linux-amd64
 
 # windows 64bit (32bit also available)
-cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.1.1/cf-report-usage-plugin-windows-amd64.exe
+cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.2.0/cf-report-usage-plugin-windows-amd64.exe
 ```
 
 ## backwards compatibility
 
-To be honest, I wouldn't describe this plugin as "totally ready" yet. It's not where I want it yet. I'd consider `3.x.x` to be the demarcation point, I suppose. I will do the best I can to maintain backwards compatibility with the current set of properties that can be rendered by a presenter. However, the only output format changes I'll _really_ care about is the `--format json`.
-
-Changes to any `json` rendering will warrant a `minor` bump for the time being. Changes to either the `string` or `table` presenter can qualify as `patch` bumps, because they're just for humans. The `json` presenter, however, I want to be more careful with, because it's more versatile for machine usage.
+To be honest, I wouldn't describe this plugin as "totally ready" yet. It's not where I want it yet. I will do the best I can to maintain backwards compatibility with the current set of properties that can be rendered by a presenter.
 
 ## use in pivotal licensing
 
