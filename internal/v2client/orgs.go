@@ -32,7 +32,7 @@ func (o *OrgsService) GetOrg(name string) (Org, error) {
 		return Org{}, err
 	}
 
-	quotaURL := fmt.Sprintf("/v2/quota_definition_url/%s", org.QuotaDefinitionGuid)
+	quotaURL := fmt.Sprintf("/v2/quota_definitions/%s", org.QuotaDefinitionGuid)
 	spacesURL := fmt.Sprintf("/v2/organizations/%s/spaces", org.Guid)
 	url := fmt.Sprintf("/v2/organizations/%s", org.Guid)
 
