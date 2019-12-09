@@ -19,13 +19,7 @@ tasks:
   test:
     cmds:
       - task: install
-      # TODO wasteful; maybe ability to specify multiple formats on a single run...?
-      - cf report-usage -o voyager -o tenzing --format string
-      - cf report-usage -o voyager -o tenzing --format table
-      - cf report-usage -o voyager -o tenzing --format json
-      # TODO will remove this last line, shouldn't be displayed in README
-      - cf report-usage -o voyager -o tenzing --format table-org-quota
-      # TODO long running / test failures
-      - cf report-usage --format table-org-quota
       - cf report-usage -o not-real-org
+      - cf report-usage -o voyager --format table-org-quota # TODO on this
+      - cf report-usage -o voyager -o tenzing --format string --format table --format json
       - task: uninstall
