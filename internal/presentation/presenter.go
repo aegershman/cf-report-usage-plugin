@@ -2,6 +2,11 @@ package presentation
 
 import (
 	"github.com/aegershman/cf-report-usage-plugin/internal/report"
+	log "github.com/sirupsen/logrus"
+)
+
+const (
+	DEFAULT_PRESENTER_FORMAT = "table"
 )
 
 // Presenter -
@@ -21,21 +26,23 @@ func NewPresenter(r report.SummaryReport, formats ...string) Presenter {
 // Render -
 func (p *Presenter) Render() {
 	for _, format := range p.formats {
-		switch format {
-		case "json":
-			p.asJSON()
-			fallthrough
-		case "string":
-			p.asString()
-			fallthrough
-		case "table-org-quota": // again, TODO, get rid of this, bleh
-			p.asTableOrgQuota()
-			fallthrough
-		case "table":
-			p.asTable()
-			fallthrough
-		default:
-			p.asString()
-		}
+		p.render(format)
 	}
+}
+
+func (p *Presenter) render(format string) {
+	switch format {
+	case "json":
+		p.asJSON()
+	case "string":
+		p.asString()
+	case "table-org-quota": // again, TODO, get rid of this, bleh
+		p.asTableOrgQuota()
+	case "table":
+		p.asTable()
+	default:
+		log.Debugf("could not identify presentation format %s\n", format)
+		p.render(DEFAULT_PRESENTER_FORMAT)
+	}
+
 }
