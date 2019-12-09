@@ -11,10 +11,15 @@ type Client struct {
 }
 
 // NewClient -
-func NewClient(cli plugin.CliConnection) *Client {
-	return &Client{
-		client: v2client.NewClient(cli),
+func NewClient(cli plugin.CliConnection) (*Client, error) {
+	client, err := v2client.NewClient(cli)
+	if err != nil {
+		return &Client{}, err
 	}
+
+	return &Client{
+		client: client,
+	}, nil
 }
 
 // GetSummaryReportByOrgNames -

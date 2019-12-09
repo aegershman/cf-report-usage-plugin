@@ -5,11 +5,13 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/cloudfoundry-community/go-cfclient"
 	"github.com/cloudfoundry/cli/plugin"
 )
 
 // Client -
 type Client struct {
+	cfc    cfclient.CloudFoundryClient
 	cli    plugin.CliConnection
 	common service
 
@@ -22,8 +24,22 @@ type Client struct {
 }
 
 // NewClient -
-func NewClient(cli plugin.CliConnection) *Client {
+func NewClient(cli plugin.CliConnection) (*Client, error) {
 	c := &Client{cli: cli}
+
+	apiAddress, err := cli.ApiEndpoint()
+	if err != nil {
+		return &Client{}, nil
+	}
+	cfcConfig := &cfclient.Config{
+		ApiAddress: apiAddress,
+	}
+	cfc, err := cfclient.NewClient(cfcConfig)
+	if err != nil {
+		return &Client{}, nil
+	}
+
+	c.cfc = cfc
 	c.common.client = c
 	c.Apps = (*AppsService)(&c.common)
 	c.Info = (*InfoService)(&c.common)
@@ -31,7 +47,7 @@ func NewClient(cli plugin.CliConnection) *Client {
 	c.Orgs = (*OrgsService)(&c.common)
 	c.Services = (*ServicesService)(&c.common)
 	c.Spaces = (*SpacesService)(&c.common)
-	return c
+	return c, nil
 }
 
 type service struct {
