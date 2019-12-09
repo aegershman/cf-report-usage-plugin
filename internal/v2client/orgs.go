@@ -2,7 +2,6 @@ package v2client
 
 import (
 	"fmt"
-	"strconv"
 )
 
 // Org -
@@ -40,33 +39,25 @@ func (o *OrgsService) GetOrg(name string) (Org, error) {
 
 // GetOrgs -
 func (o *OrgsService) GetOrgs() ([]Org, error) {
-	orgsJSON, err := o.client.Curl("/v2/organizations")
+	listedOrgs, err := o.client.cfc.ListOrgs()
 	if err != nil {
 		return nil, err
 	}
-	pages := int(orgsJSON["total_pages"].(float64))
+
 	orgs := []Org{}
-	for i := 1; i <= pages; i++ {
-		if 1 != i {
-			orgsJSON, err = o.client.Curl("/v2/organizations?page=" + strconv.Itoa(i))
-		}
-		for _, o := range orgsJSON["resources"].([]interface{}) {
-			theOrg := o.(map[string]interface{})
-			entity := theOrg["entity"].(map[string]interface{})
-			name := entity["name"].(string)
-			if name == "system" {
-				continue
-			}
-			metadata := theOrg["metadata"].(map[string]interface{})
-			orgs = append(orgs,
-				Org{
-					Name:      name,
-					URL:       metadata["url"].(string),
-					QuotaURL:  entity["quota_definition_url"].(string),
-					SpacesURL: entity["spaces_url"].(string),
-				})
-		}
+	for _, org := range listedOrgs {
+		quotaURL := fmt.Sprintf("/v2/quota_definitions/%s", org.QuotaDefinitionGuid)
+		spacesURL := fmt.Sprintf("/v2/organizations/%s/spaces", org.Guid)
+		url := fmt.Sprintf("/v2/organizations/%s", org.Guid)
+		orgs = append(orgs,
+			Org{
+				Name:      org.Name,
+				QuotaURL:  quotaURL,
+				SpacesURL: spacesURL,
+				URL:       url,
+			})
 	}
+
 	return orgs, nil
 }
 
