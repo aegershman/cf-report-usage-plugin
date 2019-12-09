@@ -25,20 +25,29 @@ type Client struct {
 
 // NewClient -
 func NewClient(cli plugin.CliConnection) (*Client, error) {
-	c := &Client{cli: cli}
-
 	apiAddress, err := cli.ApiEndpoint()
 	if err != nil {
 		return &Client{}, nil
 	}
+
+	accessToken, err := cli.AccessToken()
+	if err != nil {
+		return &Client{}, nil
+	}
+
+	trimmedAccessToken := strings.TrimPrefix(accessToken, "bearer ")
+
 	cfcConfig := &cfclient.Config{
 		ApiAddress: apiAddress,
+		Token:      trimmedAccessToken,
 	}
+
 	cfc, err := cfclient.NewClient(cfcConfig)
 	if err != nil {
 		return &Client{}, nil
 	}
 
+	c := &Client{cli: cli}
 	c.cfc = cfc
 	c.common.client = c
 	c.Apps = (*AppsService)(&c.common)
