@@ -5,11 +5,13 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/cloudfoundry-community/go-cfclient"
 	"github.com/cloudfoundry/cli/plugin"
 )
 
 // Client -
 type Client struct {
+	cfc    cfclient.CloudFoundryClient // TODO primed go-cfclient
 	cli    plugin.CliConnection
 	common service
 
@@ -22,8 +24,31 @@ type Client struct {
 }
 
 // NewClient -
-func NewClient(cli plugin.CliConnection) *Client {
+func NewClient(cli plugin.CliConnection) (*Client, error) {
+	apiAddress, err := cli.ApiEndpoint()
+	if err != nil {
+		return &Client{}, nil
+	}
+
+	accessToken, err := cli.AccessToken()
+	if err != nil {
+		return &Client{}, nil
+	}
+
+	trimmedAccessToken := strings.TrimPrefix(accessToken, "bearer ")
+
+	cfcConfig := &cfclient.Config{
+		ApiAddress: apiAddress,
+		Token:      trimmedAccessToken,
+	}
+
+	cfc, err := cfclient.NewClient(cfcConfig)
+	if err != nil {
+		return &Client{}, nil
+	}
+
 	c := &Client{cli: cli}
+	c.cfc = cfc
 	c.common.client = c
 	c.Apps = (*AppsService)(&c.common)
 	c.Info = (*InfoService)(&c.common)
@@ -31,7 +56,7 @@ func NewClient(cli plugin.CliConnection) *Client {
 	c.Orgs = (*OrgsService)(&c.common)
 	c.Services = (*ServicesService)(&c.common)
 	c.Spaces = (*SpacesService)(&c.common)
-	return c
+	return c, nil
 }
 
 type service struct {

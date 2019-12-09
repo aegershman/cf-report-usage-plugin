@@ -1,7 +1,6 @@
 package v2client
 
 import (
-	"log"
 	"net/url"
 )
 
@@ -9,16 +8,16 @@ import (
 type InfoService service
 
 // GetTarget -
-func (i *InfoService) GetTarget() string {
+func (i *InfoService) GetTarget() (string, error) {
 	envInfo, err := i.client.Curl("/v2/info")
 	if err != nil {
-		return ""
+		return "", err
 	}
 	apiep, _ := envInfo["routing_endpoint"].(string)
 	u, err := url.Parse(apiep)
 	if err != nil {
-		log.Fatalln(err)
+		return "", err
 	}
 	host := u.Host
-	return host
+	return host, nil
 }

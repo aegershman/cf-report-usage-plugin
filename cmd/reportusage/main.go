@@ -61,7 +61,11 @@ func (cmd *reportUsageCmd) reportUsageCommand(cli plugin.CliConnection, args []s
 	}
 	log.SetLevel(logLevel)
 
-	reporter := report.NewClient(cli)
+	reporter, err := report.NewClient(cli)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	summaryReport, err := reporter.GetSummaryReportByOrgNames(orgNamesFlag.names...)
 	if err != nil {
 		log.Fatalln(err)
@@ -89,7 +93,7 @@ func (cmd *reportUsageCmd) GetMetadata() plugin.PluginMetadata {
 		Version: plugin.VersionType{
 			Major: 3,
 			Minor: 2,
-			Build: 0,
+			Build: 1,
 		},
 		Commands: []plugin.Command{
 			{
