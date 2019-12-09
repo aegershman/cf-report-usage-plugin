@@ -1,7 +1,6 @@
 package v2client
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 )
@@ -16,11 +15,6 @@ type Org struct {
 	SpacesURL   string
 	URL         string
 }
-
-var (
-	// ErrOrgNotFound -
-	ErrOrgNotFound = errors.New("organization not found")
-)
 
 // OrgsService -
 type OrgsService service
