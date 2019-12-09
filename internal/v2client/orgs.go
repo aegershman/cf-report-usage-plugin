@@ -3,19 +3,19 @@ package v2client
 import (
 	"errors"
 	"fmt"
-	"net/url"
 	"strconv"
 )
 
 // Org -
 type Org struct {
-	Name        string
-	MemoryQuota int
-	MemoryUsage int
-	Spaces      []Space
-	QuotaURL    string
-	SpacesURL   string
-	URL         string
+	MemoryQuota         int
+	MemoryUsage         int
+	Name                string
+	QuotaDefinitionGUID string
+	QuotaURL            string
+	Spaces              []Space
+	SpacesURL           string
+	URL                 string
 }
 
 var (
@@ -28,28 +28,20 @@ type OrgsService service
 
 // GetOrg -
 func (o *OrgsService) GetOrg(name string) (Org, error) {
-	query := fmt.Sprintf("name:%s", name)
-	path := fmt.Sprintf("/v2/organizations?q=%s", url.QueryEscape(query))
-	orgsJSON, err := o.client.Curl(path)
+	org, err := o.client.cfc.GetOrgByName(name)
 	if err != nil {
 		return Org{}, err
 	}
 
-	results := int(orgsJSON["total_results"].(float64))
-	if results == 0 {
-		return Org{}, ErrOrgNotFound
-	}
-
-	orgResource := orgsJSON["resources"].([]interface{})[0]
-	theOrg := orgResource.(map[string]interface{})
-	entity := theOrg["entity"].(map[string]interface{})
-	metadata := theOrg["metadata"].(map[string]interface{})
+	quotaURL := fmt.Sprintf("/v2/quota_definition_url/%s", org.QuotaDefinitionGuid)
+	spacesURL := fmt.Sprintf("/v2/organizations/%s/spaces", org.Guid)
+	url := fmt.Sprintf("/v2/organizations/%s", org.Guid)
 
 	return Org{
-		Name:      entity["name"].(string),
-		URL:       metadata["url"].(string),
-		QuotaURL:  entity["quota_definition_url"].(string),
-		SpacesURL: entity["spaces_url"].(string),
+		Name:      org.Name,
+		QuotaURL:  quotaURL,
+		SpacesURL: spacesURL,
+		URL:       url,
 	}, nil
 }
 
