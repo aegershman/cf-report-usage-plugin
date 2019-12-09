@@ -8,14 +8,13 @@ import (
 
 // Org -
 type Org struct {
-	MemoryQuota         int
-	MemoryUsage         int
-	Name                string
-	QuotaDefinitionGUID string
-	QuotaURL            string
-	Spaces              []Space
-	SpacesURL           string
-	URL                 string
+	MemoryQuota int
+	MemoryUsage int
+	Name        string
+	QuotaURL    string
+	Spaces      []Space
+	SpacesURL   string
+	URL         string
 }
 
 var (
