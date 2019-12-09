@@ -1,23 +1,17 @@
 package v2client
 
-import (
-	"net/url"
-)
-
 // InfoService -
 type InfoService service
 
-// GetTarget -
+// GetTarget returns the current routing endpoint
+//
+// it uses the cf cloud foundry client to retrieve it,
+// which means it doesn't really need to use this particular client
+// to do it... buuut I'm just experimenting, so, eh
 func (i *InfoService) GetTarget() (string, error) {
-	envInfo, err := i.client.Curl("/v2/info")
+	info, err := i.client.cfc.GetInfo()
 	if err != nil {
 		return "", err
 	}
-	apiep, _ := envInfo["routing_endpoint"].(string)
-	u, err := url.Parse(apiep)
-	if err != nil {
-		return "", err
-	}
-	host := u.Host
-	return host, nil
+	return info.RoutingEndpoint, nil
 }
