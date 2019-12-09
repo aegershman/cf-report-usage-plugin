@@ -11,7 +11,7 @@ import (
 
 // Client -
 type Client struct {
-	cfc    cfclient.CloudFoundryClient
+	cfc    cfclient.CloudFoundryClient // TODO primed go-cfclient
 	cli    plugin.CliConnection
 	common service
 
