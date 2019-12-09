@@ -12,13 +12,14 @@ cf report-usage
 cf report-usage -o voyager
 cf report-usage -o voyager -o tenzing [-o orgName...]
 
-# report using different formats
+# report using specific formats
 cf report-usage -o voyager -o tenzing --format table
 cf report-usage -o voyager -o tenzing --format string
 cf report-usage -o voyager -o tenzing --format json
 
 # or output multiple report formats in the same run by specifying --format multiple times
 cf report-usage -o voyager -o tenzing --format table --format json
+cf report-usage -o voyager -o tenzing [--format formatName...]
 ```
 
 `--format table`:

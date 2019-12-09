@@ -41,16 +41,15 @@ func (f *formatFlag) Set(value string) error {
 // reportUsageCommand is the "real" main entrypoint into program execution
 func (cmd *reportUsageCmd) reportUsageCommand(cli plugin.CliConnection, args []string) {
 
-	var (
-		orgNamesFlag orgNamesFlag
-		formatFlag   formatFlag
-		logLevelFlag string
-	)
+	// flag defaults
+	var orgNamesFlag orgNamesFlag
+	formatFlag := formatFlag{formats: []string{"table"}}
+	logLevelFlag := "info"
 
 	flagss := flag.NewFlagSet(args[0], flag.ContinueOnError)
 	flagss.Var(&orgNamesFlag, "o", "")
 	flagss.Var(&formatFlag, "format", "")
-	flagss.StringVar(&logLevelFlag, "log-level", "info", "")
+	flagss.StringVar(&logLevelFlag, "log-level", "", "")
 	if err := flagss.Parse(args[1:]); err != nil {
 		log.Fatalln(err)
 	}
@@ -77,7 +76,7 @@ func (cmd *reportUsageCmd) Run(cli plugin.CliConnection, args []string) {
 	case "report-usage":
 		cmd.reportUsageCommand(cli, args)
 	default:
-		log.Infoln("did you know plugin commands can still get ran when uninstalling a plugin? interesting, right?")
+		log.Debugln("did you know plugin commands can still get ran when uninstalling a plugin? interesting, right?")
 		return
 	}
 }
