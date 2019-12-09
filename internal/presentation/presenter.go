@@ -7,33 +7,35 @@ import (
 // Presenter -
 type Presenter struct {
 	SummaryReport report.SummaryReport `json:"summary_report"`
-	Format        string               `json:"format"`
+	formats       []string
 }
 
 // NewPresenter -
-func NewPresenter(r report.SummaryReport, format string) Presenter {
+func NewPresenter(r report.SummaryReport, formats ...string) Presenter {
 	return Presenter{
 		SummaryReport: r,
-		Format:        format,
+		formats:       formats,
 	}
 }
 
 // Render -
 func (p *Presenter) Render() {
-	switch p.Format {
-	case "json":
-		p.asJSON()
-	case "string":
-		p.asString()
-	case "table-org-quota": // again, TODO, bleh
-		p.asTableOrgQuota()
-	case "table":
-		p.asTable()
-	default:
-		// TODO
-		// yeah this is kind of awful I know, I'm sorry, I'm still learning,
-		// I'll fix this along with much better and earlier error handling on this
-		// I'll fix this, I promise
-		p.asString()
+	for _, format := range p.formats {
+		switch format {
+		case "json":
+			p.asJSON()
+			fallthrough
+		case "string":
+			p.asString()
+			fallthrough
+		case "table-org-quota": // again, TODO, get rid of this, bleh
+			p.asTableOrgQuota()
+			fallthrough
+		case "table":
+			p.asTable()
+			fallthrough
+		default:
+			p.asString()
+		}
 	}
 }
