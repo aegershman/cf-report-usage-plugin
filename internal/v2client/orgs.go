@@ -64,9 +64,9 @@ func (o *OrgsService) GetOrgs() ([]Org, error) {
 	return orgs, nil
 }
 
-// GetOrgSpaces returns the spaces in an org
-func (o *OrgsService) GetOrgSpaces(spacesURL string) ([]Space, error) {
-	nextURL := spacesURL
+// GetOrgSpacesByOrgGUID returns the spaces in an org using the org's GUID
+func (o *OrgsService) GetOrgSpacesByOrgGUID(orgGUID string) ([]Space, error) {
+	nextURL := fmt.Sprintf("/v2/organizations/%s/spaces", orgGUID)
 	spaces := []Space{}
 	for nextURL != "" {
 		spacesJSON, err := o.client.Curl(nextURL)

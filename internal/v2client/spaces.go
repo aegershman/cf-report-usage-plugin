@@ -14,8 +14,8 @@ type Space struct {
 // SpacesService -
 type SpacesService service
 
-// GetSpaceAppsAndServicesByGUID returns the apps and the services from a space
-func (s *SpacesService) GetSpaceAppsAndServicesByGUID(spaceGUID string) ([]App, []Service, error) {
+// GetSpaceAppsAndServicesBySpaceGUID returns the apps and the services from a space
+func (s *SpacesService) GetSpaceAppsAndServicesBySpaceGUID(spaceGUID string) ([]App, []Service, error) {
 	path := fmt.Sprintf("/v2/spaces/%s/summary", spaceGUID)
 	summaryJSON, err := s.client.Curl(path)
 	if err != nil {
