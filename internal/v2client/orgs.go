@@ -14,7 +14,6 @@ type Org struct {
 	QuotaURL            string
 	Spaces              []Space
 	SpacesURL           string
-	URL                 string
 }
 
 // OrgsService -
@@ -26,18 +25,14 @@ func (o *OrgsService) GetOrgByName(name string) (Org, error) {
 	if err != nil {
 		return Org{}, err
 	}
-
 	quotaURL := fmt.Sprintf("/v2/quota_definitions/%s", org.QuotaDefinitionGuid)
 	spacesURL := fmt.Sprintf("/v2/organizations/%s/spaces", org.Guid)
-	url := fmt.Sprintf("/v2/organizations/%s", org.Guid)
-
 	return Org{
 		GUID:                org.Guid,
 		Name:                org.Name,
 		QuotaDefinitionGUID: org.QuotaDefinitionGuid,
 		QuotaURL:            quotaURL,
 		SpacesURL:           spacesURL,
-		URL:                 url,
 	}, nil
 }
 
@@ -52,7 +47,6 @@ func (o *OrgsService) GetOrgs() ([]Org, error) {
 	for _, org := range listedOrgs {
 		quotaURL := fmt.Sprintf("/v2/quota_definitions/%s", org.QuotaDefinitionGuid)
 		spacesURL := fmt.Sprintf("/v2/organizations/%s/spaces", org.Guid)
-		url := fmt.Sprintf("/v2/organizations/%s", org.Guid)
 		orgs = append(orgs,
 			Org{
 				GUID:                org.Guid,
@@ -60,10 +54,8 @@ func (o *OrgsService) GetOrgs() ([]Org, error) {
 				QuotaDefinitionGUID: org.QuotaDefinitionGuid,
 				QuotaURL:            quotaURL,
 				SpacesURL:           spacesURL,
-				URL:                 url,
 			})
 	}
-
 	return orgs, nil
 }
 
@@ -98,7 +90,8 @@ func (o *OrgsService) GetOrgSpacesByOrgGUID(orgGUID string) ([]Space, error) {
 
 // GetOrgMemoryUsage returns amount of memory (in MB) a given org is currently using
 func (o *OrgsService) GetOrgMemoryUsage(org Org) (float64, error) {
-	usageJSON, err := o.client.Curl(org.URL + "/memory_usage")
+	path := fmt.Sprintf("/v2/organizations/%s/memory_usage", org.GUID)
+	usageJSON, err := o.client.Curl(path)
 	if err != nil {
 		return 0, err
 	}

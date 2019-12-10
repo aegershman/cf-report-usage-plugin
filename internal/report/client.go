@@ -104,7 +104,6 @@ func (r *Client) getOrgDetails(o v2client.Org) (v2client.Org, error) {
 		QuotaURL:            o.QuotaURL,
 		Spaces:              spaces,
 		SpacesURL:           o.SpacesURL,
-		URL:                 o.URL,
 	}, nil
 }
 
