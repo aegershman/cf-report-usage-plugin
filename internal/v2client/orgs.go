@@ -83,9 +83,9 @@ func (o *OrgsService) GetOrgSpacesByOrgGUID(orgGUID string) ([]Space, error) {
 	return spaces, nil
 }
 
-// GetOrgMemoryUsage returns amount of memory (in MB) a given org is currently using
-func (o *OrgsService) GetOrgMemoryUsage(org Org) (float64, error) {
-	path := fmt.Sprintf("/v2/organizations/%s/memory_usage", org.GUID)
+// GetOrgMemoryUsageByOrgGUID returns amount of memory (in MB) a given org is currently using
+func (o *OrgsService) GetOrgMemoryUsageByOrgGUID(orgGUID string) (float64, error) {
+	path := fmt.Sprintf("/v2/organizations/%s/memory_usage", orgGUID)
 	usageJSON, err := o.client.Curl(path)
 	if err != nil {
 		return 0, err

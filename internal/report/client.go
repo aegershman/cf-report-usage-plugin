@@ -81,7 +81,7 @@ func (r *Client) getOrgs(orgNames ...string) ([]v2client.Org, error) {
 }
 
 func (r *Client) getOrgDetails(o v2client.Org) (v2client.Org, error) {
-	usage, err := r.client.Orgs.GetOrgMemoryUsage(o)
+	usage, err := r.client.Orgs.GetOrgMemoryUsageByOrgGUID(o.GUID)
 	if err != nil {
 		return v2client.Org{}, err
 	}
