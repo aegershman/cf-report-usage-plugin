@@ -6,6 +6,7 @@ import (
 
 // Org -
 type Org struct {
+	GUID        string
 	MemoryQuota int
 	MemoryUsage int
 	Name        string
@@ -30,6 +31,7 @@ func (o *OrgsService) GetOrg(name string) (Org, error) {
 	url := fmt.Sprintf("/v2/organizations/%s", org.Guid)
 
 	return Org{
+		GUID:      org.Guid,
 		Name:      org.Name,
 		QuotaURL:  quotaURL,
 		SpacesURL: spacesURL,

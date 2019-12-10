@@ -41,6 +41,7 @@ func (s *SpacesService) GetSpaceAppsAndServices(summaryURL string) ([]App, []Ser
 			// these properties should exist whether 'service_plan' exists
 			// should imply it's a user-provided service
 			serviceToAppend := Service{
+				GUID: theService["guid"].(string),
 				Name: theService["name"].(string),
 				Type: theService["type"].(string),
 			}
