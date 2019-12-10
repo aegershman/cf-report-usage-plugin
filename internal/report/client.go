@@ -32,7 +32,7 @@ func (r *Client) GetSummaryReportByOrgNames(orgNames ...string) (*SummaryReport,
 	var orgReports []OrgReport
 	for _, org := range populatedOrgs {
 		spaceReports := r.getSpaceReportsByOrg(org)
-		orgQuota, _ := r.client.OrgQuotas.GetOrgQuotaByQuotaGUID(org.QuotaDefinitionGUID)
+		orgQuota, _ := r.client.OrgQuotas.GetOrgQuotaByOrgGUID(org.GUID)
 		orgReport := *NewOrgReport(orgQuota, org, spaceReports...)
 		orgReports = append(orgReports, orgReport)
 	}
@@ -86,7 +86,7 @@ func (r *Client) getOrgDetails(o v2client.Org) (v2client.Org, error) {
 		return v2client.Org{}, err
 	}
 
-	quota, err := r.client.OrgQuotas.GetOrgQuotaByQuotaGUID(o.QuotaDefinitionGUID)
+	quota, err := r.client.OrgQuotas.GetOrgQuotaByOrgGUID(o.GUID)
 	if err != nil {
 		return v2client.Org{}, err
 	}
