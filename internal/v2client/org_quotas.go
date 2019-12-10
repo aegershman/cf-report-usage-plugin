@@ -1,5 +1,7 @@
 package v2client
 
+import "fmt"
+
 // OrgQuota -
 // A space quota looks very similar but it uses a different (v2) API endpoint
 // just to be safe, going to explicitly reference this as a way to get quota of an Org
@@ -20,12 +22,12 @@ type OrgQuota struct {
 // OrgQuotasService -
 type OrgQuotasService service
 
-// GetOrgQuota returns an org's quota. A space quota looks very similar
+// GetOrgQuotaByQuotaGUID returns an org's quota. A space quota looks very similar
 // but it uses a different (v2) API endpoint, so just to be safe, going to explicitly
 // reference this as a way to get quota of an Org
-func (o *OrgQuotasService) GetOrgQuota(quotaURL string) (OrgQuota, error) {
-
-	quotaJSON, err := o.client.Curl(quotaURL)
+func (o *OrgQuotasService) GetOrgQuotaByQuotaGUID(quotaGUID string) (OrgQuota, error) {
+	path := fmt.Sprintf("/v2/quota_definitions/%s", quotaGUID)
+	quotaJSON, err := o.client.Curl(path)
 	if err != nil {
 		return OrgQuota{}, err
 	}

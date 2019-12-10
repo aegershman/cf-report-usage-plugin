@@ -32,7 +32,7 @@ func (r *Client) GetSummaryReportByOrgNames(orgNames ...string) (*SummaryReport,
 	var orgReports []OrgReport
 	for _, org := range populatedOrgs {
 		spaceReports := r.getSpaceReportsByOrg(org)
-		orgQuota, _ := r.client.OrgQuotas.GetOrgQuota(org.QuotaURL)
+		orgQuota, _ := r.client.OrgQuotas.GetOrgQuotaByQuotaGUID(org.QuotaDefinitionGUID)
 		orgReport := *NewOrgReport(orgQuota, org, spaceReports...)
 		orgReports = append(orgReports, orgReport)
 	}
@@ -86,7 +86,7 @@ func (r *Client) getOrgDetails(o v2client.Org) (v2client.Org, error) {
 		return v2client.Org{}, err
 	}
 
-	quota, err := r.client.OrgQuotas.GetOrgQuota(o.QuotaURL)
+	quota, err := r.client.OrgQuotas.GetOrgQuotaByQuotaGUID(o.QuotaDefinitionGUID)
 	if err != nil {
 		return v2client.Org{}, err
 	}
@@ -96,14 +96,15 @@ func (r *Client) getOrgDetails(o v2client.Org) (v2client.Org, error) {
 	}
 
 	return v2client.Org{
-		GUID:        o.GUID,
-		MemoryQuota: quota.MemoryLimit,
-		MemoryUsage: int(usage),
-		Name:        o.Name,
-		QuotaURL:    o.QuotaURL,
-		Spaces:      spaces,
-		SpacesURL:   o.SpacesURL,
-		URL:         o.URL,
+		GUID:                o.GUID,
+		MemoryQuota:         quota.MemoryLimit,
+		MemoryUsage:         int(usage),
+		Name:                o.Name,
+		QuotaDefinitionGUID: o.QuotaDefinitionGUID,
+		QuotaURL:            o.QuotaURL,
+		Spaces:              spaces,
+		SpacesURL:           o.SpacesURL,
+		URL:                 o.URL,
 	}, nil
 }
 
