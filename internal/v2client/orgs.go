@@ -56,29 +56,25 @@ func (o *OrgsService) GetOrgs() ([]Org, error) {
 
 // GetOrgSpacesByOrgGUID returns the spaces in an org using the org's GUID
 func (o *OrgsService) GetOrgSpacesByOrgGUID(orgGUID string) ([]Space, error) {
-	nextURL := fmt.Sprintf("/v2/organizations/%s/spaces", orgGUID)
+	org, err := o.client.cfc.GetOrgByGuid(orgGUID)
+	if err != nil {
+		return nil, err
+	}
+
+	orgSummary, err := org.Summary()
+	if err != nil {
+		return nil, err
+	}
+
 	spaces := []Space{}
-	for nextURL != "" {
-		spacesJSON, err := o.client.Curl(nextURL)
-		if err != nil {
-			return nil, err
-		}
-		for _, s := range spacesJSON["resources"].([]interface{}) {
-			theSpace := s.(map[string]interface{})
-			metadata := theSpace["metadata"].(map[string]interface{})
-			entity := theSpace["entity"].(map[string]interface{})
-			spaces = append(spaces,
-				Space{
-					GUID:       metadata["guid"].(string),
-					Name:       entity["name"].(string),
-					SummaryURL: metadata["url"].(string) + "/summary",
-				})
-		}
-		if next, ok := spacesJSON["next_url"].(string); ok {
-			nextURL = next
-		} else {
-			nextURL = ""
-		}
+	for _, space := range orgSummary.Spaces {
+		summaryURL := fmt.Sprintf("/v2/space/%s/summary", space.Guid)
+		spaces = append(spaces,
+			Space{
+				GUID:       space.Guid,
+				Name:       space.Name,
+				SummaryURL: summaryURL,
+			})
 	}
 	return spaces, nil
 }
