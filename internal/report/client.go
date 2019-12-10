@@ -115,7 +115,7 @@ func (r *Client) getSpaces(spaceURL string) ([]v2client.Space, error) {
 	}
 	var spaces = []v2client.Space{}
 	for _, s := range rawSpaces {
-		apps, services, err := r.getAppsAndServices(s.SummaryURL)
+		apps, services, err := r.getAppsAndServices(s.GUID)
 		if err != nil {
 			return nil, err
 		}
@@ -130,8 +130,8 @@ func (r *Client) getSpaces(spaceURL string) ([]v2client.Space, error) {
 	return spaces, nil
 }
 
-func (r *Client) getAppsAndServices(summaryURL string) ([]v2client.App, []v2client.Service, error) {
-	apps, services, err := r.client.Spaces.GetSpaceAppsAndServices(summaryURL)
+func (r *Client) getAppsAndServices(spaceGUID string) ([]v2client.App, []v2client.Service, error) {
+	apps, services, err := r.client.Spaces.GetSpaceAppsAndServices(spaceGUID)
 	if err != nil {
 		return nil, nil, err
 	}
