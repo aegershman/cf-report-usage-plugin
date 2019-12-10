@@ -2,8 +2,9 @@ package v2client
 
 // Space -
 type Space struct {
-	Name       string
 	Apps       []App
+	GUID       string
+	Name       string
 	Services   []Service
 	SummaryURL string
 }
@@ -26,10 +27,11 @@ func (s *SpacesService) GetSpaceAppsAndServices(summaryURL string) ([]App, []Ser
 			theApp := a.(map[string]interface{})
 			apps = append(apps,
 				App{
-					Name:             theApp["name"].(string),
-					RunningInstances: int(theApp["running_instances"].(float64)),
+					GUID:             theApp["guid"].(string),
 					Instances:        int(theApp["instances"].(float64)),
 					Memory:           int(theApp["memory"].(float64)),
+					Name:             theApp["name"].(string),
+					RunningInstances: int(theApp["running_instances"].(float64)),
 				})
 		}
 	}
@@ -41,6 +43,7 @@ func (s *SpacesService) GetSpaceAppsAndServices(summaryURL string) ([]App, []Ser
 			// these properties should exist whether 'service_plan' exists
 			// should imply it's a user-provided service
 			serviceToAppend := Service{
+				GUID: theService["guid"].(string),
 				Name: theService["name"].(string),
 				Type: theService["type"].(string),
 			}

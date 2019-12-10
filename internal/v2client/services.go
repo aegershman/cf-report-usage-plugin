@@ -3,11 +3,12 @@ package v2client
 // Service -
 // admittantly, did flatten this structure out to avoid nesting structs
 type Service struct {
+	GUID              string
 	Name              string
-	Type              string
 	ServiceBrokerName string
-	ServicePlanName   string
 	ServicePlanLabel  string
+	ServicePlanName   string
+	Type              string
 }
 
 // ServicesService -

@@ -2,10 +2,11 @@ package v2client
 
 // App -
 type App struct {
-	RunningInstances int
-	Name             string
-	Memory           int
+	GUID             string
 	Instances        int
+	Memory           int
+	Name             string
+	RunningInstances int
 }
 
 // AppsService -
