@@ -113,7 +113,7 @@ func (r *Client) getGetSpacesByOrgGUID(orgGUID string) ([]v2client.Space, error)
 	}
 	var spaces = []v2client.Space{}
 	for _, s := range rawSpaces {
-		apps, services, err := r.getAppsAndServicesBySpaceGUID(s.GUID)
+		apps, services, err := r.client.Spaces.GetSpaceAppsAndServicesBySpaceGUID(s.GUID)
 		if err != nil {
 			return nil, err
 		}
@@ -127,12 +127,4 @@ func (r *Client) getGetSpacesByOrgGUID(orgGUID string) ([]v2client.Space, error)
 		)
 	}
 	return spaces, nil
-}
-
-func (r *Client) getAppsAndServicesBySpaceGUID(spaceGUID string) ([]v2client.App, []v2client.Service, error) {
-	apps, services, err := r.client.Spaces.GetSpaceAppsAndServicesBySpaceGUID(spaceGUID)
-	if err != nil {
-		return nil, nil, err
-	}
-	return apps, services, nil
 }
