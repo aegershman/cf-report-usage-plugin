@@ -4,16 +4,17 @@ package v2client
 // A space quota looks very similar but it uses a different (v2) API endpoint
 // just to be safe, going to explicitly reference this as a way to get quota of an Org
 type OrgQuota struct {
-	Name                    string `json:"name"`
-	TotalServices           int    `json:"total_services"`
-	TotalRoutes             int    `json:"total_routes"`
-	TotalPrivateDomains     int    `json:"total_private_domains"`
-	MemoryLimit             int    `json:"memory_limit"`
+	AppInstanceLimit        int `json:"app_instance_limit"`
+	AppTaskLimit            int `json:"app_task_limit"`
+	GUID                    string
 	InstanceMemoryLimit     int    `json:"instance_memory_limit"`
-	AppInstanceLimit        int    `json:"app_instance_limit"`
-	AppTaskLimit            int    `json:"app_task_limit"`
-	TotalServiceKeys        int    `json:"total_service_keys"`
+	MemoryLimit             int    `json:"memory_limit"`
+	Name                    string `json:"name"`
+	TotalPrivateDomains     int    `json:"total_private_domains"`
 	TotalReservedRoutePorts int    `json:"total_reserved_route_ports"`
+	TotalRoutes             int    `json:"total_routes"`
+	TotalServiceKeys        int    `json:"total_service_keys"`
+	TotalServices           int    `json:"total_services"`
 }
 
 // OrgQuotasService -
@@ -30,15 +31,16 @@ func (o *OrgQuotasService) GetOrgQuota(quotaURL string) (OrgQuota, error) {
 
 	quota := quotaJSON["entity"].(map[string]interface{})
 	return OrgQuota{
-		Name:                    quota["name"].(string),
-		TotalServices:           int(quota["total_services"].(float64)),
-		TotalRoutes:             int(quota["total_routes"].(float64)),
-		TotalPrivateDomains:     int(quota["total_private_domains"].(float64)),
-		MemoryLimit:             int(quota["memory_limit"].(float64)),
-		InstanceMemoryLimit:     int(quota["instance_memory_limit"].(float64)),
 		AppInstanceLimit:        int(quota["app_instance_limit"].(float64)),
 		AppTaskLimit:            int(quota["app_task_limit"].(float64)),
-		TotalServiceKeys:        int(quota["total_service_keys"].(float64)),
+		GUID:                    quota["guid"].(string),
+		InstanceMemoryLimit:     int(quota["instance_memory_limit"].(float64)),
+		MemoryLimit:             int(quota["memory_limit"].(float64)),
+		Name:                    quota["name"].(string),
+		TotalPrivateDomains:     int(quota["total_private_domains"].(float64)),
 		TotalReservedRoutePorts: int(quota["total_service_keys"].(float64)),
+		TotalRoutes:             int(quota["total_routes"].(float64)),
+		TotalServiceKeys:        int(quota["total_service_keys"].(float64)),
+		TotalServices:           int(quota["total_services"].(float64)),
 	}, nil
 }
