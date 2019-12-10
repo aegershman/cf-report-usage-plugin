@@ -29,11 +29,14 @@ func (o *OrgQuotasService) GetOrgQuota(quotaURL string) (OrgQuota, error) {
 		return OrgQuota{}, err
 	}
 
+	metadata := quotaJSON["metadata"].(map[string]interface{})
+	guid := metadata["guid"].(string)
+
 	quota := quotaJSON["entity"].(map[string]interface{})
 	return OrgQuota{
 		AppInstanceLimit:        int(quota["app_instance_limit"].(float64)),
 		AppTaskLimit:            int(quota["app_task_limit"].(float64)),
-		GUID:                    quota["guid"].(string),
+		GUID:                    guid,
 		InstanceMemoryLimit:     int(quota["instance_memory_limit"].(float64)),
 		MemoryLimit:             int(quota["memory_limit"].(float64)),
 		Name:                    quota["name"].(string),

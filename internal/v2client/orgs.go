@@ -79,7 +79,7 @@ func (o *OrgsService) GetOrgSpaces(spacesURL string) ([]Space, error) {
 			entity := theSpace["entity"].(map[string]interface{})
 			spaces = append(spaces,
 				Space{
-					GUID:       entity["guid"].(string),
+					GUID:       metadata["guid"].(string),
 					Name:       entity["name"].(string),
 					SummaryURL: metadata["url"].(string) + "/summary",
 				})
