@@ -19,8 +19,8 @@ type Org struct {
 // OrgsService -
 type OrgsService service
 
-// GetOrg -
-func (o *OrgsService) GetOrg(name string) (Org, error) {
+// GetOrgByName -
+func (o *OrgsService) GetOrgByName(name string) (Org, error) {
 	org, err := o.client.cfc.GetOrgByName(name)
 	if err != nil {
 		return Org{}, err

@@ -54,7 +54,7 @@ func (r *Client) getOrgs(orgNames ...string) ([]v2client.Org, error) {
 
 	if len(orgNames) > 0 {
 		for _, orgName := range orgNames {
-			rawOrg, err := r.client.Orgs.GetOrg(orgName)
+			rawOrg, err := r.client.Orgs.GetOrgByName(orgName)
 			if err != nil {
 				return nil, err
 			}

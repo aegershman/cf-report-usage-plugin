@@ -4,9 +4,9 @@ package v2client
 // A space quota looks very similar but it uses a different (v2) API endpoint
 // just to be safe, going to explicitly reference this as a way to get quota of an Org
 type OrgQuota struct {
-	AppInstanceLimit        int `json:"app_instance_limit"`
-	AppTaskLimit            int `json:"app_task_limit"`
-	GUID                    string
+	AppInstanceLimit        int    `json:"app_instance_limit"`
+	AppTaskLimit            int    `json:"app_task_limit"`
+	GUID                    string `json:"guid"`
 	InstanceMemoryLimit     int    `json:"instance_memory_limit"`
 	MemoryLimit             int    `json:"memory_limit"`
 	Name                    string `json:"name"`
@@ -24,6 +24,7 @@ type OrgQuotasService service
 // but it uses a different (v2) API endpoint, so just to be safe, going to explicitly
 // reference this as a way to get quota of an Org
 func (o *OrgQuotasService) GetOrgQuota(quotaURL string) (OrgQuota, error) {
+
 	quotaJSON, err := o.client.Curl(quotaURL)
 	if err != nil {
 		return OrgQuota{}, err
