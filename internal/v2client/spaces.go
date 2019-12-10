@@ -2,8 +2,9 @@ package v2client
 
 // Space -
 type Space struct {
-	Name       string
 	Apps       []App
+	GUID       string
+	Name       string
 	Services   []Service
 	SummaryURL string
 }

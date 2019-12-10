@@ -53,6 +53,7 @@ func (o *OrgsService) GetOrgs() ([]Org, error) {
 		url := fmt.Sprintf("/v2/organizations/%s", org.Guid)
 		orgs = append(orgs,
 			Org{
+				GUID:      org.Guid,
 				Name:      org.Name,
 				QuotaURL:  quotaURL,
 				SpacesURL: spacesURL,
@@ -78,6 +79,7 @@ func (o *OrgsService) GetOrgSpaces(spacesURL string) ([]Space, error) {
 			entity := theSpace["entity"].(map[string]interface{})
 			spaces = append(spaces,
 				Space{
+					GUID:       entity["guid"].(string),
 					Name:       entity["name"].(string),
 					SummaryURL: metadata["url"].(string) + "/summary",
 				})
