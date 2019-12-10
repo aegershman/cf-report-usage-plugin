@@ -86,8 +86,6 @@ func (r *Client) getOrgDetails(o v2client.Org) (v2client.Org, error) {
 		return v2client.Org{}, err
 	}
 
-	// TODO teeing up to swap out for 'quota' being it's own managed entity
-	// for time being, going to simply modify it _here_ to not break anything obvious
 	quota, err := r.client.OrgQuotas.GetOrgQuota(o.QuotaURL)
 	if err != nil {
 		return v2client.Org{}, err
@@ -98,6 +96,7 @@ func (r *Client) getOrgDetails(o v2client.Org) (v2client.Org, error) {
 	}
 
 	return v2client.Org{
+		GUID:        o.GUID,
 		MemoryQuota: quota.MemoryLimit,
 		MemoryUsage: int(usage),
 		Name:        o.Name,
@@ -121,8 +120,9 @@ func (r *Client) getSpaces(spaceURL string) ([]v2client.Space, error) {
 		}
 		spaces = append(spaces,
 			v2client.Space{
-				Name:     s.Name,
 				Apps:     apps,
+				GUID:     s.GUID,
+				Name:     s.Name,
 				Services: services,
 			},
 		)
