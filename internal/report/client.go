@@ -131,7 +131,7 @@ func (r *Client) getSpaces(spaceURL string) ([]v2client.Space, error) {
 }
 
 func (r *Client) getAppsAndServices(spaceGUID string) ([]v2client.App, []v2client.Service, error) {
-	apps, services, err := r.client.Spaces.GetSpaceAppsAndServices(spaceGUID)
+	apps, services, err := r.client.Spaces.GetSpaceAppsAndServicesByGUID(spaceGUID)
 	if err != nil {
 		return nil, nil, err
 	}
