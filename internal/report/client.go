@@ -32,7 +32,7 @@ func (r *Client) GetSummaryReportByOrgNames(orgNames ...string) (*SummaryReport,
 	var orgReports []OrgReport
 	for _, org := range populatedOrgs {
 		spaceReports := r.getSpaceReportsByOrg(org)
-		orgQuota, _ := r.client.OrgQuotas.GetOrgQuota(org.QuotaURL)
+		orgQuota, _ := r.client.OrgQuotas.GetOrgQuotaByOrgGUID(org.GUID)
 		orgReport := *NewOrgReport(orgQuota, org, spaceReports...)
 		orgReports = append(orgReports, orgReport)
 	}
@@ -54,7 +54,7 @@ func (r *Client) getOrgs(orgNames ...string) ([]v2client.Org, error) {
 
 	if len(orgNames) > 0 {
 		for _, orgName := range orgNames {
-			rawOrg, err := r.client.Orgs.GetOrg(orgName)
+			rawOrg, err := r.client.Orgs.GetOrgByName(orgName)
 			if err != nil {
 				return nil, err
 			}
@@ -81,59 +81,50 @@ func (r *Client) getOrgs(orgNames ...string) ([]v2client.Org, error) {
 }
 
 func (r *Client) getOrgDetails(o v2client.Org) (v2client.Org, error) {
-	usage, err := r.client.Orgs.GetOrgMemoryUsage(o)
+	usage, err := r.client.Orgs.GetOrgMemoryUsageByOrgGUID(o.GUID)
 	if err != nil {
 		return v2client.Org{}, err
 	}
 
-	// TODO teeing up to swap out for 'quota' being it's own managed entity
-	// for time being, going to simply modify it _here_ to not break anything obvious
-	quota, err := r.client.OrgQuotas.GetOrgQuota(o.QuotaURL)
+	quota, err := r.client.OrgQuotas.GetOrgQuotaByOrgGUID(o.GUID)
 	if err != nil {
 		return v2client.Org{}, err
 	}
-	spaces, err := r.getSpaces(o.SpacesURL)
+	spaces, err := r.getGetSpacesByOrgGUID(o.GUID)
 	if err != nil {
 		return v2client.Org{}, err
 	}
 
 	return v2client.Org{
-		MemoryQuota: quota.MemoryLimit,
-		MemoryUsage: int(usage),
-		Name:        o.Name,
-		QuotaURL:    o.QuotaURL,
-		Spaces:      spaces,
-		SpacesURL:   o.SpacesURL,
-		URL:         o.URL,
+		GUID:                o.GUID,
+		MemoryQuota:         quota.MemoryLimit,
+		MemoryUsage:         int(usage),
+		Name:                o.Name,
+		QuotaDefinitionGUID: o.QuotaDefinitionGUID,
+		Spaces:              spaces,
+		SpacesURL:           o.SpacesURL,
 	}, nil
 }
 
-func (r *Client) getSpaces(spaceURL string) ([]v2client.Space, error) {
-	rawSpaces, err := r.client.Orgs.GetOrgSpaces(spaceURL)
+func (r *Client) getGetSpacesByOrgGUID(orgGUID string) ([]v2client.Space, error) {
+	rawSpaces, err := r.client.Orgs.GetOrgSpacesByOrgGUID(orgGUID)
 	if err != nil {
 		return nil, err
 	}
 	var spaces = []v2client.Space{}
 	for _, s := range rawSpaces {
-		apps, services, err := r.getAppsAndServices(s.SummaryURL)
+		apps, services, err := r.client.Spaces.GetSpaceAppsAndServicesBySpaceGUID(s.GUID)
 		if err != nil {
 			return nil, err
 		}
 		spaces = append(spaces,
 			v2client.Space{
-				Name:     s.Name,
 				Apps:     apps,
+				GUID:     s.GUID,
+				Name:     s.Name,
 				Services: services,
 			},
 		)
 	}
 	return spaces, nil
-}
-
-func (r *Client) getAppsAndServices(summaryURL string) ([]v2client.App, []v2client.Service, error) {
-	apps, services, err := r.client.Spaces.GetSpaceAppsAndServices(summaryURL)
-	if err != nil {
-		return nil, nil, err
-	}
-	return apps, services, nil
 }

@@ -1,5 +1,7 @@
 package v2client
 
+import "fmt"
+
 // Space -
 type Space struct {
 	Apps       []App
@@ -12,9 +14,10 @@ type Space struct {
 // SpacesService -
 type SpacesService service
 
-// GetSpaceAppsAndServices returns the apps and the services from a space's /summary endpoint
-func (s *SpacesService) GetSpaceAppsAndServices(summaryURL string) ([]App, []Service, error) {
-	summaryJSON, err := s.client.Curl(summaryURL)
+// GetSpaceAppsAndServicesBySpaceGUID returns the apps and the services from a space
+func (s *SpacesService) GetSpaceAppsAndServicesBySpaceGUID(spaceGUID string) ([]App, []Service, error) {
+	path := fmt.Sprintf("/v2/spaces/%s/summary", spaceGUID)
+	summaryJSON, err := s.client.Curl(path)
 	if err != nil {
 		return nil, nil, err
 	}
