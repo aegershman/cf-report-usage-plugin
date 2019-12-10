@@ -26,10 +26,11 @@ func (s *SpacesService) GetSpaceAppsAndServices(summaryURL string) ([]App, []Ser
 			theApp := a.(map[string]interface{})
 			apps = append(apps,
 				App{
-					Name:             theApp["name"].(string),
-					RunningInstances: int(theApp["running_instances"].(float64)),
+					GUID:             theApp["guid"].(string),
 					Instances:        int(theApp["instances"].(float64)),
 					Memory:           int(theApp["memory"].(float64)),
+					Name:             theApp["name"].(string),
+					RunningInstances: int(theApp["running_instances"].(float64)),
 				})
 		}
 	}
