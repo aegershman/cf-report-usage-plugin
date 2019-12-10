@@ -11,7 +11,6 @@ type Org struct {
 	MemoryUsage         int
 	Name                string
 	QuotaDefinitionGUID string
-	QuotaURL            string
 	Spaces              []Space
 	SpacesURL           string
 }
@@ -25,13 +24,11 @@ func (o *OrgsService) GetOrgByName(name string) (Org, error) {
 	if err != nil {
 		return Org{}, err
 	}
-	quotaURL := fmt.Sprintf("/v2/quota_definitions/%s", org.QuotaDefinitionGuid)
 	spacesURL := fmt.Sprintf("/v2/organizations/%s/spaces", org.Guid)
 	return Org{
 		GUID:                org.Guid,
 		Name:                org.Name,
 		QuotaDefinitionGUID: org.QuotaDefinitionGuid,
-		QuotaURL:            quotaURL,
 		SpacesURL:           spacesURL,
 	}, nil
 }
@@ -45,14 +42,12 @@ func (o *OrgsService) GetOrgs() ([]Org, error) {
 
 	orgs := []Org{}
 	for _, org := range listedOrgs {
-		quotaURL := fmt.Sprintf("/v2/quota_definitions/%s", org.QuotaDefinitionGuid)
 		spacesURL := fmt.Sprintf("/v2/organizations/%s/spaces", org.Guid)
 		orgs = append(orgs,
 			Org{
 				GUID:                org.Guid,
 				Name:                org.Name,
 				QuotaDefinitionGUID: org.QuotaDefinitionGuid,
-				QuotaURL:            quotaURL,
 				SpacesURL:           spacesURL,
 			})
 	}
