@@ -1,6 +1,9 @@
 package v2client
 
-import "fmt"
+import (
+	"fmt"
+	"net/url"
+)
 
 // OrgQuota -
 // A space quota looks very similar but it uses a different (v2) API endpoint
@@ -26,27 +29,30 @@ type OrgQuotasService service
 // but it uses a different (v2) API endpoint, so just to be safe, going to explicitly
 // reference this as a way to get quota of an Org
 func (o *OrgQuotasService) GetOrgQuotaByQuotaGUID(quotaGUID string) (OrgQuota, error) {
-	path := fmt.Sprintf("/v2/quota_definitions/%s", quotaGUID)
-	quotaJSON, err := o.client.Curl(path)
+	q := url.Values{}
+	q.Set("q", "guid:"+quotaGUID)
+	orgQuotas, err := o.client.cfc.ListOrgQuotasByQuery(q)
 	if err != nil {
 		return OrgQuota{}, err
 	}
 
-	metadata := quotaJSON["metadata"].(map[string]interface{})
-	guid := metadata["guid"].(string)
+	if len(orgQuotas) != 1 {
+		return OrgQuota{}, fmt.Errorf("Unable to find single org quota guid %s", quotaGUID)
+	}
 
-	quota := quotaJSON["entity"].(map[string]interface{})
+	quota := orgQuotas[0]
+
 	return OrgQuota{
-		AppInstanceLimit:        int(quota["app_instance_limit"].(float64)),
-		AppTaskLimit:            int(quota["app_task_limit"].(float64)),
-		GUID:                    guid,
-		InstanceMemoryLimit:     int(quota["instance_memory_limit"].(float64)),
-		MemoryLimit:             int(quota["memory_limit"].(float64)),
-		Name:                    quota["name"].(string),
-		TotalPrivateDomains:     int(quota["total_private_domains"].(float64)),
-		TotalReservedRoutePorts: int(quota["total_service_keys"].(float64)),
-		TotalRoutes:             int(quota["total_routes"].(float64)),
-		TotalServiceKeys:        int(quota["total_service_keys"].(float64)),
-		TotalServices:           int(quota["total_services"].(float64)),
+		AppInstanceLimit:        quota.AppInstanceLimit,
+		AppTaskLimit:            quota.AppTaskLimit,
+		GUID:                    quotaGUID,
+		InstanceMemoryLimit:     quota.InstanceMemoryLimit,
+		MemoryLimit:             quota.MemoryLimit,
+		Name:                    quota.Name,
+		TotalPrivateDomains:     quota.TotalPrivateDomains,
+		TotalReservedRoutePorts: quota.TotalReservedRoutePorts,
+		TotalRoutes:             quota.TotalRoutes,
+		TotalServiceKeys:        quota.TotalServiceKeys,
+		TotalServices:           quota.TotalServices,
 	}, nil
 }
