@@ -1,6 +1,4 @@
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
-code.cloudfoundry.org/cli v6.48.0+incompatible h1:wxpWPSbO7ea9QSwLn9tHthmuy6HFTd5P589/hbGjpbI=
-code.cloudfoundry.org/cli v6.48.0+incompatible/go.mod h1:e4d+EpbwevNhyTZKybrLlyTvpH+W22vMsmdmcTxs/Fo=
 code.cloudfoundry.org/cli v6.51.0+incompatible h1:e3GuPc0ImRVJ4OywlersRNQXl08Onffp0jsy6uNYGIk=
 code.cloudfoundry.org/cli v6.51.0+incompatible/go.mod h1:e4d+EpbwevNhyTZKybrLlyTvpH+W22vMsmdmcTxs/Fo=
 code.cloudfoundry.org/gofileutils v0.0.0-20170111115228-4d0c80011a0f h1:UrKzEwTgeiff9vxdrfdqxibzpWjxLnuXDI5m6z3GJAk=
@@ -9,12 +7,8 @@ github.com/Masterminds/semver v1.4.2 h1:WBLTQ37jOCzSLtXNdoo8bNM8876KhNqOKvrlGITg
 github.com/Masterminds/semver v1.4.2/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF078ddwwvV3Y=
 github.com/Masterminds/semver v1.5.0 h1:H65muMkzWKEuNDnfl9d70GUjFniHKHRbFPGBuZ3QEww=
 github.com/Masterminds/semver v1.5.0/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF078ddwwvV3Y=
-github.com/cloudfoundry-community/go-cfclient v0.0.0-20190808214049-35bcce23fc5f h1:fK3ikA1s77arBhpDwFuyO0hUZ2Aa8O6o2Uzy8Q6iLbs=
-github.com/cloudfoundry-community/go-cfclient v0.0.0-20190808214049-35bcce23fc5f/go.mod h1:RtIewdO+K/czvxvIFCMbPyx7jdxSLL1RZ+DA/Vk8Lwg=
 github.com/cloudfoundry-community/go-cfclient v0.0.0-20200413172050-18981bf12b4b h1:DxtGfGx/LJEIa9ZswJw097bz6CGQdaq2m9XFFuzomg8=
 github.com/cloudfoundry-community/go-cfclient v0.0.0-20200413172050-18981bf12b4b/go.mod h1:RtIewdO+K/czvxvIFCMbPyx7jdxSLL1RZ+DA/Vk8Lwg=
-github.com/cloudfoundry/cli v6.48.0+incompatible h1:CNo3XlMHFUGl9DDy6PjHPQFXw54s6he0R6rRhW6ZSjY=
-github.com/cloudfoundry/cli v6.48.0+incompatible/go.mod h1:uUVSLzSuwWNhis5+tY5XRUp66kLbHhBktg8b3ZfcJHI=
 github.com/cloudfoundry/cli v6.51.0+incompatible h1:ICoLrRHspKjK2//Px/xYnOHcUwjPqOC5R3fvKujdweo=
 github.com/cloudfoundry/cli v6.51.0+incompatible/go.mod h1:uUVSLzSuwWNhis5+tY5XRUp66kLbHhBktg8b3ZfcJHI=
 github.com/codegangsta/inject v0.0.0-20150114235600-33e0aa1cb7c0 h1:sDMmm+q/3+BukdIpxwO365v/Rbspp2Nt5XntgQRXq8Q=
@@ -55,7 +49,6 @@ github.com/konsorten/go-windows-terminal-sequences v1.0.3 h1:CE8S1cTafDpPvMhIxNJ
 github.com/konsorten/go-windows-terminal-sequences v1.0.3/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
-github.com/kr/pretty v0.2.0/go.mod h1:ipq/a2n7PKx3OHsz4KJII5eveXtPO4qwEXGdVfWzfnI=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
@@ -72,8 +65,6 @@ github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLA
 github.com/olekukonko/tablewriter v0.0.4 h1:vHD/YYe1Wolo78koG299f7V/VAS08c6IpCLn+Ejf/w8=
 github.com/olekukonko/tablewriter v0.0.4/go.mod h1:zq6QwlOf5SlnkVbMSr5EoBv3636FWnp+qbPhuoO21uA=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
-github.com/onsi/ginkgo v1.10.3 h1:OoxbjfXVZyod1fmWYhI7SEyaD8B00ynP3T+D5GiyHOY=
-github.com/onsi/ginkgo v1.10.3/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.12.0 h1:Iw5WCbBcaAAd0fpRb1c9r5YCylv4XDoCSigm1zLevwU=
 github.com/onsi/ginkgo v1.12.0/go.mod h1:oUhWkIvk5aDxtKvDDuw8gItl8pKl42LzjC9KZE0HfGg=
 github.com/onsi/gomega v1.4.3/go.mod h1:ex+gbHU/CVuBBDIJjb2X0qEXbFg53c61hWP/1CpauHY=
@@ -125,7 +116,6 @@ golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f h1:wMNYb4v58l5UBM7MYRLPG6Zh
 golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4 h1:YUO/7uOKsKeq9UokNS62b8FYywz3ker1l1vDZRCRefw=
 golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
-golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sys v0.0.0-20180909124046-d0be0721c37e/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190422165155-953cdadca894 h1:Cz4ceDQGXuKRnVBDTS23GTn/pU5OE2C0WrNTOYK1Uuc=
