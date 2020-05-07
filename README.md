@@ -28,42 +28,42 @@ cf report-usage -o voyager -o tenzing [--format formatName...]
 +---------+-------------+--------------+-----+-------------+------+-----+
 |   ORG   |    SPACE    | BILLABLE AIS | AIS | STOPPED AIS | APPS | SCS |
 +---------+-------------+--------------+-----+-------------+------+-----+
-| voyager | dev         | 20           | 18  | 5           | 16   | 2   |
-| voyager | test        | 20           | 19  | 2           | 12   | 1   |
-| tenzing | dev         | 2            | 0   | 0           | 8    | 2   |
-| tenzing | test        | 2            | 0   | 0           | 9    | 2   |
+| voyager | dev         | 11           | 10  | 1           | 12   | 2   |
+| voyager | test        | 10           | 10  | 1           | 11   | 1   |
+| tenzing | dev         | 8            | 7   | 1           | 8    | 2   |
 | tenzing | integration | 1            | 0   | 0           | 4    | 1   |
+| tenzing | test        | 8            | 6   | 0           | 8    | 2   |
 +---------+-------------+--------------+-----+-------------+------+-----+
-|    -    |    TOTAL    |      45      | 37  |      7      |  49  |  8  |
+|    -    |    TOTAL    |      38      | 33  |      3      |  43  |  8  |
 +---------+-------------+--------------+-----+-------------+------+-----+
 ```
 
 `--format string`:
 
 ```txt
-org voyager is consuming 60416 MB of 83968 MB
-        space dev is consuming 25600 MB memory of org quota
-                AIs billable: 20
-                AIs canonical: 18 (13 running, 5 stopped)
+org voyager is consuming 36864 MB of 83968 MB
+        space dev is consuming 18432 MB memory of org quota
+                AIs billable: 11
+                AIs canonical: 10 (9 running, 1 stopped)
                 SCS instances: 2
-        space test is consuming 34816 MB memory of org quota
-                AIs billable: 20
-                AIs canonical: 19 (17 running, 2 stopped)
+        space test is consuming 18432 MB memory of org quota
+                AIs billable: 10
+                AIs canonical: 10 (9 running, 1 stopped)
                 SCS instances: 1
-org tenzing is consuming 0 MB of 83968 MB
-        space dev is consuming 0 MB memory of org quota
-                AIs billable: 2
-                AIs canonical: 0 (0 running, 0 stopped)
-                SCS instances: 2
-        space test is consuming 0 MB memory of org quota
-                AIs billable: 2
-                AIs canonical: 0 (0 running, 0 stopped)
+org tenzing is consuming 31128 MB of 83968 MB
+        space dev is consuming 15564 MB memory of org quota
+                AIs billable: 8
+                AIs canonical: 7 (6 running, 1 stopped)
                 SCS instances: 2
         space integration is consuming 0 MB memory of org quota
                 AIs billable: 1
                 AIs canonical: 0 (0 running, 0 stopped)
                 SCS instances: 1
-across 2 org(s), you have 45 billable AIs, 37 are canonical AIs (30 running, 7 stopped), 8 are SCS instances
+        space test is consuming 15564 MB memory of org quota
+                AIs billable: 8
+                AIs canonical: 6 (6 running, 0 stopped)
+                SCS instances: 2
+across 2 org(s), you have 38 billable AIs, 33 are canonical AIs (30 running, 3 stopped), 8 are SCS instances
 ```
 
 `--format json`:
@@ -76,159 +76,161 @@ This example is going to be a bit cluttered, so it's recommended using `jq` to p
     "org_reports": [
       {
         "org_quota": {
-          "name": "voyager",
-          "total_services": -1,
-          "total_routes": -1,
-          "total_private_domains": -1,
-          "memory_limit": 83968,
-          "instance_memory_limit": -1,
           "app_instance_limit": 38,
           "app_task_limit": -1,
+          "guid": "7cdf9c89-f493-417e-97bd-5422f9681759",
+          "instance_memory_limit": -1,
+          "memory_limit": 83968,
+          "name": "voyager",
+          "total_private_domains": -1,
+          "total_reserved_route_ports": 0,
+          "total_routes": -1,
           "total_service_keys": -1,
-          "total_reserved_route_ports": -1
+          "total_services": -1
         },
-        "app_instances_count": 37,
-        "apps_count": 28,
-        "billable_app_instances_count": 40,
-        "billable_services_count": 13,
+        "app_instances_count": 20,
+        "apps_count": 23,
+        "billable_app_instances_count": 21,
+        "billable_services_count": 11,
         "memory_quota": 83968,
-        "memory_usage": 60416,
+        "memory_usage": 36864,
         "name": "voyager",
-        "running_app_instances_count": 30,
-        "running_apps_count": 21,
-        "services_count": 16,
+        "running_app_instances_count": 18,
+        "running_apps_count": 18,
+        "services_count": 14,
         "services_suite_for_pivotal_platform_count": 7,
         "spring_cloud_services_count": 3,
-        "stopped_app_instances_count": 7,
-        "stopped_apps_count": 7,
+        "stopped_app_instances_count": 2,
+        "stopped_apps_count": 5,
         "space_reports": [
           {
-            "app_instances_count": 18,
-            "apps_count": 16,
-            "billable_app_instances_count": 20,
-            "billable_services_count": 7,
-            "memory_quota": -1,
-            "memory_usage": 25600,
-            "name": "dev",
-            "running_app_instances_count": 13,
-            "running_apps_count": 11,
-            "services_count": 9,
-            "services_suite_for_pivotal_platform_count": 4,
-            "spring_cloud_services_count": 2,
-            "stopped_app_instances_count": 5,
-            "stopped_apps_count": 5
-          },
-          {
-            "app_instances_count": 19,
+            "app_instances_count": 10,
             "apps_count": 12,
-            "billable_app_instances_count": 20,
+            "billable_app_instances_count": 11,
             "billable_services_count": 6,
             "memory_quota": -1,
-            "memory_usage": 34816,
+            "memory_usage": 18432,
+            "name": "dev",
+            "running_app_instances_count": 9,
+            "running_apps_count": 9,
+            "services_count": 8,
+            "services_suite_for_pivotal_platform_count": 4,
+            "spring_cloud_services_count": 2,
+            "stopped_app_instances_count": 1,
+            "stopped_apps_count": 3
+          },
+          {
+            "app_instances_count": 10,
+            "apps_count": 11,
+            "billable_app_instances_count": 10,
+            "billable_services_count": 5,
+            "memory_quota": -1,
+            "memory_usage": 18432,
             "name": "test",
-            "running_app_instances_count": 17,
-            "running_apps_count": 10,
-            "services_count": 7,
+            "running_app_instances_count": 9,
+            "running_apps_count": 9,
+            "services_count": 6,
             "services_suite_for_pivotal_platform_count": 3,
             "spring_cloud_services_count": 1,
-            "stopped_app_instances_count": 2,
+            "stopped_app_instances_count": 1,
             "stopped_apps_count": 2
           }
         ]
       },
       {
         "org_quota": {
-          "name": "tenzing",
-          "total_services": -1,
-          "total_routes": -1,
-          "total_private_domains": -1,
-          "memory_limit": 83968,
-          "instance_memory_limit": -1,
-          "app_instance_limit": 0,
+          "app_instance_limit": 28,
           "app_task_limit": -1,
+          "guid": "b87e4524-43a3-4e65-9593-013fa0fefa42",
+          "instance_memory_limit": -1,
+          "memory_limit": 83968,
+          "name": "tenzing",
+          "total_private_domains": -1,
+          "total_reserved_route_ports": 5,
+          "total_routes": -1,
           "total_service_keys": -1,
-          "total_reserved_route_ports": -1
+          "total_services": -1
         },
-        "app_instances_count": 0,
-        "apps_count": 21,
-        "billable_app_instances_count": 5,
-        "billable_services_count": 18,
+        "app_instances_count": 13,
+        "apps_count": 20,
+        "billable_app_instances_count": 17,
+        "billable_services_count": 15,
         "memory_quota": 83968,
-        "memory_usage": 0,
+        "memory_usage": 31128,
         "name": "tenzing",
-        "running_app_instances_count": 0,
-        "running_apps_count": 0,
-        "services_count": 23,
+        "running_app_instances_count": 12,
+        "running_apps_count": 12,
+        "services_count": 20,
         "services_suite_for_pivotal_platform_count": 9,
         "spring_cloud_services_count": 5,
-        "stopped_app_instances_count": 0,
-        "stopped_apps_count": 21,
+        "stopped_app_instances_count": 1,
+        "stopped_apps_count": 8,
         "space_reports": [
           {
-            "app_instances_count": 0,
+            "app_instances_count": 7,
             "apps_count": 8,
-            "billable_app_instances_count": 2,
-            "billable_services_count": 6,
+            "billable_app_instances_count": 8,
+            "billable_services_count": 5,
             "memory_quota": -1,
-            "memory_usage": 0,
+            "memory_usage": 15564,
             "name": "dev",
-            "running_app_instances_count": 0,
-            "running_apps_count": 0,
-            "services_count": 8,
+            "running_app_instances_count": 6,
+            "running_apps_count": 6,
+            "services_count": 7,
             "services_suite_for_pivotal_platform_count": 3,
             "spring_cloud_services_count": 2,
-            "stopped_app_instances_count": 0,
-            "stopped_apps_count": 8
-          },
-          {
-            "app_instances_count": 0,
-            "apps_count": 9,
-            "billable_app_instances_count": 2,
-            "billable_services_count": 6,
-            "memory_quota": -1,
-            "memory_usage": 0,
-            "name": "test",
-            "running_app_instances_count": 0,
-            "running_apps_count": 0,
-            "services_count": 8,
-            "services_suite_for_pivotal_platform_count": 3,
-            "spring_cloud_services_count": 2,
-            "stopped_app_instances_count": 0,
-            "stopped_apps_count": 9
+            "stopped_app_instances_count": 1,
+            "stopped_apps_count": 2
           },
           {
             "app_instances_count": 0,
             "apps_count": 4,
             "billable_app_instances_count": 1,
-            "billable_services_count": 6,
+            "billable_services_count": 5,
             "memory_quota": -1,
             "memory_usage": 0,
             "name": "integration",
             "running_app_instances_count": 0,
             "running_apps_count": 0,
-            "services_count": 7,
+            "services_count": 6,
             "services_suite_for_pivotal_platform_count": 3,
             "spring_cloud_services_count": 1,
             "stopped_app_instances_count": 0,
             "stopped_apps_count": 4
+          },
+          {
+            "app_instances_count": 6,
+            "apps_count": 8,
+            "billable_app_instances_count": 8,
+            "billable_services_count": 5,
+            "memory_quota": -1,
+            "memory_usage": 15564,
+            "name": "test",
+            "running_app_instances_count": 6,
+            "running_apps_count": 6,
+            "services_count": 7,
+            "services_suite_for_pivotal_platform_count": 3,
+            "spring_cloud_services_count": 2,
+            "stopped_app_instances_count": 0,
+            "stopped_apps_count": 2
           }
         ]
       }
     ],
-    "app_instances_count": 37,
-    "apps_count": 49,
-    "billable_app_instances_count": 45,
-    "billable_services_count": 31,
+    "app_instances_count": 33,
+    "apps_count": 43,
+    "billable_app_instances_count": 38,
+    "billable_services_count": 26,
     "memory_quota": 167936,
-    "memory_usage": 60416,
+    "memory_usage": 67992,
     "name": "voyagertenzing",
     "running_app_instances_count": 30,
-    "running_apps_count": 21,
-    "services_count": 39,
+    "running_apps_count": 30,
+    "services_count": 34,
     "services_suite_for_pivotal_platform_count": 16,
     "spring_cloud_services_count": 8,
-    "stopped_app_instances_count": 7,
-    "stopped_apps_count": 28
+    "stopped_app_instances_count": 3,
+    "stopped_apps_count": 13
   }
 }
 ```
