@@ -103,7 +103,7 @@ func (s *SpaceReport) billableServicesCount() int {
 // BillableAppInstancesCount -
 func (s *SpaceReport) billableAppInstancesCount() int {
 	count := 0
-	count += s.appInstancesCount()
+	count += s.runningAppInstancesCount()
 	count += s.springCloudServicesCount()
 	return count
 }
