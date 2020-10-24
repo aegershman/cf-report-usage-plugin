@@ -1,8 +1,8 @@
 package report
 
 import (
+	"code.cloudfoundry.org/cli/plugin"
 	"github.com/aegershman/cf-report-usage-plugin/internal/v2client"
-	"github.com/cloudfoundry/cli/plugin"
 )
 
 // Client orchestrates generation and aggregation of report data
