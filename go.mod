@@ -1,6 +1,6 @@
 module github.com/aegershman/cf-report-usage-plugin
 
-go 1.13
+go 1.15
 
 require (
 	code.cloudfoundry.org/cli v6.51.0+incompatible // indirect
