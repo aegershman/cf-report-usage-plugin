@@ -5,8 +5,8 @@ import (
 	"errors"
 	"strings"
 
+	"code.cloudfoundry.org/cli/plugin"
 	"github.com/cloudfoundry-community/go-cfclient"
-	"github.com/cloudfoundry/cli/plugin"
 )
 
 // Client -
