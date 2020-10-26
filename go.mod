@@ -3,7 +3,7 @@ module github.com/aegershman/cf-report-usage-plugin
 go 1.15
 
 require (
-	code.cloudfoundry.org/cli v6.51.0+incompatible
+	code.cloudfoundry.org/cli v6.53.0+incompatible
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/cloudfoundry-community/go-cfclient v0.0.0-20201023184446-5cf5e1c3862d
 	github.com/golang/protobuf v1.4.3 // indirect
