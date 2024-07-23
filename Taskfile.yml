@@ -11,7 +11,7 @@ tasks:
   release:
     cmds:
       - task: build
-      - goreleaser release
+      - goreleaser release --clean
 
   install:
     cmds:
