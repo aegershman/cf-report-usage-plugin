@@ -8,6 +8,11 @@ tasks:
       - go generate ./...
       - goreleaser build --clean 
 
+  release:
+    cmds:
+      - task: build
+      - goreleaser release
+
   install:
     cmds:
       - task: build
