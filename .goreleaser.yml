@@ -37,7 +37,7 @@ archives:
     builds:
       - darwin
     format: binary
-    name_template: "{{ .ProjectName }}-{{ .Os }}"
+    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
 
 checksum:
   name_template: "checksums.txt"

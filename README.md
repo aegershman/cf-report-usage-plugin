@@ -240,14 +240,17 @@ This example is going to be a bit cluttered, so it's recommended using `jq` to p
 If you want to try it out, install it directly from [the github releases tab as follows](https://github.com/aegershman/cf-report-usage-plugin/releases):
 
 ```sh
+# osx apple silicone
+cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.4.3/cf-report-usage-plugin-darwin-arm64
+
 # osx 64bit
-cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.3.2/cf-report-usage-plugin-darwin
+cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.4.3/cf-report-usage-plugin-darwin-amd64
 
 # linux 64bit (32bit and ARM6 also available)
-cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.3.2/cf-report-usage-plugin-linux-amd64
+cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.4.3/cf-report-usage-plugin-linux-amd64
 
 # windows 64bit (32bit also available)
-cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.3.2/cf-report-usage-plugin-windows-amd64.exe
+cf install-plugin -f https://github.com/aegershman/cf-report-usage-plugin/releases/download/3.4.3/cf-report-usage-plugin-windows-amd64.exe
 ```
 
 ## backwards compatibility
